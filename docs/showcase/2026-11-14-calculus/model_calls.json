@@ -1,0 +1,78 @@
+[
+  {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+    "provider": "api.siliconflow.cn",
+    "completed_at": "2026-11-14T07:15:32.676034+00:00",
+    "response_sha256": "a299c601271463828d83a4337bdf99605677341c4c4bc0ae9fa167aef3dbbcda",
+    "usage": {
+      "prompt_tokens": 116,
+      "completion_tokens": 51,
+      "total_tokens": 167,
+      "completion_tokens_details": {
+        "reasoning_tokens": 35
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 116
+    }
+  },
+  {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+    "provider": "api.siliconflow.cn",
+    "completed_at": "2026-11-14T07:16:00.437197+00:00",
+    "response_sha256": "501bd447059c38bef40e8b15a832fde710f0a71b839e50299145056beae6e069",
+    "usage": {
+      "prompt_tokens": 1042,
+      "completion_tokens": 2324,
+      "total_tokens": 3366,
+      "completion_tokens_details": {
+        "reasoning_tokens": 1609
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 1042
+    }
+  },
+  {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+    "provider": "api.siliconflow.cn",
+    "completed_at": "2026-11-14T07:18:05.722396+00:00",
+    "response_sha256": "ceff0aacbff48874df9eb9f628a5ba2c6119761745da215062795c2229dcd8b2",
+    "usage": {
+      "prompt_tokens": 2621,
+      "completion_tokens": 13346,
+      "total_tokens": 15967,
+      "completion_tokens_details": {
+        "reasoning_tokens": 11132
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 2621
+    }
+  },
+  {
+    "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+    "provider": "api.siliconflow.cn",
+    "completed_at": "2026-11-14T07:20:23.746821+00:00",
+    "response_sha256": "740c7aa531a1afc6d9a34aa996912384053b753392bc6e4df50bf3decc6a6c9d",
+    "usage": {
+      "prompt_tokens": 2650,
+      "completion_tokens": 8900,
+      "total_tokens": 11550,
+      "completion_tokens_details": {
+        "reasoning_tokens": 7339
+      },
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 2650
+    }
+  }
+]

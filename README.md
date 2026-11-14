@@ -1,6 +1,36 @@
-# Multi-Disciplinary Vibe Knowledge Agent
+# KnowMotion
+
+**让知识动起来：从一个知识点，生成有讲解、有字幕、有数学动画的视频。**
 
 多学科知识视频自动生产系统。输入一个主题，自动完成学科识别、资料研究、教学与视觉规划、三级素材检索、分镜与场景源码生成、并行渲染和 MP4 导出。运行时只有技术执行检查，没有用户澄清节点、AI 审片、质量评分或反复改稿循环。
+
+## 数学视频制作效果
+
+### 最新成片：《微积分的本质》
+
+下面是 **2026 年 11 月 14 日 15:30（北京时间）** 完成的数学视频，时长约 **1 分 18 秒**。从连续变化的直觉出发，依次展示割线逼近切线、黎曼和逼近积分，以及微积分的应用。讲稿与分镜由项目配置的真实文本模型经过 Agent 管线生成，再由 Manim 渲染数学动画、MiniMax 合成中文配音、FFmpeg 完成合成。
+
+[![《微积分的本质》四幕实际画面：连续变化、割线与切线、黎曼和、微积分应用](docs/showcase/2026-11-14-calculus/preview.png)](docs/showcase/2026-11-14-calculus/knowmotion-calculus.mp4)
+
+**[观看 / 下载完整视频（MP4，3.43 MB）](https://github.com/Gerke1006/KnowMotion/raw/refs/heads/main/docs/showcase/2026-11-14-calculus/knowmotion-calculus.mp4)** · [查看仓库中的视频文件](docs/showcase/2026-11-14-calculus/knowmotion-calculus.mp4)
+
+画面预览直接截自这份成片。视频中的具体效果包括：
+
+- **导数可视化**：逐步缩小两点间隔，让割线逼近切线，同时展示间隔和斜率的变化。
+- **积分可视化**：不断细化黎曼矩形，把“分割、累加、逼近面积”的过程呈现为动画。
+- **统一的数学表达**：深色背景、青色函数曲线、金色重点与 LaTeX 公式，搭配清晰的中文字幕。
+- **连续的视听节奏**：中文旁白、背景音乐与场景叠化；画面、字幕和人声同步为 1.15 倍速，并保留音高，场景按实际配音长度收尾。
+
+| 项目 | 本次成片 |
+|---|---|
+| 主题 / 场景 | 微积分的本质 / 4 幕 |
+| 时长 / 画面 | 78.03 秒 / 1280 × 720 / 30 fps |
+| 视频 / 音频编码 | H.264 / AAC 立体声 |
+| 文本模型 | `deepseek-ai/DeepSeek-V4.1-Flash`，4 次实际调用 |
+| 配音 | MiniMax `speech-2.8-turbo`，温润青年 |
+| 渲染与合成 | Manim + LaTeX + FFmpeg |
+
+该文件是已有完整 `live` 任务的最终混音版本，背景音乐音量为 `0.30`。随片提供 [模型调用记录](docs/showcase/2026-11-14-calculus/model_calls.json)、[Live 技术验收记录](docs/showcase/2026-11-14-calculus/live_acceptance.json)、[媒体检查](docs/showcase/2026-11-14-calculus/media_verification.json) 和 [发布来源与 SHA-256](docs/showcase/2026-11-14-calculus/publication.json)。公开记录仅将本机绝对路径改为项目相对路径，原始记录保留在本地任务目录；视频文件与最终成片逐字节一致。
 
 ## 快速运行
 

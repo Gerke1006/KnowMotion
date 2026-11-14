@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "topic": "微积分的本质",
+  "title": "微积分的本质",
+  "domain": "mathematics",
+  "audience": "高中生与大学初学者",
+  "duration": 90.0,
+  "aspect_ratio": "16:9",
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "style": "geometric_clarity",
+  "mode": "live",
+  "narration_char_budget": 440
+}

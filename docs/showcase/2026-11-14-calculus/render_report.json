@@ -1,0 +1,131 @@
+{
+  "scenes": [
+    {
+      "scene_id": "scene_01",
+      "renderer": "manim",
+      "duration": 21.233333333333334,
+      "planned_duration": 22.0,
+      "speech": {
+        "original_duration": 21.02,
+        "trim_start": 0.05431249999999999,
+        "trim_end": 0.13409400000000105,
+        "duration": 20.83
+      },
+      "narration_offset": 0.15,
+      "narration": "minimax",
+      "voice_id": "Chinese (Mandarin)_Gentle_Youth",
+      "voice_file": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_01/narration.trimmed.wav",
+      "cached": true,
+      "clip": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_01/normalized.mp4"
+    },
+    {
+      "scene_id": "scene_02",
+      "renderer": "manim",
+      "duration": 20.4,
+      "planned_duration": 22.0,
+      "speech": {
+        "original_duration": 20.23,
+        "trim_start": 0.187031,
+        "trim_end": 0.04784400000000133,
+        "duration": 20.0
+      },
+      "narration_offset": 0.15,
+      "narration": "minimax",
+      "voice_id": "Chinese (Mandarin)_Gentle_Youth",
+      "voice_file": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_02/narration.trimmed.wav",
+      "cached": false,
+      "clip": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_02/normalized.mp4"
+    },
+    {
+      "scene_id": "scene_03",
+      "renderer": "manim",
+      "duration": 23.966666666666665,
+      "planned_duration": 22.0,
+      "speech": {
+        "original_duration": 24.01,
+        "trim_start": 0.21821899999999997,
+        "trim_end": 0.23428100000000285,
+        "duration": 23.56
+      },
+      "narration_offset": 0.15,
+      "narration": "minimax",
+      "voice_id": "Chinese (Mandarin)_Gentle_Youth",
+      "voice_file": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_03/narration.trimmed.wav",
+      "cached": true,
+      "clip": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_03/normalized.mp4"
+    },
+    {
+      "scene_id": "scene_04",
+      "renderer": "manim",
+      "duration": 25.033333333333335,
+      "planned_duration": 24.0,
+      "speech": {
+        "original_duration": 25.2,
+        "trim_start": 0.22781300000000002,
+        "trim_end": 0.32518699999999967,
+        "duration": 24.65
+      },
+      "narration_offset": 0.15,
+      "narration": "minimax",
+      "voice_id": "Chinese (Mandarin)_Gentle_Youth",
+      "voice_file": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_04/narration.trimmed.wav",
+      "cached": true,
+      "clip": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/scenes/scene_04/normalized.mp4"
+    }
+  ],
+  "composition": {
+    "playback_speed": 1.15,
+    "source_duration": 89.73333333333333,
+    "expected_duration": 78.02898550724639,
+    "transition_duration": 0.3,
+    "transitions": [
+      {
+        "from_scene": 0,
+        "to_scene": 1,
+        "start": 18.20289855072464,
+        "end": 18.46376811594203,
+        "duration": 0.2608695652173913,
+        "type": "dissolve"
+      },
+      {
+        "from_scene": 1,
+        "to_scene": 2,
+        "start": 35.68115942028986,
+        "end": 35.94202898550724,
+        "duration": 0.2608695652173913,
+        "type": "dissolve"
+      },
+      {
+        "from_scene": 2,
+        "to_scene": 3,
+        "start": 56.2608695652174,
+        "end": 56.52173913043479,
+        "duration": 0.2608695652173913,
+        "type": "dissolve"
+      }
+    ],
+    "audio_join": "speech-preserving midpoint cuts in silent transition handles"
+  },
+  "duration": 78.03,
+  "bgm": "assets/audio/vibe-bgm.m4a",
+  "output": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/final.mp4",
+  "checks": {
+    "nonempty": true,
+    "media_duration_positive": true
+  },
+  "bgm_volume": 0.3,
+  "audio_remix": {
+    "output": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/final_bgm_louder.mp4",
+    "previous_gain": 0.1,
+    "gain": 0.3,
+    "gain_increase_db": 9.542425094393248,
+    "completed_at": "2026-11-14T07:30:23.384265+00:00",
+    "validation": {
+      "source_video_unchanged": true,
+      "decode_passed": true,
+      "duration": 78.03,
+      "mean_dbfs": -17.6,
+      "peak_dbfs": -0.9
+    }
+  }
+}

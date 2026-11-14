@@ -1,0 +1,18 @@
+{
+  "boundaries": [
+    {
+      "at": 18.333333333333336,
+      "measured_silence": 0
+    },
+    {
+      "at": 35.81159420289855,
+      "measured_silence": 0
+    },
+    {
+      "at": 56.39130434782609,
+      "measured_silence": 0
+    }
+  ],
+  "max_boundary_silence": 0,
+  "black_intervals": 0
+}

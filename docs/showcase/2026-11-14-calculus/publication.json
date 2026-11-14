@@ -1,0 +1,52 @@
+{
+  "project": "KnowMotion",
+  "title": "微积分的本质",
+  "job_id": "95c0bf25-8037-47e6-a4c8-cb93c333d164",
+  "mode": "live",
+  "source_video": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/final.mp4",
+  "source_modified_at": "2026-11-14T15:30:23.383757+08:00",
+  "published_at": "2026-11-14T15:51:20.419019+08:00",
+  "video_file": "knowmotion-calculus.mp4",
+  "video_sha256": "3b3b8cc1fdc5f6be45858414a97c89cb90740b19ce1d2be7925c9e9f1cb58c26",
+  "source_sha256": "3b3b8cc1fdc5f6be45858414a97c89cb90740b19ce1d2be7925c9e9f1cb58c26",
+  "size_bytes": 3430360,
+  "duration_seconds": 78.03,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "text_model": "deepseek-ai/DeepSeek-V4.1-Flash",
+  "text_model_calls": 4,
+  "tts_provider": "MiniMax",
+  "tts_model": "speech-2.8-turbo",
+  "voice_id": "Chinese (Mandarin)_Gentle_Youth",
+  "tts_model_evidence": "All four narration cache fingerprints match the recorded narration, model, voice and TTS speed 1.0.",
+  "playback_speed": 1.15,
+  "tts_speed": 1.0,
+  "bgm_volume": 0.3,
+  "preview": {
+    "file": "preview.png",
+    "frame_times_seconds": [
+      10,
+      27,
+      46,
+      66
+    ],
+    "layout": "2x2; chronological order"
+  },
+  "publication_checks": {
+    "video_identical_to_source": true,
+    "full_audio_video_decode_passed": true
+  },
+  "record_path_normalization": "Only absolute paths under the local project root are converted to project-relative paths. Original records remain in the local task folder.",
+  "source_record_sha256": {
+    "model_calls.json": "1bbd1d33108b531feb8e0ca2e761a7ca0d1f4ff1fd9e48ac43229ad0a32e3eac",
+    "live_acceptance.json": "abad823b604c8da52afac2250a5f75924a2cabd8e47d4acb7f7351f7c60eccbc",
+    "media_verification.json": "4148a8d850c1c1d40c0cecbe936d0ac84e569475806fac205fa525d1ffbb029c",
+    "audio_remix_report.json": "063e5bf2c44d4dbab2947a4e3340f619e1101ab773270f6359f60929eedfa421",
+    "render_report.json": "6d985adc17578a043897c52a8c59f6a349eef80b0bda48f6f523de6e004a4e90",
+    "video_request.json": "faff0f9760c76f7549357f4a191952fbff8ee4be39e65660c53e767434bed3b9"
+  },
+  "note": "Publication of an existing completed live Agent task and its final BGM remix. No new generation or end-to-end acceptance run was performed for this publication."
+}

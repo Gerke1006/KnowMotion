@@ -1,0 +1,14 @@
+{
+  "output": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/final_bgm_louder.mp4",
+  "previous_gain": 0.1,
+  "gain": 0.3,
+  "gain_increase_db": 9.542425094393248,
+  "completed_at": "2026-11-14T07:30:23.384265+00:00",
+  "validation": {
+    "source_video_unchanged": true,
+    "decode_passed": true,
+    "duration": 78.03,
+    "mean_dbfs": -17.6,
+    "peak_dbfs": -0.9
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "job_id": "95c0bf25-8037-47e6-a4c8-cb93c333d164",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+  "model_calls": 4,
+  "checks": {
+    "live_agent": true,
+    "configured_model_used": true,
+    "all_scenes_voiced": true,
+    "configured_bgm_mixed": true,
+    "synchronized_speed": true,
+    "duration_matches_timeline": true,
+    "all_boundaries_transition": true,
+    "no_long_boundary_silence": true,
+    "no_black_intervals": true,
+    "remixed_audio_decodes": true
+  },
+  "duration": 78.03,
+  "bgm": "assets/audio/vibe-bgm.m4a",
+  "output": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/final.mp4",
+  "bgm_volume": 0.3,
+  "audio_remix": {
+    "output": "outputs/95c0bf25-8037-47e6-a4c8-cb93c333d164/final_bgm_louder.mp4",
+    "previous_gain": 0.1,
+    "gain": 0.3,
+    "gain_increase_db": 9.542425094393248,
+    "completed_at": "2026-11-14T07:30:23.384265+00:00",
+    "validation": {
+      "source_video_unchanged": true,
+      "decode_passed": true,
+      "duration": 78.03,
+      "mean_dbfs": -17.6,
+      "peak_dbfs": -0.9
+    }
+  }
+}
