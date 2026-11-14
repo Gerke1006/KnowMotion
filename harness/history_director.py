@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import copy
 import math
+import re
 import unicodedata
 from typing import Annotated, Any, Literal
 
@@ -22,7 +23,7 @@ PositionX = Annotated[float, Field(ge=0, le=1, allow_inf_nan=False)]
 PositionY = Annotated[float, Field(ge=0, le=.82, allow_inf_nan=False)]
 Scale = Annotated[float, Field(ge=.3, le=1.5, allow_inf_nan=False)]
 ActionKind = Literal["enter", "exit", "move", "walk", "ride", "open", "close", "unroll",
-                     "handover", "stamp", "draw", "emphasize"]
+                     "handover", "stamp", "draw", "emphasize", "gesture"]
 SUPPORTED_VISUALS = {"actor.person", "actor.envoy", "actor.horse", "actor.caravan", "prop.gate",
                      "prop.document", "prop.flag", "prop.scroll", "prop.seal", "info.map", "info.timeline",
                      "info.portrait"}
@@ -34,7 +35,7 @@ class DirectorValidationError(ValueError):
 
     def __init__(self, errors: list[dict[str, str]]):
         self.errors = [{"code": str(item["code"])[:80], "path": str(item["path"])[:180],
-                        "message": str(item["message"])[:240]} for item in errors[:24]]
+                        "message": str(item["message"])[:240]} for item in errors]
         super().__init__("; ".join(f"{e['code']} at {e['path']}: {e['message']}" for e in self.errors)[:1800])
 
 
@@ -90,6 +91,7 @@ class StageObject(StrictData):
     facing: Literal[-1, 1] = 1
     label: str = Field(default="", max_length=10)
     parameters: dict[str, Any] = Field(default_factory=dict)
+    evidence_quote: str | None = Field(default=None, min_length=1, max_length=160)
 
 
 class SpeechAnchor(StrictData):
@@ -139,6 +141,8 @@ class DirectorBeat(StrictData):
     actions: list[StageAction] = Field(default_factory=list, max_length=3)
     camera: Camera = Field(default_factory=Camera)
     sfx: SoundCue | None = None
+    evidence_quote: str | None = Field(default=None, min_length=1, max_length=160)
+    evidence_by_object: dict[Identifier, Annotated[str, Field(min_length=1, max_length=160)]] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def unambiguous_groups(self):
@@ -234,7 +238,7 @@ def _quote_span(narration, anchor, path):
     return position, position + len(anchor.quote)
 
 
-def _validate_scene(scene, segment, resources, sources, geography):
+def _validate_scene(scene, segment, resources, sources, geography, *, validation_enabled=True):
     environments = _catalog(resources, "environments")
     visuals = _catalog(resources, "visual_assets")
     sounds = _catalog(resources, "sfx_assets")
@@ -245,7 +249,7 @@ def _validate_scene(scene, segment, resources, sources, geography):
     if len(objects) != len(scene.objects):
         _fail("duplicate_object", base + ".objects", "Object IDs must be unique within the scene")
     known_sources = {source.get("id") for source in sources}
-    if set(segment.source_ids) - known_sources:
+    if validation_enabled and set(segment.source_ids) - known_sources:
         _fail("unknown_source", base + ".segment_id", "Segment cites unknown evidence")
     anchors = {row["id"]: row for row in (geography or {}).get("records", [])}
     for obj in scene.objects:
@@ -256,14 +260,17 @@ def _validate_scene(scene, segment, resources, sources, geography):
             _fail("unsupported_visual_asset", path + ".asset_id", "The trusted renderer does not implement this resource")
         try:
             if obj.asset_id == "info.map":
-                params = validate_history_parameters("history.map", obj.parameters, sources=sources, require_sources=True)
+                params = validate_history_parameters("history.map", obj.parameters,
+                                                     sources=sources if validation_enabled else None,
+                                                     require_sources=validation_enabled)
                 if len(params["locations"]) != 2:
                     _fail("map_endpoints", path, "A current map beat shows exactly two endpoint locations")
-                for point in params["locations"]:
-                    known = anchors.get(point["id"])
-                    if not known or any(not math.isclose(point[axis], known[axis], abs_tol=1e-5, rel_tol=0)
-                                        for axis in ("lon", "lat")):
-                        _fail("unverified_coordinate", path, "Map endpoints must match this run's geography IDs and coordinates")
+                if validation_enabled:
+                    for point in params["locations"]:
+                        known = anchors.get(point["id"])
+                        if not known or any(not math.isclose(point[axis], known[axis], abs_tol=1e-5, rel_tol=0)
+                                            for axis in ("lon", "lat")):
+                            _fail("unverified_coordinate", path, "Map endpoints must match this run's geography IDs and coordinates")
                 obj.parameters = params
             elif obj.asset_id == "info.timeline":
                 obj.parameters = _model(TimelinePoint, obj.parameters).model_dump(mode="json")
@@ -281,7 +288,7 @@ def _validate_scene(scene, segment, resources, sources, geography):
         except ValueError as error:
             _fail("invalid_resource_parameters", path + ".parameters", str(error))
         referenced = referenced_source_ids(obj.parameters)
-        if referenced - known_sources or referenced - set(segment.source_ids):
+        if validation_enabled and (referenced - known_sources or referenced - set(segment.source_ids)):
             _fail("unbound_visual_evidence", path + ".parameters.source_ids", "Visible facts must cite this segment's evidence IDs")
     beat_ids = [beat.id for beat in scene.beats]
     if len(beat_ids) != len(set(beat_ids)):
@@ -301,7 +308,7 @@ def _validate_scene(scene, segment, resources, sources, geography):
             _fail("anchor_order", path + ".anchor", "Beats must follow the original narration in order")
         previous_span = position
         enters = {action.target_id for action in beat.actions if action.kind == "enter"}
-        if exited.intersection(beat.visible_ids) - enters:
+        if validation_enabled and exited.intersection(beat.visible_ids) - enters:
             _fail("exited_object_visible", path, "An exited object must enter explicitly before becoming visible again")
         for action in beat.actions:
             if action.kind not in visuals[objects[action.target_id].asset_id].get("actions", []):
@@ -310,24 +317,42 @@ def _validate_scene(scene, segment, resources, sources, geography):
         exited.update(action.target_id for action in beat.actions if action.kind == "exit")
         if beat.sfx and beat.sfx.asset_id not in sounds:
             _fail("unknown_sfx", path + ".sfx.asset_id", "Select a catalog sound asset ID")
-        if previous and (beat.visible_ids == previous.visible_ids and beat.focus_id == previous.focus_id
-                         and beat.keywords == previous.keywords and not beat.actions):
+        if validation_enabled and previous and (
+                beat.visible_ids == previous.visible_ids and beat.focus_id == previous.focus_id
+                and beat.keywords == previous.keywords and not beat.actions):
             _fail("no_semantic_change", path, "A new beat needs a visible information or object action change")
         previous = beat
-    if used != set(objects):
+    if validation_enabled and used != set(objects):
         _fail("unused_object", base + ".objects", "Every declared object must appear in at least one beat")
 
 
-def validate_director(plan, script, resources, research) -> DirectorPlan:
-    """Validate one model-authored scene per narration segment, without rewriting it."""
-    script = validate_script(script, research.get("sources", []))
+def validate_director(plan, script, resources, research, *, require_narrative_bindings=False,
+                      validation_enabled: bool = True) -> DirectorPlan:
+    """Parse executable data, optionally applying narrative and quality validation."""
+    script = validate_script(script, research.get("sources", []) if validation_enabled else None)
     result = _model(DirectorPlan, plan)
     if [scene.segment_id for scene in result.scenes] != [segment.id for segment in script.segments]:
         _fail("segment_scene_binding", "scenes", "Provide exactly one scene per segment, in original segment order")
     if len({scene.scene_id for scene in result.scenes}) != len(result.scenes):
         _fail("duplicate_scene", "scenes", "Scene IDs must be unique")
+    narrative_errors = []
+    previous_segments = []
+    from harness.history_narrative import validate_narrative_bindings
     for scene, segment in zip(result.scenes, script.segments):
-        _validate_scene(scene, segment, resources, research.get("sources", []), research.get("geography"))
+        try:
+            _validate_scene(scene, segment, resources, research.get("sources", []), research.get("geography"),
+                            validation_enabled=validation_enabled)
+        except DirectorValidationError as error:
+            if not require_narrative_bindings:
+                raise
+            narrative_errors.extend(error.errors)
+        if validation_enabled:
+            report = validate_narrative_bindings(scene, segment, resources, require_bindings=require_narrative_bindings,
+                                                 prior_narration="\n".join(previous_segments))
+            narrative_errors.extend(report["errors"])
+        previous_segments.append(segment.narration)
+    if narrative_errors:
+        raise DirectorValidationError(narrative_errors)
     return result
 
 
@@ -352,53 +377,128 @@ def _aligned_words(words, narration):
     return parsed
 
 
-def _captions(narration, words, trim_start, offset, duration):
-    captions = []
-    group = []
+def _captions(narration, words, trim_start, offset, duration, protected_phrases=()):
+    """Single-line natural pages, preserving words and original source spans."""
+    hard = set("。！？；.!?;\n")
+    soft = set("，、：,:…")
 
-    def flush():
-        if not group:
-            return
-        start_char, end_char = group[0].char_start, group[-1].char_end
-        # Attach punctuation between this observed word and the next word, never
-        # fabricate timing for an unobserved portion of a long provider token.
-        while end_char < len(narration) and unicodedata.category(narration[end_char])[0] == "P":
-            if end_char - start_char >= 24:
+    def spoken(text):
+        return any(unicodedata.category(char)[0] not in {"P", "Z", "C"} for char in text)
+
+    def boundary(position, marks):
+        char = narration[position]
+        if char not in marks:
+            return False
+        return not (char in ".,:" and 0 < position < len(narration) - 1
+                    and narration[position - 1].isdigit() and narration[position + 1].isdigit())
+
+    lexical = [word for word in words if spoken(word.text)]
+    if not lexical:
+        _fail("missing_caption_words", "captions", "Caption pages require observed spoken words")
+    units, cursor = [], 0
+    for index, word in enumerate(lexical):
+        for position in range(word.char_start, word.char_end):
+            if boundary(position, hard) and spoken(narration[position + 1:word.char_end]):
+                _fail("alignment_crosses_sentence", "words", "A timed token crosses a sentence boundary; finer observed alignment is required")
+        next_start = lexical[index + 1].char_start if index + 1 < len(lexical) else len(narration)
+        end = word.char_end
+        while end < next_start:
+            char = narration[end]
+            opening = char in "“‘「『（([{《〈" or (char == '"' and narration[:end].count('"') % 2 == 0)
+            if opening:
                 break
-            end_char += 1
-        text = narration[start_char:end_char]
-        if len(text) > 24:
-            _fail("alignment_token_too_long", "captions", "A timed token exceeds 24 characters; request finer observed alignment")
-        if len(text) > 12:
-            text = text[:12] + "\n" + text[12:]
-        start = max(0.0, group[0].start - trim_start + offset)
-        end = min(duration, group[-1].end - trim_start + offset)
-        if end <= start:
-            _fail("caption_outside_speech", "captions", "Caption timings fall outside the trimmed speech")
-        captions.append({"text": text, "start": round(start, 6), "end": round(end, 6)})
-        group.clear()
+            end += 1
+        if end - cursor > 24:
+            _fail("alignment_token_too_long", "words", "A word with its attached punctuation exceeds the 24-character caption limit")
+        members = [item for item in words if item.char_start < end and item.char_end > cursor]
+        units.append({"left": cursor, "right": end, "start": word.start,
+                      "end": max(item.end for item in members),
+                      "hard": any(boundary(position, hard) for position in range(cursor, end)),
+                      "soft": any(boundary(position, soft) for position in range(word.char_end, end))
+                              or (end > cursor and boundary(word.char_end - 1, soft))})
+        cursor = end
+    # A closing quote or punctuation has no independent page or estimated word time.
+    if cursor < len(narration):
+        if spoken(narration[cursor:]) or len(narration) - units[-1]["left"] > 24:
+            _fail("unattached_caption_text", "captions", "Trailing text cannot fit its observed word without splitting it")
+        units[-1]["right"] = len(narration)
 
-    for word in words:
-        if len(word.text) > 24:
-            _fail("alignment_token_too_long", "words", "Observed alignment tokens must fit a 24-character caption")
-        if group and word.char_end - group[0].char_start > 24:
-            flush()
-        group.append(word)
-        following = narration[word.char_end:word.char_end + 1]
-        if following in {"。", "！", "？", "；", ".", "!", "?", ";"}:
-            flush()
-    flush()
+    protected = []
+    for phrase in protected_phrases:
+        if not isinstance(phrase, str) or not 1 < len(phrase) <= 24:
+            continue
+        position = narration.find(phrase)
+        while position >= 0:
+            if not any(boundary(index, hard) for index in range(position, position + len(phrase))):
+                protected.append((position, position + len(phrase)))
+            position = narration.find(phrase, position + 1)
+    joined = []
+    for unit in units:
+        if joined and any(left < unit["left"] < right for left, right in protected):
+            previous = joined[-1]
+            previous.update(right=unit["right"], end=unit["end"], hard=unit["hard"], soft=unit["soft"])
+            if previous["right"] - previous["left"] > 24:
+                _fail("caption_phrase_too_long", "captions", "An indivisible observed word/name plus punctuation exceeds 24 characters")
+        else:
+            joined.append(unit)
+    units = joined
+
+    sentences, current = [], []
+    for unit in units:
+        current.append(unit)
+        if unit["hard"]:
+            sentences.append(current)
+            current = []
+    if current:
+        sentences.append(current)
+    pages = []
+    for sentence in sentences:
+        first = 0
+        while first < len(sentence):
+            stop = first
+            while stop < len(sentence) and sentence[stop]["right"] - sentence[first]["left"] <= 24:
+                stop += 1
+            if stop < len(sentence):
+                natural = [index + 1 for index in range(first, stop) if sentence[index]["soft"]]
+                if natural:
+                    stop = natural[-1]
+            group = sentence[first:stop]
+            left, right = group[0]["left"], group[-1]["right"]
+            start = max(0.0, group[0]["start"] - trim_start + offset)
+            end = min(duration, group[-1]["end"] - trim_start + offset)
+            if end <= start:
+                _fail("caption_outside_speech", "captions", "Caption timings fall outside trimmed speech")
+            pages.append({"text": re.sub(r"\s+", " ", narration[left:right]), "start": start, "end": end,
+                          "char_start": left, "char_end": right})
+            first = stop
+    for previous, following in zip(pages, pages[1:]):
+        if following["start"] <= previous["start"]:
+            _fail("overlapping_caption_timing", "captions", "Successive caption pages require increasing observed word starts")
+        if following["start"] - previous["end"] <= .35:
+            previous["end"] = following["start"]
+    captions = [{**page, "start": round(page["start"], 6), "end": round(page["end"], 6)} for page in pages]
     return captions
 
 
 def compile_scene(scene, segment, words, speech, resources, sources, geography=None,
-                  fps=30, transition=.30, narration_gap=.08) -> dict:
-    """Resolve original speech quotes into deterministic scene-local time windows."""
+                  fps=30, transition=.30, narration_gap=.08, require_narrative_bindings=False,
+                  *, prior_narration: str = "", validation_enabled: bool = True) -> dict:
+    """Resolve speech timing, with only completed earlier segments as identity context."""
     scene = _model(DirectorScene, scene)
     segment = _model(NarrationSegment, segment)
     if scene.segment_id != segment.id:
         _fail("segment_scene_binding", "segment_id", "The scene must reference the supplied segment")
-    _validate_scene(scene, segment, resources, sources, geography)
+    _validate_scene(scene, segment, resources, sources, geography, validation_enabled=validation_enabled)
+    from harness.history_narrative import narrative_caption_phrases, validate_narrative_bindings
+    if validation_enabled:
+        narrative_report = validate_narrative_bindings(scene, segment, resources, require_bindings=require_narrative_bindings,
+                                                       prior_narration=prior_narration)
+        if narrative_report["errors"]:
+            raise DirectorValidationError(narrative_report["errors"])
+    else:
+        narrative_report = {"scene_id": scene.scene_id, "segment_id": segment.id, "skipped": True,
+                            "reason": "validation_disabled", "passed": None, "required": False,
+                            "errors": [], "warnings": [], "beats": []}
     aligned = _aligned_words(words, segment.narration)
     if (not isinstance(fps, int) or isinstance(fps, bool) or fps <= 0
             or not all(isinstance(value, (int, float)) and not isinstance(value, bool)
@@ -457,15 +557,18 @@ def compile_scene(scene, segment, words, speech, resources, sources, geography=N
         resolved.append({"id": beat.id, "start": round(start, 6), "end": round(end, 6),
                          "anchor_time": round(timings[index], 6), "visible_ids": beat.visible_ids,
                          "focus_id": beat.focus_id, "keywords": beat.keywords,
+                         "evidence_quote": beat.evidence_quote, "evidence_by_object": beat.evidence_by_object,
                          "camera": beat.camera.model_dump(mode="json"), "actions": actions,
                          "sfx": beat.sfx.model_dump(mode="json") if beat.sfx else None})
     cited = set(segment.source_ids)
     return {"protocol": "history-director-v2", "scene_id": scene.scene_id, "segment_id": segment.id,
             "title": segment.intent, "narration": segment.narration, "duration": duration, "fps": fps,
             "environment": scene.environment, "objects": [obj.model_dump(mode="json") for obj in scene.objects],
+            "narrative_report": narrative_report,
             "sources": [{key: value for key, value in source.items() if key in {"id", "title", "url", "provider"}}
                         for source in sources if source.get("id") in cited],
-            "captions": _captions(segment.narration, aligned, trim_start, offset, duration), "beats": resolved,
+            "captions": _captions(segment.narration, aligned, trim_start, offset, duration,
+                                  narrative_caption_phrases(scene)), "beats": resolved,
             "checks": {"observed_word_alignment": True, "all_anchors_resolved": True,
                        "max_visible_groups": max(len(beat.visible_ids) for beat in scene.beats),
                        "max_beat_seconds": max(beat["end"] - beat["start"] for beat in resolved),

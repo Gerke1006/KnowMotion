@@ -2,7 +2,9 @@
 
 历史 live 任务使用项目已配置的文本模型，独立完成资料研究、分段讲稿、资源选择和动作分镜，再调用 MiniMax 温润青年、Remotion 与 FFmpeg。模型提交经过验证的数据，不编写可执行 JavaScript。v2 通过人物和道具的入场、行动、交接、展开、落印与退场组织画面，并保留兼容的地图、时间线和人物组件。
 
-视觉参考 [Motion Showreel](https://github.com/ConardLi/garden-skills/blob/main/skills/motion-showreel/README.zh-CN.md) 的确定性帧函数与连续空间承接，以及 [vibe-knowledge 固定版本](https://github.com/andyhuo520/vibe-knowledge/tree/c3a13a85f7cc560e5d396f063baecea4b2748e1e) 的旁白锚点、物件生命周期和音效起音/峰值卡点机制。古风纸本人物、道具和音效由本项目原创实现；上游 MIT 归属与媒体边界见 [NOTICE](../third_party/vibe-knowledge/NOTICE.md)。中文沿用宋体、英文 Times New Roman；字幕保持粗体白字和深蓝描边。
+视觉参考 [Motion Showreel](https://github.com/ConardLi/garden-skills/blob/main/skills/motion-showreel/README.zh-CN.md) 的确定性帧函数与连续空间承接，以及 [vibe-knowledge 固定版本](https://github.com/andyhuo520/vibe-knowledge/tree/c3a13a85f7cc560e5d396f063baecea4b2748e1e) 的旁白锚点、物件生命周期和音效起音/峰值卡点机制。古风纸本人物、道具和音效由本项目原创实现；上游 MIT 归属与媒体边界见 [NOTICE](../third_party/vibe-knowledge/NOTICE.md)。历史 v2 中文与字幕采用内置 `History Serif`（Adobe Source Han Serif SC Heavy 2.003，字重 900），作为参考图粗宋体风格的近似，不能声称精确识别了截图字体；英文保持 Times New Roman。
+
+历史专用 `production_profile.json.typography` 使用白色字幕、深灰描边（`subtitle_outline_width=1.0`）与 0.18 背景不透明度，减轻字幕底框对画面的遮挡。这些覆盖通过 `history_settings` 返回配置副本，不改变其他学科的字体配置。字体原始字节、官方固定版本、OFL 许可证和 SHA 记录在 `renderers/remotion/project/public/fonts/`；字体二进制与字幕背景不透明度均纳入冻结检查。
 
 ## v2 独立正式验收
 
@@ -73,4 +75,4 @@ MiniMax 同一次配音请求开启 `subtitle_type=word`，保存原始字幕与
 
 旧 `silk_road.json` 是 Phase 1 的离线教学 fixture，保持 Canvas 兼容，不作为 Phase 2 的验收视频。`domains/build_catalog.py` 在重建旧目录后调用 `domains.history.definition.install_metadata`，恢复 Phase 2 的规则、样式、JSON Schema 与素材注册，避免重建把 Remotion 元数据退回旧版。
 
-Python wheel 包含 v2 资源卡、全部原创 WAV、Remotion 源码与 `tools/check-director.ts`，以及固定上游 MIT 归属。Node 依赖、浏览器、系统字体、用户 BGM 和前端构建另行部署。Docker 构建同时复制资源重建工具和 TypeScript 帧审计工具；容器中的可替代字体由部署配置显式选择，不冒充 Windows 字体。
+Python wheel 包含 v2 资源卡、全部原创 WAV、Remotion 源码与 `tools/check-director.ts`，以及固定上游 MIT 归属；历史专用 Heavy OTF、原版 OFL 与来源清单也一同打包。Node 依赖、浏览器、其余系统字体、用户 BGM 和前端构建另行部署。Docker 构建同时复制字体、资源重建工具和 TypeScript 帧审计工具；其余容器字体由部署配置显式选择，不冒充 Windows 字体。

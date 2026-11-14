@@ -1,0 +1,201 @@
+/* Record actions stay separate from navigation, with a quiet destructive accent. */
+.studio-shell .history-record {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border-bottom: 1px solid #e0e7e2;
+  border-radius: 9px;
+  transition: background-color 180ms ease;
+}
+.studio-shell .history-record > .history-row {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  border-bottom: 0;
+}
+.studio-shell .history-delete-button.icon-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #7e8988;
+  background: transparent;
+  transition: color 160ms, background-color 160ms, border-color 160ms, transform 160ms;
+}
+.studio-shell .history-delete-button.icon-button > svg { width: 16px; height: 16px; stroke-width: 1.65; }
+.studio-shell .history-delete-button.icon-button:not(:disabled):hover,
+.studio-shell .sidebar .sidebar-history-delete.icon-button:not(:disabled):hover {
+  color: #975b48;
+  background: #f3e9e3;
+  border-color: #e9d7cc;
+}
+.studio-shell .history-delete-button.icon-button:active,
+.studio-shell .sidebar .sidebar-history-delete.icon-button:active { transform: scale(.94); }
+.studio-shell :is(.history-delete-button, .sidebar-history-delete, .history-detail-delete):focus-visible {
+  outline: 2px solid #397c77;
+  outline-offset: 2px;
+}
+.studio-shell :is(.history-delete-button, .sidebar-history-delete, .history-detail-delete):disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.studio-shell .sidebar .sidebar-history-record { position: relative; min-width: 0; flex-shrink: 0; }
+.studio-shell .sidebar .sidebar-history-record > .history-link { width: 100%; }
+.studio-shell .sidebar .sidebar-history-record:has(.sidebar-history-delete) > .history-link { padding-right: 40px; }
+.studio-shell .sidebar .sidebar-history-delete.icon-button {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #7b8d89;
+  background: transparent;
+  opacity: 1;
+  transition: opacity 160ms ease, color 160ms, background-color 160ms, border-color 160ms, transform 160ms;
+}
+.studio-shell .sidebar .sidebar-history-delete.icon-button > svg { width: 14px; height: 14px; stroke-width: 1.6; }
+.studio-shell .production-page .detail-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.studio-shell .history-detail-delete.button-quiet {
+  min-height: 32px;
+  padding: 6px 10px;
+  gap: 7px;
+  border-radius: 9px;
+  color: #816a61;
+  font-size: 12px;
+  font-weight: 450;
+  white-space: nowrap;
+}
+.studio-shell .history-detail-delete.button-quiet:not(:disabled):hover { background: #f3e9e3; color: #915541; }
+.studio-shell .history-detail-delete > svg { width: 14px; height: 14px; stroke-width: 1.7; }
+
+/* The native dialog provides focus containment and Escape handling. */
+dialog.history-delete-dialog {
+  width: min(430px, calc(100vw - 36px));
+  max-height: calc(100dvh - 40px);
+  margin: auto;
+  padding: 30px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid #ffffff;
+  border-radius: 22px;
+  color: #142d43;
+  background: #fafbf9;
+  box-shadow: 0 25px 80px #142d4326, 0 5px 20px #142d4310, inset 0 1px 0 #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #bacbc5 transparent;
+}
+dialog.history-delete-dialog::backdrop { background: #18313f3d; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+.history-delete-dialog .delete-dialog-icon {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  margin-bottom: 19px;
+  border: 1px solid #eadbd1;
+  border-radius: 13px;
+  color: #985c47;
+  background: #f3e9e1;
+  box-shadow: inset 0 1px 0 #ffffffb3;
+}
+.history-delete-dialog .delete-dialog-icon > svg { width: 21px; height: 21px; stroke-width: 1.65; }
+.history-delete-dialog h2 { margin: 0; color: #1c3849; font-size: 21px; font-weight: 600; line-height: 1.5; letter-spacing: -.3px; }
+.history-delete-dialog > p { margin: 10px 0 0; color: #60757b; font-size: 13px; line-height: 1.85; overflow-wrap: anywhere; }
+.history-delete-dialog .delete-record-title {
+  max-height: 140px;
+  margin: 20px 0 0;
+  padding: 12px 15px;
+  overflow-y: auto;
+  border: 1px solid #e3eae5;
+  border-left: 2px solid #b9ccc3;
+  border-radius: 10px;
+  color: #3d5c67;
+  background: #f1f5f1;
+  font-size: 13px;
+  font-weight: 450;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+}
+.history-delete-dialog .delete-dialog-error {
+  margin: 15px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #e9d9cd;
+  border-radius: 9px;
+  color: #8b513e;
+  background: #f9f0e9;
+  font-size: 12px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.history-delete-dialog .delete-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
+.history-delete-dialog .delete-dialog-actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 104px;
+  min-height: 42px;
+  padding: 10px 17px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.5;
+  transition: background-color 160ms, border-color 160ms, box-shadow 160ms, transform 160ms;
+}
+.history-delete-dialog .delete-dialog-actions > .button-secondary { color: #355464; background: #fff; border-color: #d9e3de; box-shadow: 0 1px 2px #183b4304; }
+.history-delete-dialog .button-secondary:not(:disabled):hover { background: #f1f5f1; border-color: #bccfc6; }
+.history-delete-dialog .delete-dialog-actions > .button-danger { color: #fff; background: #985b48; border-color: #985b48; box-shadow: 0 2px 5px #8e4f3d14, inset 0 1px 0 #ffffff14; }
+.history-delete-dialog .button-danger:not(:disabled):hover { background: #884d3b; border-color: #884d3b; box-shadow: 0 3px 8px #8e4f3d1a; }
+.history-delete-dialog .delete-dialog-actions > button:not(:disabled):active { transform: scale(.98); }
+.history-delete-dialog .delete-dialog-actions > button:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+.history-delete-dialog :is(button, a):focus-visible { outline: 2px solid #397c77; outline-offset: 3px; }
+.history-delete-dialog .button-danger:focus-visible { outline-color: #a56853; }
+
+@media (hover: hover) and (pointer: fine) {
+  .studio-shell .history-record:hover { background: #f0f4ef; }
+  .studio-shell .history-record > .history-row:hover { background: transparent; }
+  .studio-shell .sidebar .sidebar-history-delete.icon-button { opacity: 0; pointer-events: none; }
+  .studio-shell .sidebar .sidebar-history-record:hover .sidebar-history-delete,
+  .studio-shell .sidebar .sidebar-history-record:focus-within .sidebar-history-delete,
+  .studio-shell .sidebar .sidebar-history-delete.icon-button:focus-visible { opacity: 1; pointer-events: auto; }
+}
+@media (hover: none), (pointer: coarse) {
+  .studio-shell .sidebar .sidebar-history-delete.icon-button { width: 32px; height: 32px; margin-top: -16px; right: 4px; opacity: 1; pointer-events: auto; }
+  .studio-shell .history-delete-button.icon-button { width: 40px; height: 40px; }
+}
+@media (max-width: 480px) {
+  .studio-shell .history-record { gap: 4px; }
+  .studio-shell .history-delete-button.icon-button { margin-right: 0; width: 34px; height: 38px; border-radius: 9px; }
+  .studio-shell .history-record > .history-row { gap: 8px; }
+  .studio-shell .history-detail-delete.button-quiet { padding-right: 4px; padding-left: 7px; font-size: 11px; }
+  dialog.history-delete-dialog { width: calc(100vw - 28px); padding: 25px 22px; border-radius: 18px; }
+  .history-delete-dialog h2 { font-size: 20px; }
+  .history-delete-dialog .delete-dialog-actions { gap: 9px; margin-top: 23px; }
+  .history-delete-dialog .delete-dialog-actions > button { flex: 1; min-width: 0; padding-left: 11px; padding-right: 11px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  dialog.history-delete-dialog[open] { animation: history-delete-arrive 180ms cubic-bezier(.2, .8, .2, 1); }
+  dialog.history-delete-dialog[open]::backdrop { animation: history-delete-backdrop 160ms ease-out; }
+}
+@keyframes history-delete-arrive { from { opacity: 0; transform: translateY(7px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes history-delete-backdrop { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .studio-shell :is(.history-record, .history-delete-button, .sidebar-history-delete, .history-detail-delete),
+  dialog.history-delete-dialog, dialog.history-delete-dialog::backdrop, .history-delete-dialog * { animation: none !important; transition: none !important; }
+  .studio-shell .history-delete-button.icon-button:active,
+  .studio-shell .sidebar .sidebar-history-delete.icon-button:active,
+  .history-delete-dialog .delete-dialog-actions > button:not(:disabled):active { transform: none; }
+}

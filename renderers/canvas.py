@@ -161,6 +161,8 @@ class CanvasRenderer:
         return path
 
     def frame(self, scene: dict, metadata: dict, progress: float) -> Image.Image:
+        if scene.get("extensions", {}).get("math_animation_version") == "1.0":
+            return self.math_frame(scene, metadata, progress * float(scene["duration"]))
         width, height = int(metadata.get("width", 1280)), int(metadata.get("height", 720))
         style = scene.get("extensions", {}).get("visual_style", {})
         image = Image.new("RGB", (width, height), style.get("background", "#101820"))
@@ -437,6 +439,210 @@ class CanvasRenderer:
         draw.rectangle((0, height - 4 * scale, width * overall_progress, height), fill=accent)
         return image
 
+    def math_frame(self, scene, metadata, seconds):
+        """Render only the parts selected by the observed-narration timeline."""
+        from harness.math_animation import evaluate_math_timeline, tangent_slope
+
+        timeline = scene.get("extensions", {}).get("math_timeline")
+        if not timeline:
+            raise RendererError("Mathematical animation requires observed-speech compilation")
+        state = evaluate_math_timeline(timeline, seconds)
+        width, height = int(metadata.get("width",1280)), int(metadata.get("height",720))
+        scale = width/1280
+        style = scene.get("extensions",{}).get("visual_style",{})
+        background, cyan, gold, white = (style.get("background","#0D1424"),style.get("primary","#63D8CE"),
+                                         style.get("accent","#F7C96B"),style.get("text","#E9EFF7"))
+        image = Image.new("RGBA",(width,height),background)
+        draw = MixedScriptDraw(image,self._english_font)
+        title_font = ImageFont.truetype(self._font,max(12,round(32*scale)))
+        label_font = ImageFont.truetype(self._font,max(12,round(28*scale)))
+        subtitle_font = ImageFont.truetype(self._subtitle_font,max(14,round(38*scale)))
+        title = str(scene.get("title", ""))
+        while draw.textlength(title,font=title_font) > width*.86 and title_font.size > 10:
+            title_font = ImageFont.truetype(self._font,title_font.size-1)
+        draw.text(((width-draw.textlength(title,font=title_font))/2,height*.055),title,font=title_font,fill=white)
+        component = scene["components"][0]
+        kind, params = component["id"],component.get("parameters",{})
+        validate_component(kind,params)
+        line_width = max(2,round(3*scale))
+        chart = None
+        if kind in {"math.derivative_secant","math.integral_riemann"}:
+            fn = math_function(params.get("function","x**2"))
+            xmin,xmax = map(float,params.get("x_range",[-1,3] if "derivative" in kind else [0,2]))
+            samples = [xmin+(xmax-xmin)*i/180 for i in range(181)]
+            ys = [fn(x) for x in samples]
+            ymin,ymax = min(0,min(ys)),max(ys)
+            span = max(1,ymax-ymin)
+            ymin,ymax = ymin-span*.08,ymax+span*.15
+            left,right,top,bottom = width*.18,width*.82,height*.22,height*.58
+            def xy(x,y):
+                return left+(x-xmin)/(xmax-xmin)*(right-left),bottom-(y-ymin)/(ymax-ymin)*(bottom-top)
+            chart = fn,xmin,xmax,samples,ymin,ymax,xy
+
+        def stroke(painter, points, color, amount=1, thickness=line_width):
+            if amount <= 0 or len(points)<2:
+                return
+            lengths = [math.dist(a,b) for a,b in zip(points,points[1:])]
+            remain = sum(lengths)*min(1,amount)
+            visible = [points[0]]
+            for a,b,length in zip(points,points[1:],lengths):
+                if remain >= length:
+                    visible.append(b)
+                    remain -= length
+                else:
+                    ratio = remain/max(length,1e-8)
+                    visible.append((a[0]+(b[0]-a[0])*ratio,a[1]+(b[1]-a[1])*ratio))
+                    break
+            if len(visible)>1:
+                painter.line(visible,fill=color,width=thickness)
+
+        def polygon(painter, points, color, amount):
+            if amount >= .98:
+                painter.polygon(points,fill=color)
+            stroke(painter,[*points,points[0]],gold,amount)
+
+        def math_text(layer, expression, center, max_height, max_width, amount):
+            asset = self.formula_image(expression,max_height,gold,max_width)
+            if amount < 1:
+                asset = asset.crop((0,0,max(1,round(asset.width*amount)),asset.height))
+            # Revealing a formula keeps its complete expression's left edge fixed.
+            complete = self.formula_image(expression,max_height,gold,max_width)
+            layer.alpha_composite(asset,(round(center[0]-complete.width/2),round(center[1]-complete.height/2)))
+
+        for identity,presentation in state["parts"].items():
+            amount = presentation["draw"]
+            if amount <= 0 or presentation["opacity"] <= 0:
+                continue
+            layer = Image.new("RGBA",image.size,(0,0,0,0))
+            painter = ImageDraw.Draw(layer)
+            if chart:
+                fn,xmin,xmax,samples,ymin,ymax,xy = chart
+                if identity=="axes":
+                    stroke(painter,[xy(xmin,0),xy(xmax,0)],"#6C8390",min(1,amount*2))
+                    zero=max(xmin,min(0,xmax))
+                    stroke(painter,[xy(zero,ymin),xy(zero,ymax)],"#6C8390",max(0,amount*2-1))
+                elif identity=="curve":
+                    stroke(painter,[xy(x,fn(x)) for x in samples],cyan,amount,max(2,round(4*scale)))
+                elif kind=="math.derivative_secant":
+                    x0=float(params.get("x0",1)); dx=max(1e-7,state["values"].get("dx",params.get("dx_start",1.5)))
+                    y0,y1=fn(x0),fn(x0+dx)
+                    gradient=(y1-y0)/dx
+                    if identity in {"point_a","point_b"}:
+                        px,py=xy(x0,y0) if identity=="point_a" else xy(x0+dx,y1)
+                        radius=max(2,7*scale)*amount
+                        painter.ellipse((px-radius,py-radius,px+radius,py+radius),fill=gold)
+                    elif identity in {"secant","tangent"}:
+                        if identity=="tangent":
+                            gradient=tangent_slope(params.get("function","x**2"),x0)
+                        lo,hi=xmin,xmax
+                        if abs(gradient)>1e-10:
+                            lower,upper=sorted([x0+(ymin-y0)/gradient,x0+(ymax-y0)/gradient])
+                            lo,hi=max(lo,lower),min(hi,upper)
+                        stroke(painter,[xy(lo,y0+gradient*(lo-x0)),xy(hi,y0+gradient*(hi-x0))],gold,amount)
+                    elif identity=="delta":
+                        stroke(painter,[xy(x0,y0),xy(x0+dx,y0),xy(x0+dx,y1)],white,amount)
+                    elif identity=="formula":
+                        if "tangent" in state["parts"]:
+                            fragments=[("latex",r"f'(x_0)="),("number",f"{tangent_slope(params.get('function','x**2'),x0):.3f}")]
+                        else:
+                            fragments=[("latex",r"\Delta x="),("number",f"{dx:.2f}"),("latex",r"\frac{\Delta y}{\Delta x}="),("number",f"{gradient:.3f}")]
+                        self.formula_row(layer,MixedScriptDraw(layer,self._english_font),fragments,
+                                         (width*.23,height*.64),label_font,gold,max(12,25*scale),width*.56)
+                else:
+                    a,b=map(float,params.get("bounds",[max(0,xmin),xmax]))
+                    if identity=="bounds":
+                        stroke(painter,[xy(a,0),xy(a,fn(a))],gold,min(1,amount*2))
+                        stroke(painter,[xy(b,0),xy(b,fn(b))],gold,max(0,amount*2-1))
+                    elif identity=="rectangles":
+                        count=min(120,max(1,round(state["values"].get("n",params.get("n_start",4)))))
+                        dx=(b-a)/count
+                        for index in range(count):
+                            partial=min(1,max(0,amount*count-index))
+                            if partial<=0:
+                                continue
+                            x=a+index*dx; y=fn(x+dx/2)
+                            polygon(painter,[xy(x,0),xy(x+dx,0),xy(x+dx,y),xy(x,y)],"#24565D",partial)
+                    elif identity=="formula":
+                        math_text(layer,r"\int_a^b f(x)\,\mathrm{d}x=\lim_{n\to\infty}\sum_{i=1}^n f(x_i^*)\,\Delta x",
+                                  (width*.5,height*.665),height*.07,width*.74,amount)
+            elif kind=="math.pythagorean":
+                a,b=float(params.get("a",3)),float(params.get("b",4))
+                unit=min(width*.40/(2*a+b),height*.44/(a+2*b))
+                def point(x,y):
+                    return width*.32+(x-b/2)*unit,height*.44+(a/2-y)*unit
+                squares={"a":([(0,0),(0,a),(-a,a),(-a,0)],(-a/2,a/2),"#28545B"),
+                         "b":([(0,0),(b,0),(b,-b),(0,-b)],(b/2,-b/2),"#46533F"),
+                         "c":([(b,0),(0,a),(a,a+b),(a+b,b)],((a+b)/2,(a+b)/2),"#655536")}
+                if identity=="triangle":
+                    polygon(painter,[point(0,0),point(b,0),point(0,a)],"#183C45",amount)
+                elif identity.startswith("square_"):
+                    corners,_,color=squares[identity[-1]]
+                    polygon(painter,[point(*p) for p in corners],color,amount)
+                elif identity.startswith("label_"):
+                    _,center,_=squares[identity[-1]]
+                    math_text(layer,f"{identity[-1]}^2",point(*center),height*.035,width*.10,amount)
+                else:
+                    formulas={"equation_a":(f"a^2={a*a:g}",.29),"equation_b":(f"b^2={b*b:g}",.43),
+                              "result":(f"a^2+b^2={a*a+b*b:g}=c^2",.57)}
+                    expression,y=formulas[identity]
+                    math_text(layer,expression,(width*.74,height*y),height*.07,width*.33,amount)
+            else:
+                if identity=="formula":
+                    math_text(layer,params.get("latex") or params.get("formula"),(width*.5,height*.34),height*.10,width*.74,amount)
+                elif identity.startswith("step_"):
+                    expression=params["steps"][int(identity.split("_")[1])-1]
+                    math_text(layer,expression,(width*.5,height*.52),height*.10,width*.74,amount)
+                else:
+                    text=params["labels"][int(identity.split("_")[1])-1]
+                    font=label_font
+                    mixed=MixedScriptDraw(layer,self._english_font)
+                    while mixed.textlength(text,font=font)>width*.76 and font.size>10:
+                        font=ImageFont.truetype(self._font,font.size-1)
+                    text_width=mixed.textlength(text,font=font)
+                    mixed.text(((width-text_width)/2,height*.65),text,font=font,fill=white)
+            if amount < 1 and ((chart and kind=="math.derivative_secant" and identity=="formula")
+                               or (kind=="math.formula" and identity.startswith("label_"))):
+                text_bounds=layer.getbbox()
+                if text_bounds:
+                    x1,y1,x2,y2=text_bounds
+                    ImageDraw.Draw(layer).rectangle((x1+(x2-x1)*amount,0,width,height),fill=(0,0,0,0))
+            opacity=presentation["opacity"]
+            emphasis=state["emphasis"]
+            if emphasis and identity!=emphasis["target"] and emphasis["kind"]=="focus":
+                opacity*=1-.65*emphasis["strength"]
+            if opacity<1:
+                layer.putalpha(layer.getchannel("A").point(lambda value:round(value*opacity)))
+            bounds=layer.getbbox()
+            if emphasis and identity==emphasis["target"] and bounds:
+                x1,y1,x2,y2=bounds
+                if emphasis["kind"] in {"pulse","focus"}:
+                    cropped=layer.crop(bounds)
+                    zoom=emphasis["scale"]
+                    enlarged=cropped.resize((max(1,round(cropped.width*zoom)),max(1,round(cropped.height*zoom))),Image.Resampling.LANCZOS)
+                    x1=round((x1+x2-enlarged.width)/2); y1=round((y1+y2-enlarged.height)/2)
+                    layer=Image.new("RGBA",image.size,(0,0,0,0))
+                    layer.alpha_composite(enlarged,(x1,y1))
+                    x2,y2=x1+enlarged.width,y1+enlarged.height
+                ImageDraw.Draw(layer).rounded_rectangle((x1-7*scale,y1-7*scale,x2+7*scale,y2+7*scale),
+                    radius=6*scale,outline=(247,201,107,round(255*emphasis["strength"])),width=max(2,round(5*scale)))
+            image.alpha_composite(layer)
+        caption=state["caption"]
+        if caption:
+            mixed=MixedScriptDraw(image,self._english_font)
+            while mixed.textlength(caption,font=subtitle_font)>width*.85 and subtitle_font.size>10:
+                subtitle_font=ImageFont.truetype(self._subtitle_font,subtitle_font.size-1)
+            text_width=mixed.textlength(caption,font=subtitle_font)
+            y=height*.89-subtitle_font.size*.6
+            backing=Image.new("RGBA",image.size,(0,0,0,0))
+            ImageDraw.Draw(backing).rounded_rectangle(((width-text_width)/2-12*scale,y-6*scale,
+                        (width+text_width)/2+12*scale,y+subtitle_font.size*1.3+6*scale),radius=5*scale,fill=(0,0,0,46))
+            image.alpha_composite(backing)
+            MixedScriptDraw(image,self._english_font).text(((width-text_width)/2,y),caption,font=subtitle_font,
+                fill=setting(self.settings,"subtitle_color","#FFFFFF"),
+                stroke_fill=setting(self.settings,"subtitle_outline_color","#161044"),
+                stroke_width=max(1,round(float(setting(self.settings,"subtitle_outline_width",5))*scale)))
+        return image.convert("RGB")
+
     def render(self, scene: dict, metadata: dict, output_dir: Path) -> Path:
         self.generate(scene, metadata, output_dir)
         width, height, fps = (
@@ -480,7 +686,8 @@ class CanvasRenderer:
             proc = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=stderr)
             try:
                 for frame_number in range(frames):
-                    frame = self.frame(scene, metadata, frame_number / max(1, frames - 1))
+                    denominator = frames if scene.get("extensions", {}).get("math_animation_version") == "1.0" else max(1,frames-1)
+                    frame = self.frame(scene, metadata, frame_number / denominator)
                     if frame_number == frames // 2:
                         frame.save(output.with_suffix(".png"))
                     proc.stdin.write(frame.tobytes())

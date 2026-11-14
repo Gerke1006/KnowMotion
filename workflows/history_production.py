@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from contextlib import nullcontext
 import json
 from pathlib import Path
 import time
@@ -51,9 +52,10 @@ def final_sound_events(resolved, speed, transition, fps=30):
 
 
 class HistoryProduction:
-    def __init__(self, settings, repository, record, request, gateway, audit: FrozenRun):
+    def __init__(self, settings, repository, record, request, gateway, audit: FrozenRun, *, telemetry=None):
         self.settings, self.repository, self.record = settings, repository, record
         self.request, self.gateway, self.audit = request, gateway, audit
+        self.telemetry = telemetry
         self.work = audit.folder
         self.artifacts = dict(record.artifacts)
         self.attempts = []
@@ -66,6 +68,8 @@ class HistoryProduction:
     def update(self, stage, progress):
         self.repository.update(self.record.id, status=JobStatus.running, stage=stage, progress=progress,
                                error=None, artifacts=dict(self.artifacts))
+        if self.telemetry:
+            self.telemetry.transition(stage)
 
     def remember(self, stage, paths, *, origin="deterministic", inputs=None):
         if inputs is None:
@@ -105,7 +109,10 @@ class HistoryProduction:
             if filename not in records:
                 raise ValueError(f"Unrecorded checkpoint cannot be reused: {filename}")
             raw = json.loads(path.read_text(encoding="utf-8"))
-            return contract.model_validate(raw) if contract else raw
+            value = contract.model_validate(raw) if contract else raw
+            if self.telemetry:
+                self.telemetry("end", stage, cached=True)
+            return value
         self.gateway.stage = stage
         value = action()
         if hasattr(value, "__await__"):
@@ -127,7 +134,9 @@ class HistoryProduction:
         save_json(self.work / "director_validation_errors.json", {"errors": errors})
         self.remember("director_validation", [self.work / "director_validation_errors.json"])
         self.update("visual", .48)
-        result = await repair_director(script, findings, resources, data(prior), errors, self.gateway)
+        result = await repair_director(script, findings, resources, data(prior), errors, self.gateway,
+                                       require_narrative_bindings=self.settings.history_narrative_bindings,
+                                       validation_enabled=self.settings.history_validation_enabled)
         save_json(self.work / "director_plan.repaired.json", data(result))
         self.remember("director_repair", [self.work / "director_plan.repaired.json"], origin="configured_model")
         return result
@@ -165,12 +174,16 @@ class HistoryProduction:
             self.audit.verify()
             if "director_plan.json" not in json.loads(self.audit.records_path.read_text(encoding="utf-8"))["artifacts"]:
                 raise ValueError("Unrecorded checkpoint cannot be reused: director_plan.json")
-            plan = validate_director(json.loads(director_path.read_text(encoding="utf-8")), script, resources, findings)
+            plan = validate_director(json.loads(director_path.read_text(encoding="utf-8")), script, resources, findings,
+                                     require_narrative_bindings=cfg.history_narrative_bindings,
+                                     validation_enabled=cfg.history_validation_enabled)
         else:
             self.update("visual", .40)
             self.audit.verify()
             try:
-                plan = await generate_director(script, findings, resources, self.gateway)
+                plan = await generate_director(script, findings, resources, self.gateway,
+                                               require_narrative_bindings=cfg.history_narrative_bindings,
+                                               validation_enabled=cfg.history_validation_enabled)
             except (DirectorValidationError, ModelError) as error:
                 if isinstance(error, ModelError) and error.code != "format":
                     raise
@@ -195,16 +208,17 @@ class HistoryProduction:
                 async with semaphore:
                     folder = self.work / "speech" / segment.id
                     def produce():
-                        registered = json.loads(self.audit.records_path.read_text(encoding="utf-8"))["artifacts"]
-                        if any(p.relative_to(self.work).as_posix() not in registered
-                               for p in folder.rglob("*") if p.is_file()):
-                            raise ValueError("Unrecorded voice checkpoint cannot be reused")
-                        aligned = MiniMaxTTS(cfg).synthesize_aligned(segment.narration, folder / "narration.mp3")
-                        trimmed = folder / "narration.trimmed.wav"
-                        speech = ffmpeg.trim_narration(Path(aligned["audio_path"]), trimmed)
-                        return {"segment_id": segment.id, "words": aligned["words"], "speech": speech,
-                                "voice_file": str(trimmed), "audio_path": str(aligned["audio_path"]),
-                                "alignment_path": str(aligned["alignment_path"]), "provider": aligned["provider"]}
+                        with self.telemetry.span("narration", unit=segment.id) if self.telemetry else nullcontext():
+                            registered = json.loads(self.audit.records_path.read_text(encoding="utf-8"))["artifacts"]
+                            if any(p.relative_to(self.work).as_posix() not in registered
+                                   for p in folder.rglob("*") if p.is_file()):
+                                raise ValueError("Unrecorded voice checkpoint cannot be reused")
+                            aligned = MiniMaxTTS(cfg).synthesize_aligned(segment.narration, folder / "narration.mp3")
+                            trimmed = folder / "narration.trimmed.wav"
+                            speech = ffmpeg.trim_narration(Path(aligned["audio_path"]), trimmed)
+                            return {"segment_id": segment.id, "words": aligned["words"], "speech": speech,
+                                    "voice_file": str(trimmed), "audio_path": str(aligned["audio_path"]),
+                                    "alignment_path": str(aligned["alignment_path"]), "provider": aligned["provider"]}
                     return await finish_thread(produce)
             outcomes = await asyncio.gather(*(narrate(segment) for segment in script.segments), return_exceptions=True)
             voice_files = [p for p in (self.work / "speech").rglob("*") if p.is_file()]
@@ -221,6 +235,10 @@ class HistoryProduction:
         metadata = self.request.model_dump(mode="json")
         metadata.update(style="gufeng", schema_version="2.0", title=script.title, playback_speed=speed)
         segments = {segment.id: segment for segment in script.segments}
+        prior_narration = {
+            segment.id: "\n".join(previous.narration for previous in script.segments[:index])
+            for index, segment in enumerate(script.segments)
+        }
 
         def compile_and_check(candidate):
             resolved, frame_reports, errors, frame_failures = [], [], [], []
@@ -229,15 +247,20 @@ class HistoryProduction:
                 try:
                     result = compile_scene(scene, segments[scene.segment_id], voice["words"], voice["speech"],
                                            resources, findings["sources"], findings.get("geography"),
-                                           fps=fps, transition=transition, narration_gap=cfg.narration_gap)
+                                           fps=fps, transition=transition, narration_gap=cfg.narration_gap,
+                                           require_narrative_bindings=cfg.history_narrative_bindings,
+                                           prior_narration=prior_narration[scene.segment_id],
+                                           validation_enabled=cfg.history_validation_enabled)
                 except DirectorValidationError as error:
                     errors.extend(validation_errors(error))
                     continue
                 result["title"] = script.title
                 folder = self.work / "scenes" / scene.scene_id
                 props = adapter.generate(scene_payload(result), metadata, folder)
-                checked = adapter.check_director(props, folder / "frame_execution.json")
-                if not checked.get("passed", checked.get("ok", False)):
+                checked = (adapter.check_director(props, folder / "frame_execution.json")
+                           if cfg.history_validation_enabled else
+                           {"scene_id": scene.scene_id, "status": "skipped", "performed": False})
+                if cfg.history_validation_enabled and not checked.get("passed", checked.get("ok", False)):
                     unique = {}
                     for issue in checked.get("issues", checked.get("errors", [])):
                         key = (issue.get("kind", issue.get("code")), issue.get("object_id"))
@@ -254,7 +277,7 @@ class HistoryProduction:
                 resolved.append(result)
                 frame_reports.append(checked)
             checks = {}
-            if len(resolved) == len(candidate.scenes):
+            if cfg.history_validation_enabled and len(resolved) == len(candidate.scenes):
                 try:
                     checks = validate_film_timeline(resolved, speed, transition)
                 except DirectorValidationError as error:
@@ -285,33 +308,45 @@ class HistoryProduction:
             self.remember("director_repair", [director_path], origin="configured_model")
             resolved, frame_reports, timeline_checks = await finish_thread(compile_and_check, plan)
         sound_events = final_sound_events(resolved, speed, transition, fps)
+        from harness.history_narrative import validate_narrative_diversity
+        narrative_report = {"policy": "narration-grounded-v1", "required": cfg.history_narrative_bindings,
+                            "performed": cfg.history_validation_enabled,
+                            "scenes": [s.get("narrative_report", {}) for s in resolved],
+                            "diversity": (validate_narrative_diversity(plan.scenes, resources)
+                                          if cfg.history_validation_enabled else {"status": "skipped"})}
+        save_json(self.work / "narrative_execution.json", narrative_report)
         save_json(self.work / "resolved_timeline.json", {"schema_version": "2.0", "scenes": resolved,
                                                         "playback_speed": speed, "sound_events": sound_events,
                                                         "checks": timeline_checks})
-        save_json(self.work / "director_execution.json", {"scenes": frame_reports, "checks": timeline_checks})
+        save_json(self.work / "director_execution.json", {"scenes": frame_reports, "checks": timeline_checks,
+                                                         "performed": cfg.history_validation_enabled})
         storyboard = {"schema_version": "2.0", "domain": "history", "metadata": metadata,
                       "script": data(script), "director": data(plan), "scenes": resolved, "sources": findings["sources"]}
         save_json(self.work / "storyboard.json", storyboard)
         save_json(self.work / "video_plan.json", storyboard)
         self.remember("timeline_compiler", [self.work / name for name in
-                      ("resolved_timeline.json", "director_execution.json", "storyboard.json", "video_plan.json")],
+                      ("resolved_timeline.json", "director_execution.json", "narrative_execution.json",
+                       "storyboard.json", "video_plan.json")],
                       inputs=[director_path, speech_path])
 
         self.audit.verify()
         self.update("rendering", .72)
-        semaphore = asyncio.Semaphore(min(2, cfg.render_concurrency))
+        # Scene workers are separate from MiniMax requests and each Remotion
+        # browser's internal frame concurrency.
+        semaphore = asyncio.Semaphore(cfg.render_concurrency)
         async def render_scene(scene):
             async with semaphore:
                 folder = self.work / "scenes" / scene["scene_id"]
                 voice = voices[scene["segment_id"]]
                 def produce():
-                    video = self.retry_render(scene["scene_id"], lambda: adapter.render(scene_payload(scene), metadata, folder))
-                    clip = folder / "normalized.mp4"
-                    ffmpeg.normalize(video, clip, metadata, scene["duration"], Path(voice["voice_file"]),
-                                     voice_offset=transition / 2)
-                    return {"scene_id": scene["scene_id"], "renderer": "remotion", "duration": scene["duration"],
-                            "speech": voice["speech"], "narration_offset": transition / 2, "narration": "minimax",
-                            "voice_id": cfg.minimax_voice_id, "voice_file": voice["voice_file"], "clip": str(clip)}
+                    with self.telemetry.span("animation", unit=scene["scene_id"]) if self.telemetry else nullcontext():
+                        video = self.retry_render(scene["scene_id"], lambda: adapter.render(scene_payload(scene), metadata, folder))
+                        clip = folder / "normalized.mp4"
+                        ffmpeg.normalize(video, clip, metadata, scene["duration"], Path(voice["voice_file"]),
+                                         voice_offset=transition / 2)
+                        return {"scene_id": scene["scene_id"], "renderer": "remotion", "duration": scene["duration"],
+                                "speech": voice["speech"], "narration_offset": transition / 2, "narration": "minimax",
+                                "voice_id": cfg.minimax_voice_id, "voice_file": voice["voice_file"], "clip": str(clip)}
                 return await finish_thread(produce)
         outcomes = await asyncio.gather(*(render_scene(scene) for scene in resolved), return_exceptions=True)
         save_json(self.work / "execution_attempts.json", self.attempts)
@@ -323,15 +358,38 @@ class HistoryProduction:
         reports = outcomes
         self.audit.verify()
         joined, final = self.work / "joined.mp4", self.work / "final.mp4"
+        if self.telemetry:
+            self.telemetry("start", "composition", unit="film")
         composition = await finish_thread(ffmpeg.compose, [Path(r["clip"]) for r in reports], joined,
                                               metadata, [r["duration"] for r in reports], transition, speed)
         sound_report = await finish_thread(mix_history_audio, ffmpeg, joined, final, sound_events,
-                                               resources, cfg.bgm_path, cfg.bgm_volume, self.work)
+                                               resources, cfg.bgm_path, cfg.bgm_volume, self.work,
+                                               **({"measure_levels": False} if not cfg.history_validation_enabled else {}))
+        if self.telemetry:
+            self.telemetry("end", "composition", unit="film")
         report = {"director_protocol": "2.0", "scenes": reports, "composition": composition,
                   "duration": ffmpeg.duration(final), "bgm": cfg.bgm_path, "bgm_volume": cfg.bgm_volume,
                   "output": str(final), "checks": timeline_checks}
         save_json(self.work / "render_report.json", report)
         save_json(self.work / "sound_execution.json", sound_report)
+        if not cfg.history_validation_enabled:
+            # User-requested direct production: no frame, pacing, media or
+            # acceptance checks, and no claim that a quality gate passed.
+            generation = {"job_id": self.record.id, "input": {"topic": self.record.topic},
+                          "model": cfg.model_name, "protocol": "history-director-v2",
+                          "status": "generated", "validation_performed": False,
+                          "duration": report["duration"], "playback_speed": speed,
+                          "bgm_volume": cfg.bgm_volume, "output": str(final)}
+            save_json(self.work / "generation_report.json", generation)
+            self.remember("ffmpeg", [p for p in self.work.iterdir()
+                                     if p.is_file() and p.suffix in {".mp4", ".wav"}] +
+                          [self.work / name for name in ("render_report.json", "sound_execution.json",
+                                                        "audio_mix_report.json", "generation_report.json")])
+            for path in self.work.rglob("*"):
+                if path.is_file():
+                    self.artifacts[path.relative_to(self.work).as_posix()] = str(path.resolve())
+            return self.repository.update(self.record.id, status=JobStatus.succeeded, stage="complete", progress=1,
+                                          output_path=str(final), artifacts=self.artifacts, error=None)
         await finish_thread(ffmpeg.run, ["-v", "error", "-i", str(final), "-f", "null", "-"])
         media = await finish_thread(inspect_media, self.work, report, cfg)
         self.remember("ffmpeg", [p for p in self.work.iterdir() if p.is_file() and p.suffix in {".mp4", ".wav"}] +
@@ -347,6 +405,8 @@ class HistoryProduction:
                   "history_uses_remotion": all(r["renderer"] == "remotion" for r in reports),
                   "director_actions_executed": all(r.get("passed", r.get("ok", False)) for r in frame_reports),
                   "word_timing_used": all(s["checks"]["observed_word_alignment"] for s in resolved),
+                  "narration_visual_bindings": not cfg.history_narrative_bindings or all(
+                      s.get("narrative_report", {}).get("passed", False) for s in resolved),
                   "complete_narration_window": all(s["duration"] >= voices[s["segment_id"]]["speech"]["duration"]
                                                      + transition / 2 for s in resolved),
                   "sfx_density_within_limit": timeline_checks["sfx_density_within_limit"],

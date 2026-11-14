@@ -1,4 +1,13 @@
 FROM node:22-bookworm-slim AS node-runtime
+
+FROM node-runtime AS frontend-build
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY frontend/index.html frontend/tsconfig.json frontend/vite.config.ts ./
+COPY frontend/src ./src
+RUN npm run build
+
 FROM python:3.12-slim-bookworm
 
 # Copy Node/npm only; copying /usr/local wholesale would overwrite Python.
@@ -11,6 +20,7 @@ ENV PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PYTHONPATH=/app \
     OUTPUT_DIR=/app/outputs \
+    MANIM_PYTHON=python \
     MANIM_FONT="Noto Serif CJK SC" \
     CHINESE_FONT="Noto Serif CJK SC" \
     ENGLISH_FONT="Liberation Serif" \
@@ -58,6 +68,7 @@ COPY renderers/remotion/project/src ./renderers/remotion/project/src
 COPY renderers/remotion/project/tools ./renderers/remotion/project/tools
 COPY renderers/remotion/project/public/data ./renderers/remotion/project/public/data
 COPY renderers/remotion/project/public/portraits ./renderers/remotion/project/public/portraits
+COPY renderers/remotion/project/public/fonts ./renderers/remotion/project/public/fonts
 COPY domains ./domains
 COPY assets/*.py assets/*.json assets/*.md ./assets/
 COPY assets/audio ./assets/audio
@@ -66,8 +77,15 @@ COPY storage ./storage
 COPY api ./api
 COPY scripts/verify_live.py ./scripts/verify_live.py
 COPY scripts/verify_history.py ./scripts/verify_history.py
+COPY scripts/run_history.py scripts/run_math.py ./scripts/
 COPY tools ./tools
 COPY third_party ./third_party
-RUN pip install ".[manim,production]"
+COPY --from=frontend-build /frontend/dist ./frontend/dist
+RUN pip install ".[manim,production]" \
+    && mkdir -p /usr/local/share/fonts/knowmotion /app/data /app/outputs \
+    && cp renderers/remotion/project/public/fonts/history-serif-heavy.otf /usr/local/share/fonts/knowmotion/ \
+    && fc-cache -f
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)" || exit 1
 EXPOSE 8000
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]

@@ -14,5 +14,15 @@
   "transport_attempts": 3,
   "model_max_tokens": 16000,
   "model_timeout": 600.0,
-  "runtime_ai_review": false
+  "runtime_ai_review": false,
+  "require_narrative_bindings": true,
+  "typography": {
+    "chinese_font": "History Serif",
+    "english_font": "Times New Roman",
+    "subtitle_font": "History Serif",
+    "subtitle_font_weight": "900",
+    "subtitle_outline_color": "#292824",
+    "subtitle_outline_width": 1.0,
+    "subtitle_background_opacity": 0.18
+  }
 }

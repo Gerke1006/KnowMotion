@@ -20,6 +20,7 @@ function Person({state, small = false, courier = false}: {state: ObjectFrame; sm
   const stride = walking ? Math.sin(state.motionTime * Math.PI * 3.5) : 0;
   const bob = walking ? Math.abs(stride) * 3 : 0;
   const hand = state.action === 'handover' ? ease(state.actionProgress / .55) : state.handover;
+  const gesture = state.gesture;
   return <g transform={`translate(0 ${-bob}) scale(${small ? .65 : 1})`}>
     <ellipse cx="0" cy="-1" rx="36" ry="5" fill={INK.dark} opacity=".12"/>
     <g transform={`rotate(${stride * 20} -13 -66)`}><path d="M-22-83L-6-79L-9-13L-1-6Q2 0-9 0H-28L-23-20Z" fill={INK.dark}/></g>
@@ -28,12 +29,17 @@ function Person({state, small = false, courier = false}: {state: ObjectFrame; sm
     <path d="M-17-152L10-120L24-145M-34-96L30-98M-9-120L-14-59" fill="none" stroke={INK.light} opacity=".45" strokeWidth="2"/>
     <path d="M-32-100L30-102L29-93L-34-91Z" fill={INK.dark}/>
     <g transform={`rotate(${-stride * 14} -24 -142)`}><path d="M-24-145Q-39-139-44-103L-34-94Q-25-109-16-132Z" fill={courier ? '#894732' : '#374c54'} {...line}/><circle cx="-39" cy="-96" r="6" fill="#d2b28c"/></g>
-    <g transform={`rotate(${-hand * 65 + stride * 11} 19 -140)`}><path d="M16-148Q34-150 38-114L30-95L18-99L20-118L7-135Z" fill={courier ? '#b66443' : '#526d71'} {...line}/><circle cx="27" cy="-96" r="6" fill="#d2b28c"/></g>
+    <g data-joint="near-arm" transform={`rotate(${-hand * 65 + stride * 11-gesture*7} 19 -140)`}>
+      <path d="M16-148Q34-150 38-121L27-113L20-118L7-135Z" fill={courier ? '#b66443' : '#526d71'} {...line}/>
+      <g data-joint="forearm" transform={`rotate(${-gesture*31} 30 -119)`}><path d="M22-123L38-121L35-98L22-96L19-110Z" fill={courier ? '#b66443' : '#526d71'} {...line}/><circle cx="27" cy="-96" r="6" fill="#d2b28c"/></g>
+    </g>
     <path d="M-9-166L-9-153L8-151L9-169Z" fill="#d2b28c"/>
+    <g data-joint="head" transform={`rotate(${gesture*3.5} 0 -165)`}>
     <path d="M-16-186Q-15-204 3-203Q19-199 17-183L22-176L16-173Q16-159 4-160L-10-165Z" fill="#d7b88f" {...line}/>
     <path d="M-18-183L-20-195Q-9-211 11-204L20-190L9-187L0-196L-8-182Z" fill={INK.dark}/>
     <path d="M-14-201L-17-213L2-216L8-203Z" fill={INK.dark}/>
     <path d="M-17-194L15-193" stroke={INK.gold} strokeWidth="3"/>
+    </g>
     {courier && <g><path d="M-32-153L24-82" stroke={INK.gold} strokeWidth="4"/><path d="M-34-135L-48-117L-39-89L-24-101Z" fill="#b69b69" {...line}/></g>}
   </g>;
 }

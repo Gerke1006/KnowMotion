@@ -1,10 +1,43 @@
 """Isolated search regression tests; live acceptance remains a separate run."""
 import json
 
+import httpx
 import pytest
 
 from workflows.planning import route_topic
 from workflows.research import _history_geography, research
+
+
+async def test_live_research_sends_identifiable_contact_and_supported_extract_size(monkeypatch):
+    """Exercise the real request path against an isolated provider transport."""
+    requests = []
+
+    def provider(request):
+        requests.append(request)
+        agent = request.headers.get("User-Agent", "")
+        assert "KnowMotion/" in agent
+        assert "https://github.com/Gerke1006/KnowMotion" in agent
+        if request.url.params.get("list") == "search":
+            return httpx.Response(200, json={"query": {"search": [{"pageid": 42}]}})
+        assert 1 <= int(request.url.params["exchars"]) <= 1200
+        return httpx.Response(200, json={"query": {"pages": {"42": {
+            "title": "Provider fixture", "fullurl": f"https://{request.url.host}/wiki/Fixture",
+            "extract": "Isolated test evidence.",
+        }}}})
+
+    original_client = httpx.AsyncClient
+    monkeypatch.setattr("workflows.research.httpx.AsyncClient",
+                        lambda **kwargs: original_client(transport=httpx.MockTransport(provider), **kwargs))
+
+    class Gateway:
+        async def generate_json(self, system, prompt):
+            assert len(json.loads(prompt)["sources"]) == 2
+            return {"knowledge": ["Isolated test evidence."]}
+
+    result = await research(route_topic("导数", mode="live"), Gateway())
+    assert len(requests) == 4
+    assert len(result["sources"]) == 2
+    assert all(source["status"] == "retrieved" for source in result["sources"])
 
 
 async def test_natural_language_prompt_retries_concept_queries_with_provider_sources(monkeypatch):

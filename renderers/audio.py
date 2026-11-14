@@ -53,13 +53,17 @@ def normalize_minimax_words(text: str, subtitles: object) -> list[dict]:
                 provider_text = word["word"]
             except (KeyError, TypeError, ValueError):
                 raise RendererError("MiniMax returned malformed word timestamps.") from None
+            # MiniMax can emit a measured whitespace token between Latin math
+            # terms (for example the space in "sin x"). It is part of the
+            # original text and has genuine timing, so preserve it unchanged.
             if (type(start_index) is not int or type(end_index) is not int
                     or not 0 <= start_index < end_index <= len(text)
-                    or not isinstance(provider_text, str) or not provider_text.strip()
-                    or provider_text != text[start_index:end_index]
-                    or not math.isfinite(begin) or not math.isfinite(end)
+                    or not isinstance(provider_text, str) or not provider_text
+                    or provider_text != text[start_index:end_index]):
+                raise RendererError("MiniMax word text or character offsets do not match the original narration.")
+            if (not math.isfinite(begin) or not math.isfinite(end)
                     or begin < previous_time - .001 or end <= begin):
-                raise RendererError("MiniMax word offsets or timestamps are invalid or non-monotonic.")
+                raise RendererError("MiniMax word timestamps are invalid or non-monotonic.")
             pronunciation = _pronunciation_span(word)
             if start_index < previous_end:
                 # Numbers and abbreviations can expand to several pronounced

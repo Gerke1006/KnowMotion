@@ -113,23 +113,33 @@ def test_frontend_is_public_but_job_api_keeps_authentication(tmp_path, token, re
     (tmp_path / "private.txt").write_text("private", encoding="utf-8")
     app = create_app(settings_for(tmp_path, project_root=tmp_path, api_token=token))
     with TestClient(app) as client:
-        page = client.get("/")
-        assert page.status_code == 200
-        assert page.headers["content-type"].startswith("text/html")
+        for path in ("/", "/workspace", "/workspace/", "/workspace?view=library", "/workspace?job=existing-job"):
+            page = client.get(path, follow_redirects=False)
+            assert page.status_code == 200
+            assert page.headers["content-type"].startswith("text/html")
+            assert page.headers["cache-control"] == "no-cache"
+            assert '<script src="/assets/app.js">' in page.text
+            assert "fixture-secret" not in page.text
         assert client.get("/assets/app.js").status_code == 200
         assert client.get("/assets/%2e%2e/%2e%2e/private.txt").status_code == 404
+        assert client.get("/workspace/not-a-page").status_code == 404
+        assert client.get("/not-an-api").status_code == 404
         config = client.get("/ui-config")
-        assert config.json() == {"requires_auth": requires_auth}
+        assert config.json() == {"requires_auth": requires_auth, "public_mode": False,
+                                 "can_edit_settings": True, "can_delete_jobs": True,
+                                 "single_generation": False, "can_cancel_jobs": True}
         assert "fixture-secret" not in config.text + page.text
         assert client.get("/jobs").status_code == (401 if requires_auth else 200)
+        assert client.get("/jobs/missing").status_code == (401 if requires_auth else 404)
 
 
 def test_frontend_missing_build_explains_how_to_start(tmp_path):
     app = create_app(settings_for(tmp_path, project_root=tmp_path))
     with TestClient(app) as client:
-        response = client.get("/")
-        assert response.status_code == 503
-        assert "npm run build" in response.json()["detail"]
+        for path in ("/", "/workspace", "/workspace/"):
+            response = client.get(path, follow_redirects=False)
+            assert response.status_code == 503
+            assert "npm run build" in response.json()["detail"]
         assert client.get("/health").status_code == 200
 
 

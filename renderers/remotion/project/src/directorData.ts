@@ -8,10 +8,10 @@ export const ASSET_SIZES: Record<AssetId, [number, number]> = {
   'prop.gate': [440, 340], 'prop.document': [150, 145], 'prop.flag': [140, 240], 'prop.scroll': [360, 200],
   'prop.seal': [140, 200], 'info.map': [760, 370], 'info.timeline': [700, 200], 'info.portrait': [220, 280],
 };
-export const ACTION_KINDS: ActionKind[] = ['enter', 'exit', 'move', 'walk', 'ride', 'open', 'close', 'unroll', 'handover', 'stamp', 'draw', 'emphasize'];
+export const ACTION_KINDS: ActionKind[] = ['enter', 'exit', 'move', 'walk', 'ride', 'open', 'close', 'unroll', 'handover', 'stamp', 'draw', 'emphasize', 'gesture'];
 const common: ActionKind[] = ['enter','exit','move','emphasize'];
 export const ASSET_ACTIONS: Record<AssetId, ActionKind[]> = {
-  'actor.person': [...common,'walk','handover'], 'actor.envoy': [...common,'walk','handover'],
+  'actor.person': [...common,'walk','handover','gesture'], 'actor.envoy': [...common,'walk','handover','gesture'],
   'actor.horse': [...common,'ride','walk'], 'actor.caravan': [...common,'ride','walk'],
   'prop.gate': [...common,'open','close'], 'prop.document': [...common,'handover','open'],
   'prop.flag': [...common,'draw'], 'prop.scroll': [...common,'unroll','open','close'],
@@ -25,18 +25,28 @@ export function directorLayout(width=1280,height=720) {
   const portrait=height>width*1.15, stageScale=width/1280, stageHeight=720*stageScale;
   return {width,height,portrait,stageScale,stageHeight,stageTop:portrait?Math.max(80,(height-stageHeight)*.34):(height-stageHeight)/2,
     keywordSize:portrait?Math.max(26,width*.047):Math.max(25,width*.034), keywordY:portrait?102:68,
-    captionSize:portrait?Math.max(24,width*.042):Math.max(24,width*.026), captionBottom:portrait?66:23};
+    captionSize:portrait?Math.max(24,width*.044):Math.max(24,width*42/1280), captionBottom:portrait?66:23};
 }
 export function captionLayout(text:string,width=1280,height=720) {
-  const layout=directorLayout(width,height), available=width*.85-28;
+  const layout=directorLayout(width,height);
+  // Caption timing comes from observed speech; editorial line breaks are not timing boundaries.
+  const normalized=text.trim().replace(/([A-Za-z0-9])\s*\r?\n\s*(?=[A-Za-z0-9])/g,'$1 ').replace(/\s*\r?\n\s*/g,'').replace(/[ \t]+/g,' ');
+  const paddingX=Math.max(12,width*.011),paddingY=Math.max(5,layout.captionSize*.16);
+  const available=width*.86-paddingX*2;
+  const naturalWidth=textWidth(normalized,layout.captionSize);
+  const fontSize=naturalWidth>available?Math.max(layout.captionSize*.9,layout.captionSize*available/naturalWidth):layout.captionSize;
   const lines:string[]=[];
-  for(const paragraph of text.split('\n')) {
-    let current='';
-    for(const char of paragraph) {if(current && textWidth(current+char,layout.captionSize)>available){lines.push(current);current='';}current+=char;}
-    lines.push(current);
+  let current='';
+  for(const char of normalized) {
+    if(current && textWidth(current+char,fontSize)>available+.001){lines.push(current.trim());current='';}
+    current+=char;
   }
-  const boxHeight=Math.max(layout.portrait?78:65,lines.length*layout.captionSize*1.35+14);
-  return {text:lines.join('\n'),box:{x:width*.075,y:height-layout.captionBottom-boxHeight,width:width*.85,height:boxHeight}};
+  if(current)lines.push(current.trim());
+  const lineWidths=lines.map(line=>textWidth(line,fontSize)),lineHeight=fontSize*1.22;
+  const boxWidth=normalized?Math.max(...lineWidths)+paddingX*2:0;
+  const boxHeight=normalized?lineHeight*lines.length+paddingY*2:0;
+  return {text:lines.join('\n'),lines,lineWidths,fontSize,lineHeight,paddingX,paddingY,
+    box:{x:(width-boxWidth)/2,y:height-layout.captionBottom-boxHeight,width:boxWidth,height:boxHeight}};
 }
 export function keywordLayout(keywords:string[],width=1280,height=720) {
   const layout=directorLayout(width,height),gap=layout.portrait?15:35;
@@ -111,6 +121,7 @@ function applyAction(state: ObjectFrame, a: DirectorAction, seconds: number, anc
     if (a.kind === 'enter') state.opacity *= ease((seconds - a.start) / Math.min(.5, a.end - a.start));
     if (a.kind === 'exit') state.opacity *= 1 - ease((seconds - Math.max(a.start, a.end - .45)) / Math.min(.45, a.end - a.start));
     if (a.kind === 'emphasize') state.emphasis = Math.sin(Math.PI * clamp((seconds - a.start) / .5)) * .09;
+    if (a.kind === 'gesture') state.gesture = ease((seconds-a.start)/.28)*ease((a.end-seconds)/.28)*(.72+.28*Math.sin(state.motionTime*Math.PI*2.4));
   } else if (a.kind === 'exit') state.opacity = 0;
 }
 
@@ -127,7 +138,7 @@ export function evaluateDirector(d: DirectorSceneData, seconds: number) {
   if (beat) for (const id of beat.visible_ids) {
     const object = d.objects.find((o) => o.id === id)!;
     const state: ObjectFrame = {object, x: object.x, y: object.y, scale: object.scale ?? 1, facing: object.facing ?? 1, opacity: 1,
-      actionProgress: 0, motionTime: 0, gateOpen: 0, scrollOpen: 0, draw: 0, stamp: -.18, handover: 0, emphasis: 0, focus: id === beat.focus_id};
+      actionProgress: 0, motionTime: 0, gateOpen: 0, scrollOpen: 0, draw: 0, stamp: -.18, handover: 0, emphasis: 0, gesture: 0, focus: id === beat.focus_id};
     // Prior transforms and articulated states persist; prior visibility never leaks into this beat.
     for (const prior of d.beats.slice(0, beatIndex)) for (const a of prior.actions) if (a.target_id === id) {
       applyAction(state, a, prior.end + .001,prior.anchor_time??prior.start); state.opacity = 1; state.action = undefined; state.emphasis = 0;
@@ -165,10 +176,11 @@ export function auditDirector(d: DirectorSceneData, fps = d.fps,width=1280,heigh
     state.consumed.forEach((id) => consumed.add(id));
     const visible = state.objects.filter((o) => o.opacity > .02);
     const quantize=(v:number)=>Math.round(v*100)/100;
-    const semanticSignature=JSON.stringify({objects:visible.map((o)=>({id:o.object.id,x:quantize(o.x),y:quantize(o.y),scale:quantize(o.scale),gate:quantize(o.gateOpen),scroll:quantize(o.scrollOpen),draw:quantize(o.draw),stamp:quantize(o.stamp),handover:quantize(o.handover),emphasis:quantize(o.emphasis),gait:o.action==='walk'||o.action==='ride'?Math.floor(o.motionTime*6)%12:0})),keywords:state.keywords});
+    const semanticSignature=JSON.stringify({objects:visible.map((o)=>({id:o.object.id,x:quantize(o.x),y:quantize(o.y),scale:quantize(o.scale),gate:quantize(o.gateOpen),scroll:quantize(o.scrollOpen),draw:quantize(o.draw),stamp:quantize(o.stamp),handover:quantize(o.handover),emphasis:quantize(o.emphasis),gesture:quantize(o.gesture),gait:o.action==='walk'||o.action==='ride'?Math.floor(o.motionTime*6)%12:0}))});
     unchangedFrames=semanticSignature===lastSemantic?unchangedFrames+1:1; maxUnchangedFrames=Math.max(maxUnchangedFrames,unchangedFrames);lastSemantic=semanticSignature;
     const captionBox=captionLayout(state.caption,width,height).box;
-    const textBoxes=keywordLayout(state.keywords,width,height).map((k)=>({kind:'keyword',...k}));
+    // Top keywords are planning metadata only; the renderer does not display them.
+    const textBoxes:{kind:string;text:string;box:Box}[]=[];
     if(state.caption)textBoxes.push({kind:'caption',text:state.caption,box:captionBox});
     const boxes = visible.map((o) => {
       const logical = objectBox(o, state.camera);
@@ -195,7 +207,7 @@ export function auditDirector(d: DirectorSceneData, fps = d.fps,width=1280,heigh
       const a=textBoxes[i]; if(a.box.x<0||a.box.x+a.box.width>width||a.box.y<0||a.box.y+a.box.height>height)issues.push({frame,kind:'text_outside_frame'});
       for(const b of textBoxes.slice(i+1))if(rectOverlap(a.box,b.box)>0)issues.push({frame,kind:'text_overlap'});
     }
-    frames.push({frame, beat: state.beat?.id ?? null, groups: visible.map((o) => o.object.id), keywords: state.keywords, caption: state.caption,semantic_signature:semanticSignature,text_boxes:textBoxes,boxes});
+    frames.push({frame, beat: state.beat?.id ?? null, groups: visible.map((o) => o.object.id), keywords: [], caption: state.caption,semantic_signature:semanticSignature,text_boxes:textBoxes,boxes});
   }
   const expected = d.beats.flatMap((b) => b.actions.map((_, i) => `${b.id}:${i}`));
   const finalSemanticGap=maxUnchangedFrames/fps/playbackSpeed;

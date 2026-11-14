@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from contextlib import suppress
 import inspect
 import json
 from pathlib import Path
@@ -16,6 +17,7 @@ from harness.model_gateway import ModelGateway
 from harness.production_audit import FrozenRun, build_snapshot
 from harness.schemas import AssetManifest, JobStatus, TeachingPlan, VideoPlan, VideoRequest, VisualPlan
 from harness.settings import Settings, secret_value
+from harness.telemetry import JobTelemetry
 from workflows.planning import plan, route_topic, visual_plan
 from workflows.research import research
 from workflows.storyboard import build_storyboard
@@ -66,13 +68,32 @@ class Orchestrator:
                 await asyncio.sleep(1)
         try:
             latest = self.repository.get(job_id)
+            if latest is None:
+                raise KeyError(job_id)
             if waited and latest and latest.status == JobStatus.succeeded:
                 return latest
-            return await self._run(job_id)
+            telemetry = JobTelemetry(self.repository, job_id, work)
+            telemetry.start_run()
+
+            async def heartbeat():
+                while True:
+                    await asyncio.sleep(5)
+                    telemetry.heartbeat()
+
+            clock_task = asyncio.create_task(heartbeat())
+            try:
+                result = await self._run(job_id, telemetry=telemetry)
+            finally:
+                clock_task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await clock_task
+                current = self.repository.get(job_id)
+                telemetry.finish_run(getattr(current.status, "value", current.status) if current else "interrupted")
+            return self.repository.get(job_id) or result
         finally:
             lock.release()
 
-    async def _run(self, job_id: str):
+    async def _run(self, job_id: str, *, telemetry=None):
         record = self.repository.get(job_id)
         if record is None:
             raise KeyError(job_id)
@@ -100,6 +121,8 @@ class Orchestrator:
         async def stage(name: str, progress: float, filename: str, contract, action: Callable):
             nonlocal dirty
             self.repository.update(job_id, status=JobStatus.running, stage=name, progress=progress, error=None)
+            if telemetry:
+                telemetry("start", name)
             target = work / filename
             cached = False
             if audit:
@@ -126,6 +149,8 @@ class Orchestrator:
                 audit.record_model_calls()
             artifacts[filename] = str(target)
             self.repository.update(job_id, artifacts=dict(artifacts))
+            if telemetry:
+                telemetry("end", name, cached=cached)
             return result
 
         try:
@@ -167,8 +192,14 @@ class Orchestrator:
                     audit.record("identify", [work / "video_request.json"], origin="topic_routing")
                     audit.record_model_calls()
                 from workflows.history_production import HistoryProduction
-                historical = HistoryProduction(cfg, self.repository, self.repository.get(job_id), request, gateway, audit)
+                historical = HistoryProduction(cfg, self.repository, self.repository.get(job_id), request, gateway, audit,
+                                               telemetry=telemetry)
                 return await historical.run()
+            if request.domain.value == "mathematics":
+                from harness.math_profile import apply_math_settings
+                cfg = apply_math_settings(cfg)
+                if hasattr(gateway, "settings"):
+                    gateway.settings = cfg
             findings = await stage("research", .15, "research.json", None,
                                    lambda: research(request, gateway))
             teaching = await stage("teaching", .28, "teaching_plan.json", TeachingPlan,
@@ -189,7 +220,6 @@ class Orchestrator:
             video = await stage("storyboard", .60, "storyboard.json", VideoPlan, storyboard)
             write_json(work / "video_plan.json", video)
             artifacts["video_plan.json"] = str(work / "video_plan.json")
-            cfg = self.settings
             if record.request.tts_enabled is not None:
                 # Content source and narration are independent: a bundled lesson can have a real voice.
                 cfg = cfg.model_copy(update={"tts_enabled": record.request.tts_enabled})
@@ -197,16 +227,24 @@ class Orchestrator:
                 cfg = cfg.model_copy(update={"playback_speed": record.request.playback_speed})
             if self.renderer_factory is None:
                 from renderers.service import VideoRenderer
-                renderer = VideoRenderer(cfg)
+                renderer = VideoRenderer(cfg, telemetry=telemetry)
             else:
                 renderer = self.renderer_factory(cfg)
             self.repository.update(job_id, stage="generation", progress=.68, artifacts=dict(artifacts))
+            if telemetry:
+                telemetry("start", "generation")
             await finish_thread(renderer.generate, video, work)
+            if telemetry:
+                telemetry("end", "generation")
             self.repository.update(job_id, stage="rendering", progress=.72)
+            if telemetry:
+                telemetry("start", "rendering")
             if inspect.iscoroutinefunction(renderer.render):
                 final = await renderer.render(video, work)
             else:
                 final = await finish_thread(renderer.render, video, work)
+            if telemetry:
+                telemetry("end", "rendering")
             final = Path(final).resolve()
             if not final.is_relative_to(work) or not final.is_file() or final.stat().st_size < 32:
                 raise RuntimeError("渲染器未生成有效 final.mp4")

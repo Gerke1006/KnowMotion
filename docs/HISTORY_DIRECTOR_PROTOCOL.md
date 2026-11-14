@@ -15,6 +15,17 @@ normalized 1280x720 stage coordinates; (x,y) is the object's bottom-center ancho
 Objects have stable IDs, scale defaults to 1 and facing to 1; label is at most 10 chars.
 Parameters are trusted per-resource data, never markup, code, or file paths.
 
+New productions require object `evidence_quote`, beat `evidence_quote`, and
+`evidence_by_object: {object_id: quote}`. A beat quote is an exact fragment of its
+current sentence containing its anchor; each visible object's current quote must
+occur in that fragment. An object's initial quote may come from an earlier
+segment or the current sentence, never from future narration. Previously narrated
+person/place identities may remain labeled across segments; event/date labels and
+keywords must still occur in the current sentence. The compiler receives only
+the strict preceding segment prefix as `prior_narration`, never the whole script.
+This deterministic provenance check does not prove semantic or historical truth.
+Legacy plans may omit these fields when strict bindings are disabled.
+
 Each beat: `{id, anchor: {quote, occurrence: 1, edge: "start"}, visible_ids,
 focus_id, keywords, actions, camera, sfx}`. The quote must match the scene segment's
 original narration. Edge is start/end. At most 3 visible foreground object groups;
@@ -23,7 +34,7 @@ The next beat replaces the visible list and keywords; future information is hidd
 Camera: `{x: 0.5, y: 0.5, zoom: 1}` (normalized focus, zoom 1–1.25).
 
 An action is `{target_id, kind, to_x?, to_y?, scale?, path?}`. Path points are `{x,y}`.
-Kinds: enter, exit, move, walk, ride, open, close, unroll, handover, stamp, draw,
+Kinds: enter, exit, move, walk, ride, gesture, open, close, unroll, handover, stamp, draw,
 emphasize. Each resource card lists its supported kinds. Actions begin at the
 observed speech `anchor_time` and end at the beat's end; the earlier first-beat
 background visibility does not start an action. The action window must be positive
@@ -58,7 +69,8 @@ are original Unicode character offsets, times seconds in untrimmed provider audi
 Missing reliable word timestamps is an explicit error, not estimated timing.
 
 `compile_scene(scene, segment, words, speech, resources, sources, geography=None,
-fps=30, transition=.30, narration_gap=.08)` returns a resolved dictionary.
+fps=30, transition=.30, narration_gap=.08, require_narrative_bindings=False,
+prior_narration="")` returns a resolved dictionary.
 Speech is FFmpeg's `{trim_start, duration, ...}`. Scene time is provider time minus
 trim_start plus transition/2. Scene duration is ceil((speech.duration+transition+
 narration_gap)*fps)/fps. Resolved output:
@@ -71,7 +83,9 @@ narration_gap)*fps)/fps. Resolved output:
          sfx:null|{asset_id,align,gain_db}}], checks:{...}}
 ```
 
-Captions use observed words, at most 24 characters, at most two lines. Every anchor
+Captions use observed words and natural phrases, at most 24 characters, preferably
+one line (two only when necessary). The bundled Heavy serif and tight backing
+use shared text measurements; backing defaults to 0.18 opacity. Every anchor
 must resolve; no semantic beat gap longer than 4 seconds of final 1.15x playback.
 Tiny background drift does not count as semantic action. A scene's first visual
 beat begins at 0 to establish the background while its actions and sound remain

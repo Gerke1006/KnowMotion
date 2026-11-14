@@ -44,23 +44,28 @@ class Settings(BaseSettings):
     subtitle_color: str = "#FFFFFF"
     subtitle_outline_color: str = "#161044"
     subtitle_outline_width: float = Field(default=5, ge=0, le=20)
+    subtitle_background_opacity: float = Field(default=.18, ge=0, le=1)
     english_font_path: str = ""
     subtitle_font_path: str = ""
     latex_compiler_path: str = ""
     latex_cache_dir: Path = Path("data/latex-cache")
     manim_python: str = sys.executable
     renderer_fallback: bool = False
+    video_validation_enabled: bool = True
     remotion_project: str = ""
     remotion_entry: str = "src/index.ts"
     remotion_concurrency: int = Field(default=2, ge=1, le=16)
     remotion_browser_executable: str = ""
     history_director_enabled: bool = True
+    history_narrative_bindings: bool = False
+    history_validation_enabled: bool = True
     blender_path: str = "blender"
     blender_template: str = ""
-    render_concurrency: int = Field(default=2, ge=1, le=16)
+    render_concurrency: int = Field(default=4, ge=1, le=16)
     execution_backend: Literal["local", "temporal"] = "local"
     local_workers: int = Field(default=2, ge=1, le=16)
     max_queued_jobs: int = Field(default=100, ge=1, le=10000)
+    public_mode: bool = False
     api_token: SecretStr = SecretStr("")
     temporal_address: str = "localhost:7233"
     temporal_namespace: str = "default"

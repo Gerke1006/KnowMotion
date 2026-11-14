@@ -80,20 +80,22 @@ def validate_latex(expression: str) -> str:
 
 
 def find_compiler(settings=None) -> Path:
+    # TeX Live selects the format from argv[0]: pdflatex is commonly a symlink
+    # to pdftex. Keep that invocation name instead of resolving the symlink.
     configured = setting(settings, "latex_compiler_path", "") or os.environ.get("LATEX_COMPILER_PATH", "")
     if configured:
-        path = Path(configured).expanduser().resolve()
+        path = Path(configured).expanduser().absolute()
         if path.is_file():
             return path
         raise RendererError("LATEX_COMPILER_PATH does not point to an existing executable")
     project = Path(setting(settings, "project_root", Path(__file__).resolve().parents[1]))
     for candidate in (project / ".tools/latex/tectonic.exe", project / ".tools/latex/tectonic"):
         if candidate.is_file():
-            return candidate.resolve()
+            return candidate.absolute()
     for executable in ("tectonic", "pdflatex"):
         found = shutil.which(executable)
         if found:
-            return Path(found).resolve()
+            return Path(found).absolute()
     raise RendererError("Real LaTeX requires Tectonic or pdflatex. Set LATEX_COMPILER_PATH; no text fallback is used.")
 
 

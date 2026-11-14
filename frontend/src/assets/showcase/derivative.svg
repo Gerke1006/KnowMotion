@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs><pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" stroke="#142D43" stroke-opacity=".055"/></pattern></defs>
+  <rect width="1600" height="900" fill="#EDF2EE"/>
+  <rect x="640" width="960" height="900" fill="url(#grid)"/>
+  <circle cx="1335" cy="300" r="260" fill="#DCE9E2" fill-opacity=".65"/>
+  <g font-family="Microsoft YaHei, PingFang SC, sans-serif">
+    <rect x="96" y="108" width="160" height="42" rx="21" fill="#DFE9E3"/>
+    <text x="176" y="136" text-anchor="middle" font-size="20" letter-spacing="3" fill="#2B7A78">微积分 · 导数</text>
+    <text x="96" y="284" font-size="65" font-weight="700" letter-spacing="-2" fill="#142D43">从平均变化</text>
+    <text x="96" y="378" font-size="65" font-weight="700" letter-spacing="-2" fill="#142D43">走向<tspan fill="#2B7A78">瞬时变化</tspan></text>
+    <path d="M96 425H172" stroke="#2B7A78" stroke-width="4" stroke-linecap="round"/>
+    <text x="96" y="492" font-size="24" fill="#607377">让看不见的变化，有了清晰的方向。</text>
+    <text x="96" y="745" font-size="19" fill="#7F8E8D">割线逐渐靠近，答案就在这一刻。</text>
+    <g stroke="#A9BAB7" stroke-width="2"><path d="M720 698H1485"/><path d="M785 763V132"/><path d="M1472 690L1485 698L1472 706"/><path d="M777 146L785 132L793 146"/></g>
+    <text x="1410" y="746" font-size="20" fill="#788B89">时间</text>
+    <text x="688" y="156" font-size="20" fill="#788B89">变化量</text>
+    <path d="M800 652C898 652 1017 624 1122 526C1239 417 1315 258 1404 124" stroke="#142D43" stroke-width="7" stroke-linecap="round"/>
+    <path d="M890 720L1416 222" stroke="#2B7A78" stroke-opacity=".3" stroke-width="3" stroke-dasharray="12 12"/>
+    <path d="M913 743L1318 337" stroke="#2B7A78" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1122 526H1331V317" stroke="#A8BDB4" stroke-width="2" stroke-dasharray="7 8"/>
+    <circle cx="1122" cy="526" r="28" fill="#2B7A78" fill-opacity=".09"/>
+    <circle cx="1122" cy="526" r="10" fill="#2B7A78" stroke="#EDF2EE" stroke-width="5"/>
+    <circle cx="1331" cy="317" r="8" fill="#90AF9F" stroke="#EDF2EE" stroke-width="4"/>
+    <rect x="1192" y="582" width="213" height="67" rx="15" fill="white" stroke="#D9E3DC"/>
+    <circle cx="1217" cy="616" r="5" fill="#2B7A78"/>
+    <text x="1237" y="625" font-size="22" fill="#2B7A78">此刻的变化率</text>
+    <text x="1013" y="466" font-size="19" fill="#2B7A78">切线</text>
+  </g>
+  <path d="M96 795H1504" stroke="#D4E0D9"/>
+  <circle cx="1485" cy="804" r="4" fill="#2B7A78"/><circle cx="1468" cy="804" r="4" fill="#C3D5CB"/><circle cx="1451" cy="804" r="4" fill="#C3D5CB"/>
+</svg>

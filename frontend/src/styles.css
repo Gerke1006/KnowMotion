@@ -2526,6 +2526,73 @@ p {
 .process-progress > span {
   background: #b2a1c6;
 }
+.job-metrics {
+  margin: 4px 0 28px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fcfbfd;
+  overflow: hidden;
+}
+.job-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+}
+.job-metric-grid > div {
+  min-width: 0;
+  padding: 20px 18px;
+  border-right: 1px solid var(--line);
+}
+.job-metric-grid > div:last-child { border-right: 0; }
+.job-metric-grid dt { color: #77717e; font-size: 12px; line-height: 1.5; }
+.job-metric-grid dd {
+  margin: 8px 0 0;
+  color: #38333f;
+  font-size: clamp(16px, 1.5vw, 21px);
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.job-metric-notes { padding: 12px 18px; border-top: 1px solid var(--line); }
+.job-metric-notes > p, .stage-metric-note {
+  font-size: 11px;
+  color: #827b8b;
+  line-height: 1.7;
+}
+.usage-breakdown { margin-top: 8px; font-size: 11px; font-weight: 400; }
+.usage-breakdown summary { width: fit-content; cursor: pointer; color: #79668b; line-height: 1.6; }
+.usage-breakdown dl { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 10px 0 6px; }
+.usage-breakdown dl > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.usage-breakdown dt { color: #827b8b; }
+.usage-breakdown dd { margin: 0; color: #48424f; font-variant-numeric: tabular-nums; }
+.usage-breakdown p { color: #918799; font-size: 10px; line-height: 1.6; }
+.stage-metrics-scroll { overflow-x: auto; border-radius: 8px; }
+.stage-metrics table { width: 100%; min-width: 570px; border-collapse: collapse; text-align: left; font-size: 11px; }
+.stage-metrics thead th { padding: 10px 9px; font-weight: 500; color: #7b7185; background: #f8f6fa; white-space: nowrap; }
+.stage-metrics tbody th, .stage-metrics tbody td { padding: 12px 9px; vertical-align: top; border-bottom: 1px solid #f0edf3; line-height: 1.7; }
+.stage-metrics tbody th { width: 32%; color: #62586c; font-weight: 500; }
+.stage-metrics tbody th > small { display: block; font-size: 10px; font-weight: 400; color: #95889e; }
+.stage-metric-number { font-variant-numeric: tabular-nums; white-space: nowrap; color: #6f637c; }
+.stage-metric-name { display: inline-block; }
+.stage-metric-child .stage-metric-name { padding-left: 17px; position: relative; }
+.stage-metric-child .stage-metric-name::before { content: ""; position: absolute; left: 3px; top: 5px; height: 7px; width: 6px; border-left: 1px solid #cfc6d7; border-bottom: 1px solid #cfc6d7; }
+.stage-metric-status { color: #93899c; font-size: 10px; white-space: nowrap; }
+.stage-metric-status.running { color: #806193; }
+.stage-metric-status.completed, .stage-metric-status.cached { color: #6f8a78; }
+.stage-metric-status.failed, .stage-metric-status.interrupted { color: #ad7862; }
+.stage-metric-active { background: #fcf9fe; }
+.stage-metric-note { margin-top: 12px; }
+.stage-metrics .usage-breakdown dl { display: grid; gap: 5px; }
+@media (max-width: 760px) {
+  .job-metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .job-metric-grid > div { padding: 14px; }
+  .job-metric-grid > div:nth-child(2) { border-right: 0; }
+  .job-metric-grid > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .job-metric-grid dd { font-size: 17px; }
+  .job-metric-notes { padding: 10px 14px; }
+  .job-metrics { margin-bottom: 20px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

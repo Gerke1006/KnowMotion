@@ -61,6 +61,54 @@ def test_valid_script_and_director_are_independent_deep_copies(production_data):
     assert validate_script(script, research["sources"]).title == script["title"]
 
 
+def continued_identity_data(production_data):
+    script, plan, resources, research, _, _ = production_data
+    sentence = "他继续沿路前行，随后停下查看方向。"
+    for index, (segment, scene) in enumerate(zip(script["segments"], plan["scenes"])):
+        segment["narration"] = ("使者甲抵达甲城。" if index == 0 else "") + sentence * 4 + "道路周围的环境保持平静。"
+        scene["objects"][0].update(label="使者甲", evidence_quote="使者甲")
+        for beat_index, beat in enumerate(scene["beats"]):
+            beat["anchor"] = {"quote": "继续", "occurrence": beat_index + 1, "edge": "start"}
+            beat["evidence_quote"] = sentence
+            beat["evidence_by_object"] = {"traveler": "他"}
+    return script, plan, resources, research
+
+
+def test_director_accumulates_only_completed_segment_identity_context(production_data):
+    script, plan, resources, research = continued_identity_data(production_data)
+    original = copy.deepcopy((script, plan))
+    result = validate_director(plan, script, resources, research, require_narrative_bindings=True)
+    assert result.scenes[1].objects[0].label == "使者甲"
+    assert (script, plan) == original
+
+    # An identity introduced only in a later segment must not leak backward.
+    script["segments"][-1]["narration"] += "人物乙随后出现。"
+    plan["scenes"][0]["objects"][0]["label"] = "人物乙"
+    with pytest.raises(DirectorValidationError) as failure:
+        validate_director(plan, script, resources, research, require_narrative_bindings=True)
+    assert any(error["code"] == "visible_text_not_narrated" and ".scene_0." in error["path"]
+               for error in failure.value.errors)
+
+
+def test_compile_uses_the_same_explicit_prior_context_as_director_validation(production_data):
+    script, plan, resources, research = continued_identity_data(production_data)
+    validate_director(plan, script, resources, research, require_narrative_bindings=True)
+    segment, scene = script["segments"][1], plan["scenes"][1]
+    words = [{"text": char, "char_start": index, "char_end": index + 1,
+              "start": index * .16, "end": (index + 1) * .16}
+             for index, char in enumerate(segment["narration"])]
+    speech = {"trim_start": 0, "duration": len(segment["narration"]) * .16}
+    with pytest.raises(DirectorValidationError) as failure:
+        compile_scene(scene, segment, words, speech, resources, research["sources"], require_narrative_bindings=True)
+    assert "future_object_evidence" in {error["code"] for error in failure.value.errors}
+    compiled = compile_scene(scene, segment, words, speech, resources, research["sources"],
+                             require_narrative_bindings=True, prior_narration=script["segments"][0]["narration"])
+    assert compiled["narrative_report"]["passed"]
+    assert compiled["narrative_report"]["prior_narration_char_count"] == len(script["segments"][0]["narration"])
+    assert all(row["visible_objects"][0]["current_evidence_quote"] == "他"
+               for row in compiled["narrative_report"]["beats"])
+
+
 @pytest.mark.parametrize("change", ["short", "segments", "duplicate", "source", "extra"])
 def test_script_rejects_invalid_structure_or_evidence(production_data, change):
     script, _, _, research, _, _ = production_data

@@ -14,7 +14,7 @@ def component_formulas(component: dict) -> dict[str, str]:
     """Static math fragments are typeset once, while moving numeric values stay dynamic."""
     kind, params = component.get("id", ""), component.get("parameters", {})
     if kind == "math.derivative_secant":
-        return {"dx": r"\Delta x =", "slope": r"\frac{\Delta y}{\Delta x} ="}
+        return {"dx": r"\Delta x =", "slope": r"\frac{\Delta y}{\Delta x} =", "tangent": r"f'(x_0) ="}
     if kind == "math.integral_riemann":
         return {"integral": r"\int_a^b f(x)\,\mathrm{d}x=\lim_{n\to\infty}\sum_{i=1}^n f(x_i^*)\,\Delta x"}
     if kind == "math.pythagorean":
@@ -25,7 +25,7 @@ def component_formulas(component: dict) -> dict[str, str]:
         expression = params.get("latex") or params.get("formula")
         if not isinstance(expression, str) or not expression.strip():
             raise RendererError("A math.formula component requires a nonempty LaTeX expression")
-        return {"main": expression}
+        return {"main": expression, **{f"step_{index+1}": step for index, step in enumerate(params.get("steps", []))}}
     return {}
 
 
@@ -61,6 +61,8 @@ class ManimRenderer:
         shutil.copyfile(Path(__file__).with_name("runtime.py"), output_dir / "vibe_manim_runtime.py")
         shutil.copyfile(Path(__file__).parents[1] / "base.py", output_dir / "vibe_render_base.py")
         shutil.copyfile(Path(__file__).with_name("typography.py"), output_dir / "vibe_typography.py")
+        shutil.copyfile(Path(__file__).with_name("math_runtime.py"), output_dir / "vibe_math_runtime.py")
+        shutil.copyfile(Path(__file__).parents[2] / "harness" / "math_animation.py", output_dir / "vibe_math_animation.py")
         data = json.dumps(
             {
                 "scene": scene,

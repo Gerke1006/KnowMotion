@@ -68,6 +68,12 @@ def caption(text, fonts):
 
 
 def construct_scene(stage, scene, metadata, fonts):
+    if scene.get("extensions", {}).get("math_animation_version") == "1.0":
+        try:
+            from vibe_math_runtime import construct_math_scene
+        except ImportError:
+            from renderers.manim.math_runtime import construct_math_scene
+        return construct_math_scene(stage, scene, metadata, fonts)
     if isinstance(fonts, str):
         fonts = {"chinese": fonts, "english": "Times New Roman", "subtitle": "Microsoft YaHei"}
     components = scene.get("components") or [{"id": "general.title", "parameters": {}}]

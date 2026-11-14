@@ -10,6 +10,7 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from harness.orchestrator import Orchestrator
+from harness.history_profile import HistoryTypography, history_settings
 from harness.schemas import Domain, JobCreate, JobStatus
 from harness.settings import Settings, secret_value
 from storage.repository import JobRepository
@@ -33,6 +34,8 @@ class ProductionProfile(BaseModel):
     model_timeout: float = Field(default=600.0, ge=180, le=900, allow_inf_nan=False)
     model_max_tokens: int = Field(default=16000, ge=16000, le=64000)
     runtime_ai_review: bool
+    require_narrative_bindings: bool = False
+    typography: HistoryTypography | None = None
 
     @model_validator(mode="after")
     def supported_protocol(self):
@@ -61,7 +64,7 @@ def public_text(value, settings: Settings) -> str:
     return text
 
 
-async def verify(topic: str) -> dict:
+async def verify(topic: str, *, validate: bool = True) -> dict:
     """Always create a new job; content and technical retries belong to Orchestrator."""
     settings = Settings()
     try:
@@ -72,6 +75,8 @@ async def verify(topic: str) -> dict:
             "model_timeout": max(settings.model_timeout, profile.model_timeout),
             "model_max_tokens": profile.model_max_tokens,
         })
+        settings = history_settings(settings)
+        settings = settings.model_copy(update={"history_validation_enabled": validate})
         if not settings.model_name or not secret_value(settings.model_api_key):
             raise RuntimeError("正式历史验收需要项目配置的文本模型与密钥")
         if not secret_value(settings.minimax_api_key):
@@ -91,7 +96,7 @@ async def verify(topic: str) -> dict:
             settings.output_dir.mkdir(parents=True, exist_ok=True)
             (settings.output_dir / "latest_history_job.txt").write_text(job.id, encoding="utf-8")
             print(public_text({"job_id": job.id, "model": settings.model_name, "profile": profile.id,
-                               "playback_speed": profile.playback_speed}, settings), flush=True)
+                               "playback_speed": profile.playback_speed, "validation_enabled": validate}, settings), flush=True)
             task = asyncio.create_task(Orchestrator(settings, repository).run(job.id))
             previous = None
             while not task.done():
@@ -108,6 +113,11 @@ async def verify(topic: str) -> dict:
             output = Path(result.output_path).resolve()
             if not output.is_relative_to(folder) or not output.is_file():
                 raise RuntimeError("历史 Agent 未在新任务目录产生有效成片")
+            if not validate:
+                summary = {"job_id": job.id, "model": settings.model_name, "validation_performed": False,
+                           "output": str(output), "report": str(folder / "generation_report.json")}
+                print(public_text(summary, settings), flush=True)
+                return summary
             report_path = folder / "live_acceptance.json"
             report = json.loads(report_path.read_text(encoding="utf-8"))
             checks = report.get("checks")

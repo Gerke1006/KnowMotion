@@ -14,7 +14,9 @@ import httpx
 from harness.schemas import Domain, VideoRequest
 from workflows.planning import demo_lesson
 
-USER_AGENT = "VibeKnowledgeAgent/0.1 (educational video research; local development)"
+# Wikimedia requires an identifiable client and a real operator contact URL.
+# A generic local-development label can be rejected from hosted server IPs.
+USER_AGENT = "KnowMotion/0.1 (https://github.com/Gerke1006/KnowMotion; educational research)"
 
 
 class _ArticleText(HTMLParser):
@@ -99,7 +101,7 @@ async def _wiki_sources(topic: str, language: str, client: httpx.AsyncClient) ->
     if not pages:
         return []
     response = await client.get(endpoint, params={"action": "query", "format": "json", "prop": "extracts|info", "inprop": "url",
-                                                "explaintext": 1, "exchars": 6000, "pageids": "|".join(str(page["pageid"]) for page in pages)})
+                                                "explaintext": 1, "exchars": 1200, "pageids": "|".join(str(page["pageid"]) for page in pages)})
     response.raise_for_status()
     result = []
     for page in response.json().get("query", {}).get("pages", {}).values():

@@ -84,6 +84,7 @@ class RemotionRenderer:
             "subtitle_color": setting(self.settings, "subtitle_color", "#FFFFFF"),
             "outline_color": setting(self.settings, "subtitle_outline_color", "#161044"),
             "outline_width": setting(self.settings, "subtitle_outline_width", 5),
+            "background_opacity": setting(self.settings, "subtitle_background_opacity", .18),
         }
         path = output_dir / f"{scene_filename(scene)}.remotion.json"
         props = {"scene": scene, "metadata": metadata, "fonts": fonts, "sources": sources}

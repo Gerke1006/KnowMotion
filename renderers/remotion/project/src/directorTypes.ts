@@ -1,7 +1,7 @@
 import type {Source} from './types';
 
 export type AssetId = 'actor.person' | 'actor.envoy' | 'actor.horse' | 'actor.caravan' | 'prop.gate' | 'prop.document' | 'prop.flag' | 'prop.scroll' | 'prop.seal' | 'info.map' | 'info.timeline' | 'info.portrait';
-export type ActionKind = 'enter' | 'exit' | 'move' | 'walk' | 'ride' | 'open' | 'close' | 'unroll' | 'handover' | 'stamp' | 'draw' | 'emphasize';
+export type ActionKind = 'enter' | 'exit' | 'move' | 'walk' | 'ride' | 'open' | 'close' | 'unroll' | 'handover' | 'stamp' | 'draw' | 'emphasize' | 'gesture';
 export type Position = {x: number; y: number; scale: number};
 export type DirectorObject = {id: string; asset_id: AssetId; x: number; y: number; scale?: number; facing?: number; label?: string; parameters?: Record<string, unknown>};
 export type DirectorAction = {target_id: string; kind: ActionKind; start: number; end: number; from: Position; to: Position; path?: {x: number; y: number}[]};
@@ -16,5 +16,5 @@ export type DirectorSceneData = {
 export type ObjectFrame = {
   object: DirectorObject; x: number; y: number; scale: number; facing: number; opacity: number;
   action?: ActionKind; actionProgress: number; motionTime: number; gateOpen: number; scrollOpen: number;
-  draw: number; stamp: number; handover: number; emphasis: number; focus: boolean;
+  draw: number; stamp: number; handover: number; emphasis: number; gesture: number; focus: boolean;
 };

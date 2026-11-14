@@ -44,12 +44,30 @@ test('frame audit shares renderer evaluation, reports complete action consumptio
   assert.ok(report.frames.slice(0,120).every((f)=>!f.groups.includes('scroll')));
   assert.ok(report.frames.slice(120).every((f)=>!f.groups.includes('traveler')));
 });
-test('two-line observed captions and keyword geometry remain in the output frame',()=>{
+test('editorial line breaks collapse into one centered caption when the safe width permits',()=>{
   for(const [w,h] of [[1280,720],[720,1280]]){
     const c=captionLayout('第一行字幕内容\n第二行字幕内容',w,h);
-    assert.equal(c.text.split('\n').length,2);assert.ok(c.box.y>0&&c.box.y+c.box.height<h);
+    assert.equal(c.lines.length,1);assert.equal(c.text,'第一行字幕内容第二行字幕内容');
+    assert.ok(c.box.y>0&&c.box.y+c.box.height<h);assert.ok(c.box.width<w*.86);
+    assert.equal(c.box.x+c.box.width/2,w/2);
     for(const k of keywordLayout(['主题一','主题二'],w,h))assert.ok(k.box.x>=0&&k.box.x+k.box.width<=w);
   }
+});
+
+test('a full 24-character landscape caption stays at 42px; only overflow causes shrink and wrapping',()=>{
+  const full=captionLayout('字'.repeat(24));
+  assert.equal(full.lines.length,1);assert.equal(full.fontSize,42);assert.equal(full.lineWidths[0],1008);
+  const fitted=captionLayout('字'.repeat(27));
+  assert.equal(fitted.lines.length,1);assert.ok(fitted.fontSize<42&&fitted.fontSize>=37.8);
+  const wrapped=captionLayout('字'.repeat(32));
+  assert.equal(wrapped.lines.length,2);assert.ok(Math.abs(wrapped.fontSize-37.8)<.001);
+  for(const c of [full,fitted,wrapped,captionLayout('字'.repeat(24),720,1280)]){
+    assert.ok(c.box.x>=0);
+    assert.ok(c.lineWidths.every(w=>w<=c.box.width-c.paddingX*2+.001));
+  }
+  assert.equal(captionLayout('Route\nHistory\n道路').text,'Route History道路');
+  assert.equal(captionLayout('  短句  ').box.width,42*2+1280*.022);
+  assert.equal(captionLayout('').box.width,0);assert.deepEqual(captionLayout('').lines,[]);
 });
 test('seal contact is synchronous with the observed anchor rather than delayed after it',()=>{
   const d=fixture();d.objects[0].asset_id='prop.seal';d.beats[0].actions[0].kind='stamp';
@@ -127,4 +145,23 @@ test('late action visibility is pure under backward seeks and stamp still contac
   assert.equal(evaluateDirector(d,2).objects[0].stamp,0);
   assert.equal(evaluateDirector(d,2).objects[0].opacity,1);
   assert.equal(evaluateDirector(d,2.5).objects[0].stamp,.24);
+});
+
+test('gesture is explicit, articulated, bounded in time and counted as real semantic change',()=>{
+  const d=fixture();const a=d.beats[0].actions[0];a.kind='gesture';a.start=1;a.end=3;a.to={...a.from};
+  validateDirector(d);
+  assert.equal(evaluateDirector(d,.9).objects[0].gesture,0);
+  assert.equal(evaluateDirector(d,1).objects[0].gesture,0);
+  assert.equal(evaluateDirector(d,3).objects[0].gesture,0);
+  const first=evaluateDirector(d,1.5),second=evaluateDirector(d,1.7);
+  assert.ok(first.objects[0].gesture>0&&first.objects[0].gesture<=1);
+  assert.notEqual(first.objects[0].gesture,second.objects[0].gesture);
+  assert.equal(first.objects[0].x,second.objects[0].x);assert.equal(first.objects[0].scale,1);
+  evaluateDirector(d,7);assert.deepEqual(evaluateDirector(d,1.5),first);
+  const report=auditDirector(d);
+  assert.notEqual(report.frames[45].semantic_signature,report.frames[51].semantic_signature);
+  assert.ok(report.consumed_actions.includes('walk:0'));
+  const still=fixture();still.beats[0].actions=[];
+  assert.equal(evaluateDirector(still,2).objects[0].gesture,0);
+  d.objects[0].asset_id='actor.horse';assert.throws(()=>validateDirector(d),/Unsupported action/);
 });

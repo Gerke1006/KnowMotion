@@ -24,7 +24,8 @@ dev = ["pytest>=8,<10", "pytest-asyncio>=0.25,<2", "ruff>=0.11,<1"]
 vibe = "harness.cli:main"
 
 [tool.setuptools]
-license-files = ["third_party/vibe-knowledge/LICENSE", "third_party/vibe-knowledge/NOTICE.md"]
+license-files = ["third_party/vibe-knowledge/LICENSE", "third_party/vibe-knowledge/NOTICE.md",
+                 "renderers/remotion/project/public/fonts/OFL.txt"]
 
 [tool.setuptools.packages.find]
 include = ["harness*", "api*", "storage*", "workflows*", "renderers*", "domains*", "assets*"]
@@ -40,6 +41,7 @@ renderers = [
   "remotion/project/src/**/*.ts", "remotion/project/src/**/*.tsx", "remotion/project/src/**/*.css",
   "remotion/project/public/**/*.json", "remotion/project/public/**/*.geojson", "remotion/project/public/**/*.md",
   "remotion/project/public/**/*.jpg", "remotion/project/public/**/*.png", "remotion/project/public/**/*.svg",
+  "remotion/project/public/fonts/*.otf", "remotion/project/public/fonts/OFL.txt",
 ]
 
 [tool.pytest.ini_options]

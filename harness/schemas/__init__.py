@@ -1,7 +1,7 @@
 """Versioned, validated contracts shared by all domain packs and renderers."""
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -138,6 +138,8 @@ class VideoPlan(Contract):
 class JobStatus(str, Enum):
     queued = "queued"
     running = "running"
+    cancelling = "cancelling"
+    cancelled = "cancelled"
     succeeded = "succeeded"
     failed = "failed"
 
@@ -157,5 +159,6 @@ class JobRecord(Contract):
     error: str | None = None
     output_path: str | None = None
     artifacts: dict[str, str] = Field(default_factory=dict)
+    telemetry: dict[str, Any] | None = None
     created_at: str = Field(default_factory=utcnow)
     updated_at: str = Field(default_factory=utcnow)

@@ -86,7 +86,8 @@
         "move",
         "emphasize",
         "walk",
-        "handover"
+        "handover",
+        "gesture"
       ],
       "parameters": {
         "type": "object",
@@ -102,12 +103,24 @@
       "intents": [
         "人物",
         "行旅",
-        "交接"
+        "交接",
+        "交谈",
+        "解释"
       ],
       "conditions": [
         "旁白涉及人物的行动或参与关系，且不需要声称特定身份服饰。",
-        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。",
+        "gesture只在当前旁白涉及交谈、商议、请求或解释等含义时选择；不自动添加道具、命令或权力仪式。"
       ],
+      "narrative_terms": [
+        "人物",
+        "交谈",
+        "商议",
+        "请求",
+        "解释",
+        "行走"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "actor.person",
@@ -150,7 +163,8 @@
         "move",
         "emphasize",
         "walk",
-        "handover"
+        "handover",
+        "gesture"
       ],
       "parameters": {
         "type": "object",
@@ -167,12 +181,25 @@
         "使者",
         "命令",
         "行旅",
-        "交接"
+        "交接",
+        "交谈",
+        "请求"
       ],
       "conditions": [
         "资料明确支持使者或传达命令的身份；外形仅作通用示意。",
-        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。",
+        "gesture只在当前旁白涉及交谈、商议、请求或解释等含义时选择；不自动添加道具、命令或权力仪式。"
       ],
+      "narrative_terms": [
+        "使者",
+        "出使",
+        "传达",
+        "交谈",
+        "商议",
+        "请求",
+        "解释"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "actor.envoy",
@@ -236,6 +263,12 @@
         "旁白有据地涉及骑行；不得用骑者外观替代历史肖像。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "马",
+        "骑",
+        "骑乘"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "actor.horse",
@@ -300,6 +333,12 @@
         "资料支持群体交通或商旅，不把通用群组画成确定人数。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "商队",
+        "使团",
+        "队伍"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "actor.caravan",
@@ -364,6 +403,13 @@
         "城门开闭或入城离城是当前旁白含义；建筑仅为环境示意。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "城门",
+        "关隘",
+        "入城",
+        "出城"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "prop.gate",
@@ -428,6 +474,12 @@
         "旁白涉及文书、消息或命令；图形不承载伪造原文。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "文书",
+        "书信",
+        "记录"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "prop.document",
@@ -491,6 +543,12 @@
         "需要通用方向或群组标识；不得暗示未经证实的国旗、军旗和纹章。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "旗",
+        "旗帜",
+        "旗号"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "prop.flag",
@@ -556,6 +614,13 @@
         "需要逐步展开当前一条有来源的信息；不预告后续事实。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "卷轴",
+        "书卷",
+        "展开",
+        "记载"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "prop.scroll",
@@ -619,6 +684,13 @@
         "落印用于当前消息确认或叙事强调，不声称真实印文和印制事件。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "印",
+        "印章",
+        "盖章",
+        "落印"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "prop.seal",
@@ -897,6 +969,16 @@
         "本轮 geography 至少有两个有据地点，当前仅展示这两个端点。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "地理",
+        "地点",
+        "方位",
+        "路线",
+        "距离",
+        "出发",
+        "到达"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "info.map",
@@ -984,6 +1066,15 @@
         "当前旁白涉及有来源的一个日期，保留约数、世纪或纪年分歧标签。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "时间",
+        "年代",
+        "年",
+        "世纪",
+        "此前",
+        "后来"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "info.timeline",
@@ -1061,6 +1152,13 @@
         "旁白需识别有来源的人物姓名与角色，只显示符号而非虚构肖像。",
         "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
       ],
+      "narrative_terms": [
+        "人物",
+        "身份",
+        "角色",
+        "关系"
+      ],
+      "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
       "combination_example": {
         "resource_ids": [
           "info.portrait",
@@ -1391,6 +1489,6 @@
   "generation": {
     "script": "tools/build_history_resources.py",
     "version": "history-original-synthesis-v1",
-    "script_sha256": "9864de9f6f17b8302e1741dfddea01f32cec917c01e1b3648e6e13b1da719719"
+    "script_sha256": "0013ed5d231688fd1a07483ccadd333557f0c9938c6fe2fcc688a6ad3b47979d"
   }
 }

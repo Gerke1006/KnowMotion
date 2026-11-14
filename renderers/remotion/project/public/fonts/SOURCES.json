@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "fonts": [
+    {
+      "id": "history-serif-heavy",
+      "path": "fonts/history-serif-heavy.otf",
+      "css_family_alias": "History Serif",
+      "original_filename": "SourceHanSerifSC-Heavy.otf",
+      "family": "Source Han Serif SC",
+      "subfamily": "Heavy",
+      "postscript_name": "SourceHanSerifSC-Heavy",
+      "version": "Version 2.003;hotconv 1.1.1;makeotfexe 2.6.0",
+      "weight_class": 900,
+      "copyright": "© 2017-2024 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'.",
+      "source_url": "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/7889f11bf31170b5d092a083b357c8c8130f89e0/OTF/SimplifiedChinese/SourceHanSerifSC-Heavy.otf",
+      "repository": "https://github.com/adobe-fonts/source-han-serif",
+      "repository_commit": "7889f11bf31170b5d092a083b357c8c8130f89e0",
+      "release_tag": "2.003R",
+      "release_url": "https://github.com/adobe-fonts/source-han-serif/releases/tag/2.003R",
+      "license": "SIL Open Font License 1.1",
+      "license_path": "fonts/OFL.txt",
+      "license_source_url": "https://raw.githubusercontent.com/adobe-fonts/source-han-serif/7889f11bf31170b5d092a083b357c8c8130f89e0/LICENSE.txt",
+      "license_sha256": "9ff5bb567e1b92c801fc1069e5fbf992ff8efccacb9db94e5959a5b3ba9bb903",
+      "sha256": "d033af54f96530476faed924ab5d5e9e6ef0833495670fd57bab9a7758398048",
+      "byte_size": 24063280,
+      "font_bytes_modified": false,
+      "note": "Official static Simplified Chinese Heavy font; filename and CSS alias only. Selected as a visual approximation, not an exact identification of a screenshot font.",
+      "verification": {
+        "sample_text": "山河相望，史事有据。文字清晰可读。",
+        "sample_missing_glyphs": [],
+        "digit_glyphs_present": true,
+        "otf_signature": "OTTO",
+        "original_names_preserved": true
+      }
+    }
+  ]
+}

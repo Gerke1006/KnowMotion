@@ -1,0 +1,400 @@
+/* A quiet creative canvas. These overrides only apply inside the workspace. */
+.studio-shell.canvas-studio { --sidebar-width: 240px; background: #f7f8f5; }
+.canvas-studio .studio-main { background: #f7f8f5; }
+.canvas-studio .workspace-header { height: 70px; min-height: 70px; padding: 0 36px; border-bottom-color: transparent; background: transparent; }
+.canvas-studio .header-path { font-size: 13px; gap: 10px; color: #526974; }
+.canvas-studio .header-section-icon { color: #72908b; }
+.canvas-studio .header-status { font-size: 11px; color: #60716d; }
+.canvas-studio .api-settings-button { min-height: 35px; padding: 7px 11px; border-color: #e0e6e1; border-radius: 9px; font-size: 12px; box-shadow: none; }
+.canvas-studio .workspace-scroll { scroll-padding-top: 24px; scrollbar-width: thin; }
+.canvas-studio .workspace-composer-dock { flex-shrink: 0; width: 100%; min-width: 0; padding: 0 44px 20px; background: #f7f8f5; }
+.canvas-studio .composer-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* The navigation becomes a full-height surface, leaving the canvas generous. */
+.studio-shell.canvas-studio .sidebar {
+  inset: 0 auto 0 0;
+  width: var(--sidebar-width);
+  padding: 27px 16px 16px;
+  border: 0;
+  border-right: 1px solid #e7ebe6;
+  border-radius: 0;
+  background: #fcfdfb;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.canvas-studio .sidebar .sidebar-brand { margin-bottom: 34px; padding: 0 8px; }
+.canvas-studio .sidebar .brand-mark { width: 31px; height: 31px; filter: none; }
+.canvas-studio .sidebar .brand-wordmark { font-size: 20px; letter-spacing: -.9px; }
+.canvas-studio .sidebar .brand-lockup { gap: 8px; }
+.canvas-studio .sidebar .sidebar-create { min-height: 49px; padding: 10px 13px; gap: 10px; border: 1px solid transparent; border-radius: 12px; color: #38555f; background: transparent; box-shadow: none; }
+.canvas-studio .sidebar .sidebar-create::before { display: none; }
+.canvas-studio .sidebar .sidebar-create.is-current { border-color: #e1ebe5; color: #235e5b; background: #eaf2ed; box-shadow: none; }
+.canvas-studio .sidebar .create-symbol { width: 24px; height: 25px; border: 0; border-radius: 0; color: #467870; background: transparent; box-shadow: none; }
+.canvas-studio .sidebar .create-copy strong { font-size: 13px; font-weight: 550; letter-spacing: 0; }
+.canvas-studio .sidebar .create-copy small { display: none; }
+.canvas-studio .sidebar .sidebar-create > svg:last-of-type { width: 14px; height: 14px; color: #748f87; }
+.canvas-studio .sidebar .primary-nav { margin-top: 27px; }
+.canvas-studio .sidebar .sidebar-nav-label { font-size: 10px; letter-spacing: .5px; color: #657071; margin-bottom: 10px; }
+.canvas-studio .sidebar .nav-item { min-height: 43px; height: 43px; padding: 0 12px; border-radius: 10px; gap: 9px; font-size: 13px; }
+.canvas-studio .sidebar .nav-icon svg { width: 18px; height: 18px; }
+.canvas-studio .sidebar .sidebar-selection { border: 0; border-radius: 10px; background: #eaf2ed; box-shadow: none; }
+.canvas-studio .sidebar .nav-item.active { color: #235e5b; font-weight: 550; }
+.canvas-studio .sidebar .nav-count { font-size: 10px; min-width: 20px; line-height: 20px; border-radius: 6px; background: #edf1ed; box-shadow: none; }
+.canvas-studio .sidebar .nav-item.active .nav-count { background: #dfece5; }
+.canvas-studio .sidebar .history-navigation { margin-top: 26px; padding-top: 21px; border-top-color: #e8ede6; }
+.canvas-studio .sidebar .sidebar-section-heading > span { font-size: 10px; letter-spacing: .5px; color: #657071; }
+.canvas-studio .sidebar .history-link { height: 49px; min-height: 49px; padding: 8px 10px; gap: 9px; border-radius: 9px; }
+.canvas-studio .sidebar .history-link.active { background: #eef4ef; border-color: transparent; box-shadow: none; }
+.canvas-studio .sidebar .history-entry-icon { width: 23px; height: 26px; background: transparent; box-shadow: none; }
+.canvas-studio .sidebar .history-entry-copy > span { font-size: 11px; font-weight: 450; }
+.canvas-studio .sidebar .history-entry-copy > small { font-size: 9px; color: #61706e; }
+.canvas-studio .sidebar .sidebar-bottom { padding: 18px 8px 3px; margin-top: 18px; border-top-color: #e7ece5; background: transparent; }
+.canvas-studio .sidebar .workspace-avatar { background: #edf3ee; border-color: #e3ebe3; }
+.canvas-studio .sidebar .sidebar-bottom strong { font-size: 11px; }
+.canvas-studio .sidebar .sidebar-bottom > div > span { font-size: 10px; }
+.canvas-studio .sidebar .sidebar-create .sidebar-ripple { background: radial-gradient(circle, #6ba09330 0, #6ba09312 45%, transparent 72%); }
+
+/* Inspiration above, a compact writing surface anchored by normal flow below. */
+.canvas-studio .create-page.creator-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  max-width: 1090px;
+  padding: 28px 48px 26px;
+  gap: 36px;
+}
+.canvas-studio .creator-welcome { display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 0; width: 100%; max-width: 880px; margin: 0 auto; padding: 8px 0 20px; }
+.canvas-studio .creator-page .create-heading { margin: 0 0 30px; text-align: center; }
+.canvas-studio .creator-page .create-heading .eyebrow { display: none; }
+.canvas-studio .creator-page .create-heading h1 { max-width: none; margin-inline: auto; font-size: clamp(25px, 2.2vw, 30px); line-height: 1.55; font-weight: 550; letter-spacing: -.7px; color: #203d4b; }
+.canvas-studio .creator-page .create-heading p { margin-top: 10px; font-size: 13px; color: #607073; line-height: 1.8; }
+.canvas-studio .creator-page .topic-suggestions { width: 100%; margin: 0; }
+.canvas-studio .creator-page .suggestion-heading { margin-bottom: 13px; }
+.canvas-studio .creator-page .suggestion-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; width: 100%; min-width: 0; }
+.canvas-studio .creator-page .topic-suggestion { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; min-height: 0; padding: 0; overflow: hidden; border: 1px solid #e1e7e1; border-radius: 15px; background: #fff; box-shadow: 0 2px 4px #243e3b02; }
+.studio-shell.canvas-studio .topic-suggestion > .suggestion-art { position: relative; display: block; flex: none; width: 100%; height: 156px; min-width: 0; overflow: hidden; background: #ecf1ec; }
+.canvas-studio .suggestion-art > img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 350ms cubic-bezier(.2, .8, .2, 1); }
+.canvas-studio .suggestion-art-label { position: absolute; top: 11px; left: 12px; display: inline-flex; align-items: center; gap: 5px; width: fit-content; padding: 4px 7px; border: 1px solid #ffffffae; border-radius: 6px; color: #3d635e; background: #ffffffdc; backdrop-filter: blur(5px); font-size: 10px; line-height: 1.2; }
+.canvas-studio .suggestion-art-label > svg { width: 12px; height: 12px; }
+.studio-shell.canvas-studio .topic-suggestion > .suggestion-card-body { display: flex; flex-direction: column; align-items: flex-start; flex: 1; gap: 4px; padding: 14px 16px 13px; min-width: 0; width: 100%; }
+.canvas-studio .creator-page .topic-suggestion strong { font-size: 14px; line-height: 1.55; font-weight: 550; color: #304e59; }
+.canvas-studio .creator-page .topic-suggestion small { font-size: 11px; line-height: 1.7; color: #5f7173; }
+.canvas-studio .suggestion-try { display: inline-flex; align-items: center; gap: 5px; margin-top: 6px; color: #43776d; font-size: 10px; line-height: 1.5; }
+.canvas-studio .suggestion-try > svg { width: 12px; height: 12px; }
+.canvas-studio .composer-form { flex-shrink: 0; width: 100%; max-width: 880px; margin: auto auto 0; padding: 18px 21px 0; border: 1px solid #d7e1da; border-radius: 18px; background: #fff; box-shadow: 0 5px 22px #1c423508, 0 1px 2px #1c423503; }
+.canvas-studio .composer-form:focus-within { border-color: #9abeb0; box-shadow: 0 0 0 3px #2b7a7806, 0 5px 22px #1c423508; }
+.canvas-studio .composer-form .prompt-editor { width: 100%; }
+.canvas-studio .composer-form .prompt-editor textarea,
+.canvas-studio .composer-form textarea.prompt-editor { width: 100%; height: 80px; min-height: 80px; max-height: 200px; padding: 0; color: #294651; font-size: 14px; line-height: 1.85; resize: vertical; }
+.canvas-studio .composer-form textarea::placeholder { color: #636f6b; }
+.canvas-studio .composer-form .prompt-editor-footer { min-height: 25px; padding: 5px 0 0; gap: 12px; }
+.canvas-studio .composer-form .prompt-editor-footer > span:first-child { flex: 1; min-width: 0; max-width: none; color: #5e7270; font-size: 10px; line-height: 1.7; }
+.canvas-studio .composer-form .prompt-editor-footer > span:first-child > svg { width: 11px; height: 11px; }
+.canvas-studio .composer-form .character-count { margin-left: auto; white-space: nowrap; font-size: 10px; color: #567170; }
+.canvas-studio .composer-form .character-count > span { color: #60706a; }
+.canvas-studio .composer-form .generate-toolbar { margin: 12px -21px 0; padding: 12px 21px; min-height: 66px; gap: 16px; border-top-color: #edf1ec; border-radius: 0 0 18px 18px; background: transparent; }
+.canvas-studio .composer-form .generate-button { min-width: 135px; min-height: 41px; height: 41px; margin-left: 0; padding: 9px 16px; border-radius: 11px; font-size: 13px; gap: 13px; box-shadow: none; }
+.canvas-studio .composer-form .composer-kind { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; color: #517370; font-size: 12px; }
+.canvas-studio .composer-form .composer-kind > svg { color: #688d80; width: 15px; height: 15px; }
+.canvas-studio .composer-form .character-count { margin-left: auto; }
+.canvas-studio .composer-form .keyboard-hint { display: inline-flex; color: #61706b; font-size: 10px; gap: 4px; }
+.canvas-studio .composer-form .keyboard-hint kbd { font-size: 10px; border: 0; background: transparent; padding: 0; color: #5a736d; }
+.canvas-studio .composer-mode { display: inline-flex; align-items: center; gap: 7px; color: #517370; font-size: 12px; }
+
+/* A fixed-width primary canvas keeps generation and playback in the same place. */
+.canvas-studio .detail-page.production-page { max-width: 968px; padding: 22px 44px 62px; }
+.canvas-studio .production-page .detail-heading { margin-bottom: 23px; }
+.canvas-studio .production-page .creation-message { position: relative; max-width: 680px; width: 100%; margin: 0 0 21px; padding-right: 36px; }
+.canvas-studio .production-page .creation-message-label { justify-content: flex-start; gap: 10px; margin: 0 0 7px; font-size: 10px; color: #62716c; }
+.canvas-studio .production-page .creation-message-label > :first-child { color: #5b7167; }
+.canvas-studio .production-page .creation-message-bubble { padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.canvas-studio .production-page .creation-message-bubble h1 { font-size: 17px; font-weight: 500; line-height: 1.8; letter-spacing: 0; color: #2e4c57; }
+.canvas-studio .production-page .creation-message-actions { position: absolute; right: 0; top: 22px; margin: 0; min-height: 28px; }
+.canvas-studio .production-work,
+.canvas-studio .production-work.is-complete { max-width: 680px; width: 100%; margin: 0; }
+.canvas-studio .production-primary-stage { width: 100%; min-width: 0; }
+.canvas-studio .generation-placeholder { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; aspect-ratio: 16 / 9; min-height: 0; overflow: hidden; padding: 58px 24px 50px; border: 1px solid #dfe7e0; border-radius: 14px; background: #eaf0eb; }
+.canvas-studio .generation-placeholder.is-failed { border-color: #e8dfd5; background: #f0eee7; }
+.canvas-studio .generation-placeholder-status { position: absolute; top: 17px; left: 19px; display: inline-flex; align-items: center; flex-wrap: wrap; gap: 7px; color: #4e7275; font-size: 11px; line-height: 1.5; }
+.canvas-studio .generation-placeholder-status > i,
+.canvas-studio .generation-placeholder-status > .generation-placeholder-status-dot { width: 5px; height: 5px; border-radius: 50%; background: #488b80; }
+.canvas-studio .generation-placeholder-status strong { margin-left: 3px; color: #315f68; font-size: 12px; font-weight: 550; font-variant-numeric: tabular-nums; }
+.canvas-studio .generation-placeholder-center { display: flex; flex-direction: column; align-items: center; max-width: 400px; text-align: center; }
+.canvas-studio .generation-placeholder-mark { display: grid; place-items: center; width: 43px; height: 43px; margin-bottom: 17px; }
+.canvas-studio .generation-placeholder-mark > .brand-mark { width: 43px; height: 43px; filter: none; }
+.canvas-studio .generation-placeholder h2 { margin: 0; color: #345762; font-size: 18px; font-weight: 550; line-height: 1.65; letter-spacing: -.2px; }
+.canvas-studio .generation-placeholder-center p { margin: 9px 0 0; color: #5c7273; font-size: 12px; line-height: 1.8; }
+.canvas-studio .generation-placeholder-caption { position: absolute; right: 20px; bottom: 17px; left: 20px; margin: 0; color: #5d7271; font-size: 10px; line-height: 1.7; text-align: center; }
+.canvas-studio .production-final-result .video-result { width: 100%; max-width: 100%; margin-top: 0; }
+.canvas-studio .production-final-result .result-section-heading { display: none; }
+.canvas-studio .production-final-result .video-player-wrap { border: 1px solid #dce5dc; border-radius: 14px; box-shadow: none; }
+.canvas-studio .production-final-result .result-actions { margin-top: 14px; }
+.canvas-studio .production-final-result .result-actions button { min-height: 39px; padding: 9px 14px; border-radius: 10px; font-size: 12px; }
+.canvas-studio .production-process-slot { margin-top: 13px; }
+.canvas-studio .production-status-slot { margin-top: 17px; }
+.canvas-studio .production-status-slot:empty { display: none; }
+.canvas-studio .production-status-slot .failure-panel { margin: 0; padding: 18px; border-radius: 12px; }
+.canvas-studio .production-status-slot .failure-panel h2 { font-size: 14px; }
+.canvas-studio .production-status-slot .failure-panel > p { font-size: 12px; }
+
+/* One line by default; the complete record opens as a small, orderly ledger. */
+.canvas-studio .task-progress.task-progress-inline { overflow: visible; margin: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.canvas-studio .task-progress-inline .task-current-button { display: grid; grid-template-columns: 23px minmax(0, 1fr) 14px; width: fit-content; max-width: 100%; min-height: 36px; padding: 5px 1px; gap: 8px; border-radius: 6px; background: transparent; }
+.canvas-studio .task-progress-inline .task-current-button:hover { background: transparent; }
+.canvas-studio .task-progress-inline .task-current-mark { grid-column: 1; grid-row: 1; width: 23px; height: 23px; margin: 0; align-self: center; border-radius: 7px; color: #447d74; background: transparent; }
+.canvas-studio .task-progress-inline .task-current-mark .brand-mark { width: 22px; height: 22px; filter: none; }
+.canvas-studio .task-progress-inline .task-current-mark > svg:not(.brand-mark) { width: 16px; height: 16px; }
+.canvas-studio .task-progress-inline .task-current-copy { grid-column: 2; grid-row: 1; }
+.canvas-studio .task-progress-inline .task-current-title { font-size: 12px; line-height: 1.6; font-weight: 500; color: #506e75; }
+.canvas-studio .task-progress-inline .task-current-button > .task-chevron { grid-column: 3; grid-row: 1; width: 14px; height: 14px; color: #748e89; }
+.canvas-studio .task-expanded-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 14px; padding: 19px 19px 17px; border: 1px solid #dfe7e2; border-bottom: 0; border-radius: 14px 14px 0 0; background: #fff; }
+.canvas-studio .task-expanded-label h3 { margin: 0; color: #304f5b; font-size: 14px; font-weight: 600; line-height: 1.6; }
+.canvas-studio .task-expanded-label > small { display: block; margin-top: 4px; color: #5b7271; font-size: 10px; line-height: 1.6; }
+.canvas-studio .task-total-summary { display: flex; align-items: center; gap: 23px; padding: 11px 15px; border: 1px solid #256e6d; border-radius: 11px; background: #2b7a78; box-shadow: inset 0 1px 0 #ffffff14; }
+.canvas-studio .task-total-metric { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; min-width: 0; font-variant-numeric: tabular-nums; }
+.canvas-studio .task-total-metric > small { color: #e9f7f3; font-size: 10px; line-height: 1.5; }
+.canvas-studio .task-total-metric > strong { color: #fff; font-size: 18px; font-weight: 600; line-height: 1.35; letter-spacing: -.3px; overflow-wrap: anywhere; }
+.canvas-studio .task-progress-inline .task-stages { padding: 0 14px 13px; gap: 0; border: 1px solid #dfe7e2; border-top: 0; border-radius: 0 0 14px 14px; background: #fff; }
+.canvas-studio .task-stage { border: 0; border-bottom: 1px solid #e8efea; border-radius: 0; background: transparent; }
+.canvas-studio .task-stage:last-child { border-bottom: 0; }
+.canvas-studio .task-stage[data-child="true"] { margin-left: 14px; background: transparent; }
+.canvas-studio .task-stage[data-state="running"] { border-color: #deebe4; border-radius: 7px; background: #f1f7f3; box-shadow: inset 2px 0 0 #6b9d8d; }
+.canvas-studio .task-stage[data-state="failed"], .canvas-studio .task-stage[data-state="interrupted"] { border-color: #e9e1d4; background: #fcfaf4; border-radius: 7px; }
+.canvas-studio .task-stage-button { display: grid; grid-template-columns: 24px minmax(100px, 1fr) minmax(260px, auto) 14px; min-height: 67px; gap: 10px; padding: 12px 7px; }
+.canvas-studio .task-stage-icon { width: 24px; height: 25px; border-radius: 7px; }
+.canvas-studio .task-stage-copy { gap: 3px; }
+.canvas-studio .task-stage-copy > strong { font-size: 12px; font-weight: 500; color: #3a5a64; }
+.canvas-studio .task-stage-status { font-size: 10px; color: #5f706f; }
+.canvas-studio .task-stage-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; width: 288px; max-width: 100%; align-items: start; }
+.canvas-studio .task-stage-metrics > span { display: flex; flex-direction: column; align-items: flex-end; min-width: 0; gap: 5px; }
+.canvas-studio .task-stage-metrics small { font-size: 10px; color: #5f7172; line-height: 1.4; text-align: right; }
+.canvas-studio .task-stage-metrics strong { color: #496c72; font-size: 11px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+.canvas-studio .task-stage-metrics [data-metric="cost"] strong { color: #35756e; }
+.canvas-studio .task-stage-detail { margin: 0 7px 13px 41px; padding-top: 11px; }
+.canvas-studio .task-stage-description { margin-bottom: 10px; font-size: 11px; }
+.canvas-studio .task-detail-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 12px; gap: 13px; border-radius: 8px; }
+.canvas-studio .task-detail-grid dt { font-size: 10px; }
+.canvas-studio .task-detail-grid dd { font-size: 11px; }
+.canvas-studio .task-detail-note { font-size: 10px; }
+
+/* Real scene drafts remain accessible as secondary work below the main canvas. */
+.canvas-studio .production-scenes-section { margin-top: 23px; border-top: 1px solid #dfe8e2; }
+.canvas-studio .production-scenes-toggle { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 49px; padding: 12px 0; color: #507373; background: transparent; text-align: left; }
+.canvas-studio .production-scenes-toggle > svg:first-child { width: 15px; height: 15px; color: #6b9087; }
+.canvas-studio .production-scenes-toggle > span { font-size: 12px; font-weight: 500; }
+.canvas-studio .production-scenes-toggle > small { margin-left: auto; font-size: 10px; color: #5b726e; }
+.canvas-studio .production-scenes-toggle > svg:last-child { width: 14px; height: 14px; margin-left: 5px; color: #728f83; transition: transform 300ms cubic-bezier(.22, 1, .36, 1); }
+.canvas-studio .production-scenes-toggle .rotated { transform: rotate(180deg); }
+.canvas-studio .production-scenes-section .production-canvas { border-radius: 11px; box-shadow: none; }
+.canvas-studio .production-scenes-section .scene-preview-caption { min-height: 38px; padding: 10px 14px; font-size: 10px; }
+.canvas-studio .production-scenes-section .scene-strip { grid-auto-columns: minmax(125px, 1fr); gap: 10px; margin-top: 13px; }
+.canvas-studio .production-scenes-section .scene-card { border-radius: 10px; padding: 5px; }
+.canvas-studio .production-scenes-section .scene-card-copy { padding: 8px 3px 3px; gap: 5px; }
+.canvas-studio .production-scenes-section .scene-card-copy > strong { font-size: 11px; }
+.canvas-studio .production-scenes-section .scene-state { font-size: 9px; }
+.canvas-studio .production-script-summary { padding: 18px 20px; margin-top: 2px; border: 1px solid #dfe8e1; border-radius: 11px; background: #fafcf9; }
+.canvas-studio .production-script-summary .production-empty-label { margin-bottom: 10px; font-size: 11px; }
+.canvas-studio .production-script-summary h3 { color: #315962; font-size: 15px; font-weight: 550; line-height: 1.7; }
+.canvas-studio .production-script-summary .production-script-excerpt { margin-top: 10px; color: #587377; font-size: 12px; line-height: 1.95; white-space: pre-line; overflow-wrap: anywhere; }
+.canvas-studio .production-script-summary > small { display: block; margin-top: 12px; font-size: 10px; color: #58716c; }
+
+.canvas-studio .collection-page { max-width: 1120px; padding: 35px 48px 60px; }
+.canvas-studio .collection-page .page-heading h1 { font-size: 28px; font-weight: 550; }
+.canvas-studio .collection-page .page-heading p { font-size: 13px; }
+.canvas-studio .collection-page .page-heading > .button-primary { min-height: 39px; padding: 9px 13px; border-radius: 10px; font-size: 12px; box-shadow: none; }
+.canvas-studio .video-card { border-radius: 12px; box-shadow: none; }
+.canvas-studio .video-card:hover { box-shadow: 0 6px 18px #234b4308; }
+.canvas-studio .history-row { padding-top: 19px; padding-bottom: 19px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .canvas-studio .sidebar .sidebar-create:hover { transform: none; background: #f0f5ef; box-shadow: none; }
+  .canvas-studio .sidebar .sidebar-create.is-current:hover { background: #e3eee5; }
+  .canvas-studio .sidebar .nav-item:hover { background: #eef4f0; }
+  .canvas-studio .sidebar .history-link:hover { background: #f0f5f1; }
+  .canvas-studio .sidebar .history-link.active:hover { background: #e8f1eb; }
+  .canvas-studio .creator-page .topic-suggestion:hover { border-color: #a5c4b8; box-shadow: 0 5px 15px #2a554a07; transform: translateY(-2px); }
+  .canvas-studio .topic-suggestion:hover .suggestion-art > img { transform: scale(1.025); }
+  .canvas-studio .creator-page .topic-suggestion:active { transform: translateY(0) scale(.99); }
+}
+@media (min-width: 981px) and (min-height: 701px) {
+  .canvas-studio .creator-welcome { padding-bottom: 6vh; }
+}
+@media (max-width: 1150px) {
+  .canvas-studio .workspace-composer-dock { padding-right: 33px; padding-left: 33px; }
+  .canvas-studio .create-page.creator-page { padding-right: 33px; padding-left: 33px; }
+  .canvas-studio .creator-page .suggestion-grid { gap: 12px; }
+  .studio-shell.canvas-studio .topic-suggestion > .suggestion-art { height: 115px; }
+  .studio-shell.canvas-studio .topic-suggestion > .suggestion-card-body { padding-right: 13px; padding-left: 13px; }
+  .canvas-studio .detail-page.production-page { padding-right: 33px; padding-left: 33px; }
+  .canvas-studio .collection-page { padding-right: 35px; padding-left: 35px; }
+}
+@media (max-width: 980px) {
+  .canvas-studio .workspace-composer-dock { padding-right: 26px; padding-left: 26px; }
+  .studio-shell.canvas-studio { --sidebar-width: 218px; }
+  .studio-shell.canvas-studio .sidebar { padding-left: 13px; padding-right: 13px; }
+  .canvas-studio .sidebar .brand-wordmark { font-size: 19px; }
+  .canvas-studio .workspace-header { padding: 0 26px; }
+  .canvas-studio .create-page.creator-page { padding: 25px 26px 24px; gap: 28px; }
+  .canvas-studio .creator-page .create-heading h1 { font-size: 26px; }
+  .canvas-studio .creator-page .suggestion-grid { grid-template-columns: repeat(3, minmax(185px, 1fr)); overflow-x: auto; padding: 3px 3px 12px; margin: -3px; width: calc(100% + 6px); scrollbar-width: thin; scrollbar-color: #b8cec3 transparent; overscroll-behavior-x: contain; }
+  .canvas-studio .detail-page.production-page { padding-right: 26px; padding-left: 26px; }
+  .canvas-studio .task-stage-button { grid-template-columns: 24px minmax(0, 1fr) 14px; gap: 8px; padding-top: 12px; padding-bottom: 12px; }
+  .canvas-studio .task-stage-icon { grid-column: 1; grid-row: 1 / 3; align-self: start; }
+  .canvas-studio .task-stage-copy { grid-column: 2; grid-row: 1; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 5px 9px; }
+  .canvas-studio .task-stage-metrics { grid-column: 2; grid-row: 2; width: 100%; max-width: none; gap: 9px; justify-content: normal; }
+  .canvas-studio .task-stage-metrics > span { align-items: flex-start; }
+  .canvas-studio .task-stage-metrics small { text-align: left; }
+  .canvas-studio .task-stage-button > .task-chevron { grid-column: 3; grid-row: 1 / 3; }
+}
+@media (max-width: 760px) {
+  .canvas-studio .workspace-composer-dock { padding: 0 24px 20px; }
+  .studio-shell.canvas-studio { --sidebar-width: 250px; }
+  .studio-shell.canvas-studio .sidebar { inset: 0 auto 0 0; width: min(250px, calc(100vw - 42px)); padding: 24px 16px 18px; border-radius: 0; background: #fcfdfb; transform: translateX(-100%); visibility: hidden; box-shadow: 9px 0 32px #183b3420; }
+  .studio-shell.canvas-studio.mobile-menu-open .sidebar { transform: translateX(0); visibility: visible; }
+  .canvas-studio .studio-main { margin-left: 0; width: 100%; }
+  .canvas-studio .sidebar .sidebar-brand { margin-bottom: 28px; padding-left: 3px; }
+  .canvas-studio .sidebar .brand-wordmark { font-size: 20px; }
+  .canvas-studio .sidebar .brand-mark { width: 31px; height: 31px; }
+  .canvas-studio .workspace-header { height: 62px; min-height: 62px; padding: 0 21px; }
+  .canvas-studio .header-path { font-size: 12px; }
+  .canvas-studio .create-page.creator-page { padding: 23px 24px 22px; gap: 30px; }
+  .canvas-studio .creator-welcome { padding-top: 6px; padding-bottom: 9px; }
+  .canvas-studio .creator-page .create-heading { margin-bottom: 24px; }
+  .canvas-studio .creator-page .create-heading h1 { font-size: 27px; }
+  .canvas-studio .creator-page .suggestion-grid { grid-template-columns: repeat(3, minmax(210px, 1fr)); }
+  .canvas-studio .composer-form { padding: 16px 18px 0; }
+  .canvas-studio .composer-form .generate-toolbar { margin-right: -18px; margin-left: -18px; padding-right: 18px; padding-left: 18px; }
+  .canvas-studio .detail-page.production-page { padding: 16px 24px 48px; }
+  .canvas-studio .production-page .detail-heading { margin-bottom: 19px; }
+  .canvas-studio .production-page .creation-message-bubble h1 { font-size: 16px; }
+  .canvas-studio .generation-placeholder { min-height: 0; padding: 43px 22px 37px; }
+  .canvas-studio .generation-placeholder h2 { font-size: 17px; }
+  .canvas-studio .generation-placeholder-mark, .canvas-studio .generation-placeholder-mark > .brand-mark { width: 38px; height: 38px; }
+  .canvas-studio .task-total-metric > strong { font-size: 17px; }
+  .canvas-studio .collection-page { padding: 24px 24px 48px; }
+}
+@media (max-width: 480px) {
+  .canvas-studio .workspace-composer-dock { padding: 0 19px 16px; }
+  .canvas-studio .workspace-header { padding: 0 16px; }
+  .canvas-studio .api-settings-button { padding: 7px 9px; font-size: 11px; }
+  .canvas-studio .create-page.creator-page { padding: 20px 19px 19px; gap: 25px; }
+  .canvas-studio .creator-page .create-heading h1 { font-size: 24px; line-height: 1.55; max-width: 340px; }
+  .canvas-studio .creator-page .create-heading p { font-size: 12px; }
+  .canvas-studio .creator-page .suggestion-grid { grid-template-columns: repeat(3, 218px); gap: 11px; }
+  .studio-shell.canvas-studio .topic-suggestion > .suggestion-art { height: 112px; }
+  .canvas-studio .composer-form { padding: 15px 16px 0; border-radius: 15px; }
+  .canvas-studio .composer-form .prompt-editor textarea, .canvas-studio .composer-form textarea.prompt-editor { font-size: 16px; height: 80px; min-height: 80px; line-height: 1.7; }
+  .canvas-studio .composer-form .prompt-editor-footer { flex-wrap: nowrap; gap: 8px; }
+  .canvas-studio .composer-form .prompt-editor-footer > span:first-child { font-size: 9px; flex: 1; }
+  .canvas-studio .composer-form .character-count { font-size: 9px; }
+  .canvas-studio .composer-form .generate-toolbar { margin: 10px -16px 0; padding: 11px 16px; min-height: 62px; border-radius: 0 0 15px 15px; gap: 10px; }
+  .canvas-studio .composer-form .generate-button { min-width: 119px; height: 39px; min-height: 39px; padding: 9px 12px; font-size: 12px; gap: 8px; }
+  .canvas-studio .composer-form .keyboard-hint { font-size: 9px; gap: 2px; flex-wrap: wrap; max-width: 112px; }
+  .canvas-studio .composer-form .keyboard-hint { display: none; }
+  .canvas-studio .composer-form .composer-kind { font-size: 10px; gap: 5px; }
+  .canvas-studio .composer-form .keyboard-hint kbd { font-size: 9px; }
+  .canvas-studio .detail-page.production-page { padding: 14px 19px 42px; }
+  .canvas-studio .production-page .creation-message { margin-bottom: 17px; }
+  .canvas-studio .production-page .creation-message-label { font-size: 9px; }
+  .canvas-studio .production-page .creation-message-bubble h1 { font-size: 15px; line-height: 1.8; }
+  .canvas-studio .generation-placeholder { min-height: 0; padding: 38px 18px 30px; border-radius: 12px; }
+  .canvas-studio .generation-placeholder-status { top: 13px; left: 14px; font-size: 10px; }
+  .canvas-studio .generation-placeholder-status strong { font-size: 11px; }
+  .canvas-studio .generation-placeholder-mark, .canvas-studio .generation-placeholder-mark > .brand-mark { width: 29px; height: 29px; }
+  .canvas-studio .generation-placeholder-mark { margin-bottom: 9px; }
+  .canvas-studio .generation-placeholder h2 { font-size: 15px; }
+  .canvas-studio .generation-placeholder-center p { font-size: 11px; line-height: 1.7; margin-top: 7px; }
+  .canvas-studio .generation-placeholder-caption { right: 14px; left: 14px; bottom: 12px; font-size: 9px; }
+  .canvas-studio .production-process-slot { margin-top: 10px; }
+  .canvas-studio .task-expanded-header { padding: 16px 14px; gap: 13px; }
+  .canvas-studio .task-expanded-label { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .canvas-studio .task-expanded-label h3 { font-size: 13px; }
+  .canvas-studio .task-expanded-label > small { margin: 0; }
+  .canvas-studio .task-total-summary { justify-content: space-between; width: 100%; gap: 15px; padding: 10px 13px; }
+  .canvas-studio .task-total-metric { align-items: flex-start; }
+  .canvas-studio .task-total-metric:last-child { align-items: flex-end; }
+  .canvas-studio .task-progress-inline .task-stages { padding: 0 10px 10px; }
+  .canvas-studio .task-stage[data-child="true"] { margin-left: 8px; }
+  .canvas-studio .task-stage-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+  .canvas-studio .task-stage-metrics > span { gap: 3px; }
+  .canvas-studio .task-stage-detail { margin: 0 7px 12px; }
+  .canvas-studio .task-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .canvas-studio .production-scenes-section { margin-top: 17px; }
+  .canvas-studio .production-scenes-toggle { min-height: 45px; gap: 6px; }
+  .canvas-studio .production-scenes-toggle > small { font-size: 9px; }
+  .canvas-studio .production-scenes-section .scene-strip { grid-auto-columns: 137px; }
+  .canvas-studio .production-script-summary { padding: 16px; }
+  .canvas-studio .collection-page { padding: 22px 19px 42px; }
+  .canvas-studio .collection-page .page-heading h1 { font-size: 25px; }
+  .canvas-studio .collection-page .page-heading p { font-size: 12px; }
+}
+@media (max-width: 360px) {
+  .canvas-studio .workspace-composer-dock { padding-right: 15px; padding-left: 15px; }
+  .canvas-studio .create-page.creator-page, .canvas-studio .detail-page.production-page, .canvas-studio .collection-page { padding-right: 15px; padding-left: 15px; }
+  .canvas-studio .creator-page .create-heading h1 { font-size: 23px; }
+  .canvas-studio .creator-page .suggestion-grid { grid-template-columns: repeat(3, 202px); }
+  .canvas-studio .composer-form .keyboard-hint { max-width: 94px; }
+  .canvas-studio .task-total-metric > strong { font-size: 16px; }
+}
+@media (max-height: 700px) and (min-width: 761px) {
+  .canvas-studio .workspace-composer-dock { padding-bottom: 14px; }
+  .canvas-studio .create-page.creator-page { padding-top: 17px; gap: 26px; }
+  .canvas-studio .creator-welcome { padding-top: 0; padding-bottom: 0; }
+  .canvas-studio .creator-page .create-heading { margin-bottom: 20px; }
+  .studio-shell.canvas-studio .topic-suggestion > .suggestion-art { height: 112px; }
+}
+@media (max-height: 560px) {
+  .canvas-studio .workspace-composer-dock { padding-bottom: 10px; }
+  .canvas-studio .composer-form { padding-top: 12px; }
+  .canvas-studio .composer-form .prompt-editor textarea, .canvas-studio .composer-form textarea.prompt-editor { height: 56px; min-height: 56px; }
+  .canvas-studio .composer-form .generate-toolbar { margin-top: 7px; padding-top: 9px; padding-bottom: 9px; min-height: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canvas-studio *, .canvas-studio *::before, .canvas-studio *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .canvas-studio .topic-suggestion:hover .suggestion-art > img { transform: none; }
+  .canvas-studio .creator-page .topic-suggestion:hover, .canvas-studio .creator-page .topic-suggestion:active { transform: none; }
+}
+
+.canvas-studio .shared-production-banner {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 35px;
+  border-bottom: 1px solid #dce9e3;
+  color: #42675a;
+  background: #f2f8f4;
+  font-size: 12px;
+}
+.canvas-studio .shared-production-banner > svg { flex: 0 0 auto; }
+.canvas-studio .shared-production-banner > div { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 4px; }
+.canvas-studio .shared-production-banner strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.canvas-studio .shared-production-banner span { font-size: 11px; line-height: 1.6; }
+.canvas-studio .shared-production-banner .button-quiet { flex: 0 0 auto; color: #267052; gap: 6px; }
+.canvas-studio .shared-production-banner.is-busy { background: #eaf5ef; }
+.canvas-studio .shared-production-banner > .shared-production-actions { flex: 0 0 auto; flex-direction: row; align-items: center; gap: 10px; }
+.canvas-studio .stop-production-button.button-quiet { color: #8a5b45; white-space: nowrap; border: 1px solid #dccdbf; border-radius: 8px; padding: 7px 10px; gap: 6px; }
+.canvas-studio .stop-production-button:not(:disabled):hover { background: #f4eae2; }
+.canvas-studio .stop-production-button:disabled { cursor: not-allowed; opacity: .65; }
+.canvas-studio .stopped-panel { display: flex; align-items: flex-start; gap: 12px; padding: 18px; border: 1px solid #dbe5df; border-radius: 12px; background: #f4f7f3; color: #5f756b; }
+.canvas-studio .stopped-panel > svg { flex: 0 0 auto; margin-top: 2px; }
+.canvas-studio .stopped-panel h2 { font-size: 15px; margin: 0; color: #365b4b; }
+.canvas-studio .stopped-panel p { font-size: 12px; line-height: 1.8; margin: 8px 0 0; }
+.canvas-studio .stopped-panel .button-secondary { margin-top: 13px; font-size: 12px; }
+.canvas-studio .generation-placeholder.is-cancelled,
+.canvas-studio .generation-placeholder.is-cancelling { background: #f0f3ee; border-color: #dfe5dd; }
+.canvas-studio .generation-placeholder.is-cancelled .generation-placeholder-status-dot { background: #829389; box-shadow: none; }
+.canvas-studio .status-badge.cancelled { background: #edf0e9; color: #67796a; }
+.canvas-studio .status-badge.cancelling { background: #f4eddf; color: #8b704b; }
+.canvas-studio .sidebar .history-link[data-status="cancelled"] .history-entry-icon { color: #738774; background: #e9eee6; }
+.canvas-studio .task-progress[data-status="cancelled"] .task-current-mark,
+.canvas-studio .task-progress[data-status="cancelling"] .task-current-mark { color: #75886d; background: #edf1e7; }
+@media (max-width: 760px) {
+  .canvas-studio .shared-production-banner { padding: 11px 21px; gap: 9px; }
+}
+@media (max-width: 480px) {
+  .canvas-studio .shared-production-banner { padding: 10px 16px; flex-wrap: wrap; }
+  .canvas-studio .shared-production-banner > .shared-production-actions { flex-basis: 100%; padding-left: 26px; }
+  .canvas-studio .shared-production-banner .button-quiet { font-size: 11px; padding-right: 0; }
+}

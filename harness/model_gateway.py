@@ -84,25 +84,34 @@ class ModelGateway:
                 call_id = uuid4().hex
                 started_at = datetime.now(timezone.utc).isoformat()
                 self.last_response = None
+                usage = None
                 try:
                     response = await client.post(
                         cfg.model_base_url.rstrip("/") + "/chat/completions",
                         headers={"Authorization": "Bearer " + key}, json=payload,
                     )
+                    if response.is_error:
+                        # Read usage alone from an error body; never retain provider text/headers.
+                        try:
+                            error_body = response.json()
+                            usage = error_body.get("usage") if isinstance(error_body, dict) else None
+                        except ValueError:
+                            usage = None
                     if response.status_code in {429, 500, 502, 503, 504} and attempt < cfg.model_retries:
                         self._audit(call_id, payload, None, attempt=attempt + 1, started_at=started_at,
-                                    status="failed", error_code=f"http_{response.status_code}")
+                                    status="failed", error_code=f"http_{response.status_code}", usage=usage)
                         await asyncio.sleep(min(2 ** attempt, 8))
                         continue
                     if response.is_error:
                         # Provider response bodies may include request credentials; never persist them.
                         self._audit(call_id, payload, None, attempt=attempt + 1, started_at=started_at,
-                                    status="failed", error_code=f"http_{response.status_code}")
+                                    status="failed", error_code=f"http_{response.status_code}", usage=usage)
                         raise ModelError(f"模型服务返回 HTTP {response.status_code}", code="transport")
                     body = response.json()
+                    usage = body.get("usage", {}) if isinstance(body, dict) else None
                     if body.get("base_resp", {}).get("status_code", 0) != 0:
                         self._audit(call_id, payload, None, attempt=attempt + 1, started_at=started_at,
-                                    status="failed", error_code="provider_rejected")
+                                    status="failed", error_code="provider_rejected", usage=usage)
                         raise ModelError("模型服务拒绝了请求，请检查配置与账号状态。")
                     content = self.sanitize(body["choices"][0]["message"]["content"])
                     self.last_response = content
@@ -118,7 +127,7 @@ class ModelGateway:
                     await asyncio.sleep(min(2 ** attempt, 8))
                 except (KeyError, IndexError, TypeError, ValueError) as exc:
                     self._audit(call_id, payload, self.last_response, attempt=attempt + 1, started_at=started_at,
-                                status="failed", error_code="format")
+                                status="failed", error_code="format", usage=usage)
                     raise ModelError("模型返回值不符合 JSON 对象协议", code="format") from exc
         raise ModelError("模型调用失败")
 

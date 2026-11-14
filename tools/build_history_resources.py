@@ -93,8 +93,8 @@ def build_catalog(root: Path = ROOT) -> dict:
     empty = {"type": "object", "properties": {}, "additionalProperties": False}
     base = ["enter", "exit", "move", "emphasize"]
     descriptions = {
-        "actor.person": ("通用古风人物剪影；不宣称具体人物容貌或朝代服饰复原", ["walk", "handover"]),
-        "actor.envoy": ("持节使者示意；身份由来源支持的标签说明", ["walk", "handover"]),
+        "actor.person": ("通用古风人物剪影；不宣称具体人物容貌或朝代服饰复原", ["walk", "handover", "gesture"]),
+        "actor.envoy": ("持节使者示意；身份由来源支持的标签说明", ["walk", "handover", "gesture"]),
         "actor.horse": ("骑者与马的纸本剪影；骑行动作表现位移", ["walk", "ride"]),
         "actor.caravan": ("商队群组示意；不声称确切人数与动物构成", ["walk", "ride"]),
         "prop.gate": ("通用城门示意；支持开闭，不还原特定建筑", ["open", "close"]),
@@ -107,8 +107,8 @@ def build_catalog(root: Path = ROOT) -> dict:
         "info.portrait": ("人物符号与姓名身份；示意而非生前肖像或历史照片", []),
     }
     uses = {
-        "actor.person": (["人物", "行旅", "交接"], "旁白涉及人物的行动或参与关系，且不需要声称特定身份服饰。", "prop.document", "handover"),
-        "actor.envoy": (["使者", "命令", "行旅", "交接"], "资料明确支持使者或传达命令的身份；外形仅作通用示意。", "prop.document", "handover"),
+        "actor.person": (["人物", "行旅", "交接", "交谈", "解释"], "旁白涉及人物的行动或参与关系，且不需要声称特定身份服饰。", "prop.document", "handover"),
+        "actor.envoy": (["使者", "命令", "行旅", "交接", "交谈", "请求"], "资料明确支持使者或传达命令的身份；外形仅作通用示意。", "prop.document", "handover"),
         "actor.horse": (["骑乘", "行旅"], "旁白有据地涉及骑行；不得用骑者外观替代历史肖像。", "prop.gate", "ride"),
         "actor.caravan": (["商队", "行旅", "交流"], "资料支持群体交通或商旅，不把通用群组画成确定人数。", "prop.flag", "walk"),
         "prop.gate": (["城门", "抵达", "离开"], "城门开闭或入城离城是当前旁白含义；建筑仅为环境示意。", "actor.person", "open"),
@@ -124,6 +124,20 @@ def build_catalog(root: Path = ROOT) -> dict:
              "actor.caravan": (340, 230), "prop.gate": (440, 340), "prop.document": (150, 145),
              "prop.flag": (140, 240), "prop.scroll": (360, 200), "prop.seal": (140, 200),
              "info.map": (760, 370), "info.timeline": (700, 200), "info.portrait": (220, 280)}
+    narrative_terms = {
+        "actor.person": ["人物", "交谈", "商议", "请求", "解释", "行走"],
+        "actor.envoy": ["使者", "出使", "传达", "交谈", "商议", "请求", "解释"],
+        "actor.horse": ["马", "骑", "骑乘"],
+        "actor.caravan": ["商队", "使团", "队伍"],
+        "prop.gate": ["城门", "关隘", "入城", "出城"],
+        "prop.document": ["文书", "书信", "记录"],
+        "prop.flag": ["旗", "旗帜", "旗号"],
+        "prop.scroll": ["卷轴", "书卷", "展开", "记载"],
+        "prop.seal": ["印", "印章", "盖章", "落印"],
+        "info.map": ["地理", "地点", "方位", "路线", "距离", "出发", "到达"],
+        "info.timeline": ["时间", "年代", "年", "世纪", "此前", "后来"],
+        "info.portrait": ["人物", "身份", "角色", "关系"],
+    }
     map_schema = HistoryMap.model_json_schema(by_alias=True)
     map_schema["properties"]["locations"]["maxItems"] = 2
     map_schema["properties"]["source_ids"]["minItems"] = 1
@@ -143,6 +157,9 @@ def build_catalog(root: Path = ROOT) -> dict:
         parameters = {"info.map": map_schema, "info.timeline": timeline,
                       "info.portrait": portrait}.get(asset_id, empty)
         intents, condition, companion, demonstration = uses[asset_id]
+        conditions = [condition, "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"]
+        if asset_id in {"actor.person", "actor.envoy"}:
+            conditions.append("gesture只在当前旁白涉及交谈、商议、请求或解释等含义时选择；不自动添加道具、命令或权力仪式。")
         example = ("在当前旁白提示处展示；必填事实参数从本次 research 填入，不能照抄虚构示例。"
                    if asset_id.startswith("info.") else
                    {"id": "object_1", "asset_id": asset_id, "x": .5, "y": .70, "scale": 1,
@@ -151,7 +168,8 @@ def build_catalog(root: Path = ROOT) -> dict:
                         "actions": base + actions, "parameters": parameters,
                         "geometry": {"width": sizes[asset_id][0], "height": sizes[asset_id][1],
                                      "anchor": "bottom_center", "label_bottom": 32},
-                        "intents": intents, "conditions": [condition, "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"],
+                        "intents": intents, "conditions": conditions, "narrative_terms": narrative_terms[asset_id],
+                        "narrative_terms_note": "词典只供候选检索提示与报告，不是完整语义校验；否定、比喻与上下文是否支持由Agent结合证据判断。",
                         "combination_example": {"resource_ids": [asset_id, companion],
                                                 "focus_resource": asset_id, "action": demonstration,
                                                 "layout": {"focus": {"x": .42, "y": .70},

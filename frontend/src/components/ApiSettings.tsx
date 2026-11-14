@@ -53,8 +53,8 @@ class ConfigurationError extends Error {
     super(
       {
         401: "访问令牌无效，请输入服务端配置的访问令牌。",
-        409: "当前执行后端暂不支持在页面修改 API，请在服务端配置。",
-        422: "请检查 API 地址和模型名称。地址应为接口基址，不包含 /chat/completions。",
+        409: "当前执行后端暂不支持在页面修改接口，请在服务端配置。",
+        422: "请检查服务地址和模型名称。地址应为接口基址，不包含具体请求路径。",
         429: "请求过于频繁，请稍后重试。",
       }[status] || "服务暂时不可用，请稍后重试。",
     );
@@ -144,7 +144,7 @@ export function ApiSettings({
           setNeedsToken(reason.status === 401);
           setError(reason.message);
         } else {
-          setError("暂时无法读取 API 配置，请检查连接后重试。");
+          setError("暂时无法读取接口配置，请检查连接后重试。");
         }
       })
       .finally(() => {
@@ -198,7 +198,7 @@ export function ApiSettings({
         !form.minimax_model.trim() ||
         !form.minimax_voice_id.trim()
       ) {
-        setError("请填写有效的 HTTP(S) 接口基址、模型名称和音色 ID。");
+        setError("请填写有效的网络服务地址、模型名称和音色标识。");
         return;
       }
     }
@@ -261,7 +261,7 @@ export function ApiSettings({
           <KeyRound size={19} />
         </span>
         <div>
-          <h2 id={`${ids}-title`}>自定义 API</h2>
+          <h2 id={`${ids}-title`}>自定义接口</h2>
           <p id={`${ids}-description`}>
             连接你的模型服务，生成自己的知识视频。
           </p>
@@ -269,7 +269,7 @@ export function ApiSettings({
         <button
           className="modal-close"
           type="button"
-          aria-label="关闭 API 设置"
+          aria-label="关闭接口设置"
           disabled={!!busy}
           onClick={close}
         >
@@ -304,8 +304,7 @@ export function ApiSettings({
               aria-describedby={`${ids}-access-help`}
             />
             <p className="form-help" id={`${ids}-access-help`}>
-              这是 KnowMotion 服务的访问令牌，不是模型 API
-              Key。仅在当前页面会话中使用。
+              这是本工作台服务的访问令牌，不是模型接口密钥。仅在当前页面会话中使用。
             </p>
           </div>
           <div className="modal-actions">
@@ -330,8 +329,7 @@ export function ApiSettings({
         >
           {!editable && (
             <p className="config-message" role="status">
-              当前使用 {config.execution_backend}{" "}
-              执行后端，请在服务端统一配置模型 API。
+              当前执行后端不支持在页面修改配置，请在服务端统一配置模型接口。
             </p>
           )}
           <fieldset
@@ -347,7 +345,7 @@ export function ApiSettings({
               <span>{config.customized ? "自定义配置" : "项目默认配置"}</span>
             </div>
             <div className="form-field">
-              <label htmlFor={`${ids}-model-url`}>API Base URL</label>
+              <label htmlFor={`${ids}-model-url`}>服务地址</label>
               <input
                 id={`${ids}-model-url`}
                 className="field-input"
@@ -356,14 +354,14 @@ export function ApiSettings({
                 autoComplete="off"
                 value={form.model_base_url}
                 required
-                placeholder="https://api.example.com/v1"
+                placeholder="输入服务商提供的接口基址"
                 onChange={(event) =>
                   update("model_base_url", event.target.value)
                 }
                 aria-describedby={`${ids}-url-help`}
               />
               <p className="form-help" id={`${ids}-url-help`}>
-                支持兼容 Chat Completions 的接口，填写基址即可。
+                支持兼容对话补全的接口，填写服务基址即可。
               </p>
             </div>
             <div className="form-field">
@@ -381,7 +379,7 @@ export function ApiSettings({
             </div>
             <div className="form-field">
               <label htmlFor={`${ids}-model-key`}>
-                API Key{" "}
+                接口密钥{" "}
                 {config.model_key_configured && (
                   <span className="key-state">已配置</span>
                 )}
@@ -395,7 +393,7 @@ export function ApiSettings({
                 placeholder={
                   config.model_key_configured
                     ? "已配置，留空保留现有密钥"
-                    : "输入文本模型 API Key"
+                    : "输入文本模型接口密钥"
                 }
                 onChange={(event) =>
                   update("model_api_key", event.target.value)
@@ -409,14 +407,14 @@ export function ApiSettings({
 
             <details className="config-section">
               <summary>
-                配音 API（MiniMax）
+                语音合成服务
                 <ChevronDown size={16} aria-hidden="true" />
               </summary>
               <p className="form-help">
-                沿用当前配音配置即可，文本与配音使用各自的 API Key。
+                沿用当前配音配置即可，文本与配音使用各自的接口密钥。
               </p>
               <div className="form-field">
-                <label htmlFor={`${ids}-voice-url`}>API Base URL</label>
+                <label htmlFor={`${ids}-voice-url`}>服务地址</label>
                 <input
                   id={`${ids}-voice-url`}
                   className="field-input"
@@ -445,7 +443,7 @@ export function ApiSettings({
                   />
                 </div>
                 <div className="form-field">
-                  <label htmlFor={`${ids}-voice-id`}>音色 ID</label>
+                  <label htmlFor={`${ids}-voice-id`}>音色标识</label>
                   <input
                     id={`${ids}-voice-id`}
                     className="field-input"
@@ -461,7 +459,7 @@ export function ApiSettings({
               </div>
               <div className="form-field">
                 <label htmlFor={`${ids}-voice-key`}>
-                  API Key{" "}
+                  接口密钥{" "}
                   {config.minimax_key_configured && (
                     <span className="key-state">已配置</span>
                   )}
@@ -475,7 +473,7 @@ export function ApiSettings({
                   placeholder={
                     config.minimax_key_configured
                       ? "已配置，留空保留现有密钥"
-                      : "输入 MiniMax API Key"
+                      : "输入语音合成服务接口密钥"
                   }
                   onChange={(event) =>
                     update("minimax_api_key", event.target.value)
@@ -495,7 +493,7 @@ export function ApiSettings({
               role="group"
               aria-label="确认恢复默认配置"
             >
-              <p>恢复项目启动时的默认 API 配置？当前自定义配置将被移除。</p>
+              <p>恢复项目启动时的默认接口配置？当前自定义配置将被移除。</p>
               <div>
                 <button
                   className="button-quiet"

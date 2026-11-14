@@ -210,6 +210,86 @@ async def test_complete_isolated_production_preserves_gateway_authored_content(i
     assert setup.observed.events[3]["at"] == pytest.approx((13.2 - .3 + .15) / 1.15)
 
 
+@pytest.mark.parametrize("scene_limit", [1, 4])
+async def test_history_scene_parallelism_honors_configured_limit(isolated_production, monkeypatch, scene_limit):
+    """Exercise real scheduling with blocked fixture renderers, not a video acceptance run."""
+    setup = isolated_production
+    cfg = setup.settings.model_copy(update={"render_concurrency": scene_limit})
+    job = setup.repository.create(JobCreate(topic=setup.job.topic, domain=Domain.history, mode="live"))
+    folder = cfg.output_dir / job.id
+    audit = FrozenRun(cfg, folder, job.topic)
+    setup.gateway.settings = cfg
+    setup.gateway.audit_path = folder / "model_calls.json"
+    original_render = production.RemotionRenderer.render
+    lock, full, release = threading.Lock(), threading.Event(), threading.Event()
+    entered = []
+    active = peak = 0
+
+    def blocked_render(self, scene, metadata, work):
+        nonlocal active, peak
+        with lock:
+            entered.append(scene["scene_id"])
+            active += 1
+            peak = max(peak, active)
+            if active == scene_limit:
+                full.set()
+        try:
+            assert release.wait(20), "Fixture render workers were not released"
+            return original_render(self, scene, metadata, work)
+        finally:
+            with lock:
+                active -= 1
+
+    monkeypatch.setattr(production.RemotionRenderer, "render", blocked_render)
+    runner = production.HistoryProduction(cfg, setup.repository, job, setup.request, setup.gateway, audit)
+    task = asyncio.create_task(runner.run())
+    try:
+        assert await asyncio.to_thread(full.wait, 10), "Configured scene parallelism was not reached"
+        await asyncio.sleep(.03)
+        assert len(entered) == scene_limit, "A scene escaped the configured bound"
+    finally:
+        release.set()
+        result = await task
+    assert result.status == "succeeded"
+    assert peak == scene_limit
+    assert len(entered) == len(setup.plan["scenes"])
+    report = json.loads((folder / "render_report.json").read_text(encoding="utf-8"))
+    assert [scene["scene_id"] for scene in report["scenes"]] == [scene["scene_id"] for scene in setup.plan["scenes"]]
+
+
+async def test_new_history_production_enforces_and_records_narration_bindings(isolated_production):
+    setup = isolated_production
+    cfg = setup.settings.model_copy(update={"history_narrative_bindings": True})
+    job = setup.repository.create(JobCreate(topic=setup.job.topic, domain=Domain.history, mode="live"))
+    folder = cfg.output_dir / job.id
+    audit = FrozenRun(cfg, folder, job.topic)
+    setup.gateway.settings = cfg
+    setup.gateway.audit_path = folder / "model_calls.json"
+    # A name introduced in the first segment must stay known during later
+    # narration, in both director validation and the production compiler.
+    first = setup.script["segments"][0]
+    first["narration"] = "工匠阿明" + first["narration"][4:]
+    setup.plan["scenes"][0]["beats"][0]["anchor"]["quote"] = "工匠阿明"
+    for beat in setup.plan["scenes"][0]["beats"][1:]:
+        beat["anchor"]["occurrence"] -= 1
+    for scene, segment in zip(setup.plan["scenes"], setup.script["segments"]):
+        scene["objects"][0]["label"] = "阿明"
+        scene["objects"][0]["evidence_quote"] = "工匠阿明"
+        for beat in scene["beats"]:
+            beat["evidence_quote"] = segment["narration"]
+            beat["evidence_by_object"] = {"figure": "甲乙"}
+    runner = production.HistoryProduction(cfg, setup.repository, job, setup.request, setup.gateway, audit)
+    result = await runner.run()
+    assert result.status == "succeeded"
+    report = json.loads((folder / "narrative_execution.json").read_text(encoding="utf-8"))
+    assert report["required"] and all(scene["passed"] for scene in report["scenes"])
+    assert all(not scene["legacy_unbound"] for scene in report["scenes"])
+    assert report["diversity"]["enforced_quota"] is False
+    acceptance = json.loads((folder / "live_acceptance.json").read_text(encoding="utf-8"))
+    assert acceptance["checks"]["narration_visual_bindings"]
+    assert setup.observed.stages == ["research", "teaching", "director"]
+
+
 async def test_model_json_format_failure_has_one_runtime_repair(isolated_production):
     setup = isolated_production
     setup.observed.malformed_initial = True

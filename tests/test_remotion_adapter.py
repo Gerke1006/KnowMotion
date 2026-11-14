@@ -109,7 +109,7 @@ def test_props_preserve_untrusted_text_without_execution(installed_project, tmp_
     assert props["fonts"] == {
         "chinese": "SimSun", "english": "Times New Roman", "subtitle": "Microsoft YaHei",
         "subtitle_weight": "BOLD", "subtitle_color": "#FEFEFE", "outline_color": "#161044",
-        "outline_width": 6,
+        "outline_width": 6, "background_opacity": .18,
     }
     assert not marker.exists()
 

@@ -1,12 +1,13 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {AbsoluteFill, cancelRender, continueRender, delayRender, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import React, {useMemo} from 'react';
+import {AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {geoEquirectangular, geoGraticule10, geoPath} from 'd3-geo';
 import type {GeoPermissibleObjects} from 'd3-geo';
 import type {HistoryProps, MapParams, PersonParams, Source, TimelineParams} from './types';
+import {HistoryCaption, HistoryTypography, historyFontStack} from './HistoryTypography';
 import {audienceNote, captionAt, clamp, ease, layoutMapLabels, sortedEvents, yearLabel, yearOrdinal} from './data';
 
 const C = {paper: '#f3efe5', ink: '#222c30', muted: '#69716a', red: '#a34b37', gold: '#b49358', rule: '#c9c8b8', land: '#d9ddcc'};
-const fontStack = (english?: string, chinese?: string) => `"${english ?? 'Times New Roman'}", "${chinese ?? 'SimSun'}", serif`;
+
 const short = (text: string, limit = 46) => text.length > limit ? text.slice(0, limit - 1) + '…' : text;
 const lines = (text: string, length: number): string[] => {
   const result: string[] = [];
@@ -203,14 +204,6 @@ function citedSources(props: HistoryProps): Source[] {
 export const HistoryScene: React.FC<HistoryProps> = (props) => {
   const frame = useCurrentFrame();
   const {width, height, fps, durationInFrames} = useVideoConfig();
-  const [fontHandle] = useState(() => delayRender('Loading local Chinese and Roman fonts'));
-  useEffect(() => {
-    Promise.all([
-      document.fonts.load(`30px "${props.fonts?.chinese ?? 'SimSun'}"`, '历史'),
-      document.fonts.load(`700 30px "${props.fonts?.subtitle ?? 'Microsoft YaHei'}"`, '历史'),
-      document.fonts.ready,
-    ]).then(() => continueRender(fontHandle)).catch(cancelRender);
-  }, [fontHandle, props.fonts?.chinese, props.fonts?.subtitle]);
   const portrait = height > width * 1.15;
   const logicalW = portrait ? 720 : 1280;
   const scale = width / logicalW;
@@ -227,7 +220,8 @@ export const HistoryScene: React.FC<HistoryProps> = (props) => {
   const page = captionAt(scene.narration ?? '', seconds, scene.audio?.narration_offset ?? 0,
     scene.audio?.narration_duration ?? scene.duration, portrait ? 20 : 32);
   const sources = citedSources(props);
-  return <AbsoluteFill style={{background: C.paper, overflow: 'hidden', fontFamily: fontStack(props.fonts?.english, props.fonts?.chinese)}}>
+  return <AbsoluteFill style={{background: C.paper, overflow: 'hidden', fontFamily: historyFontStack(props.fonts?.english, props.fonts?.chinese), fontWeight:900, fontSynthesis:'none'}}>
+    <HistoryTypography/>
     <div style={{width: logicalW, height: logicalH, position: 'absolute', transform: `scale(${scale})`, transformOrigin: 'top left', color: C.ink}}>
       <Paper width={logicalW} height={logicalH}/>
       <div style={{position: 'absolute', top: 28, left: margin, right: margin, display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 14, color: C.muted, letterSpacing: 2}}>
@@ -244,7 +238,7 @@ export const HistoryScene: React.FC<HistoryProps> = (props) => {
       <div style={{position: 'absolute', left: margin, right: margin, bottom: portrait ? 167 : 117, fontSize: portrait ? 14 : 13, lineHeight: 1.4, color: C.muted, borderTop: `1px solid ${C.rule}`, paddingTop: 10}}>
         {sources.length ? sources.map((s) => `${s.id ? `[${s.id}] ` : ''}${short(s.title ?? s.provider ?? '历史资料', portrait ? 35 : 58)}`).join('   /   ') : '历史材料依照讲稿来源整理'}
       </div>
-      {page && <div style={{position: 'absolute', left: margin - 5, right: margin - 5, bottom: portrait ? 42 : 23, minHeight: portrait ? 84 : 65, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '6px 18px', boxSizing: 'border-box', borderRadius: 3, background: 'rgba(26,36,42,.92)', color: props.fonts?.subtitle_color ?? '#fff', fontFamily: fontStack(props.fonts?.english, props.fonts?.subtitle ?? 'Microsoft YaHei'), fontWeight: 700, fontSize: portrait ? 31 : 33, lineHeight: 1.4, WebkitTextStroke: `${(props.fonts?.outline_width ?? 5) / 2}px ${props.fonts?.outline_color ?? '#161044'}`, paintOrder: 'stroke fill'}}>{page}</div>}
+      <HistoryCaption text={page} width={logicalW} height={logicalH} fonts={props.fonts}/>
       <div style={{position: 'absolute', bottom: 0, height: 3, width: logicalW * progress, background: C.red}}/>
     </div>
   </AbsoluteFill>;

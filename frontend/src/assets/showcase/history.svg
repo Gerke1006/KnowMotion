@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" fill="none">
+  <defs><pattern id="grid" width="65" height="65" patternUnits="userSpaceOnUse"><path d="M65 0H0V65" stroke="#7F826A" stroke-opacity=".07"/></pattern></defs>
+  <rect width="1600" height="900" fill="#F3EDE2"/><rect x="610" width="990" height="900" fill="url(#grid)"/>
+  <g font-family="Microsoft YaHei, PingFang SC, sans-serif">
+    <rect x="96" y="108" width="180" height="42" rx="21" fill="#EAE1D1"/><text x="186" y="136" text-anchor="middle" font-size="20" letter-spacing="2" fill="#8B7656">历史 · 丝绸之路</text>
+    <text x="96" y="284" font-size="65" font-weight="700" letter-spacing="-2" fill="#142D43">向西出发</text>
+    <text x="96" y="378" font-size="65" font-weight="700" letter-spacing="-2" fill="#142D43">走向<tspan fill="#2B7A78">更大的世界</tspan></text>
+    <path d="M96 425H172" stroke="#2B7A78" stroke-width="4" stroke-linecap="round"/>
+    <text x="96" y="492" font-size="24" fill="#7C8174">沿着一条路，读懂一次远行的意义。</text>
+    <text x="96" y="745" font-size="19" fill="#949486">张骞出使西域 · 跟随足迹理解历史</text>
+    <path d="M697 317L771 295L805 334L862 285L904 313L954 263L1002 310L1061 284L1114 330L1178 287L1262 350L1373 317L1491 405V609L1408 663L1324 620L1253 652L1173 610L1100 646L1029 596L940 628L875 586L788 612L708 544L670 450L697 317Z" fill="#E5E2CE" stroke="#D2D2B8" stroke-width="2"/>
+    <path d="M735 385L777 337L820 385M791 392L831 346L876 392M893 376L938 323L980 376M975 398L1016 353L1058 398" stroke="#B7BDA7" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M1120 536L1160 491L1200 536M1225 542L1266 490L1307 542M1300 570L1347 516L1395 570" stroke="#B7BDA7" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M1430 567C1370 590 1350 477 1276 456S1167 471 1100 437S991 451 923 418S820 463 755 444" stroke="#2B7A78" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 10"/>
+    <path d="M769 433L751 444L769 454" stroke="#2B7A78" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#2B7A78" stroke="#F3EDE2" stroke-width="5"><circle cx="1430" cy="567" r="9"/><circle cx="1276" cy="456" r="9"/><circle cx="1100" cy="437" r="9"/><circle cx="923" cy="418" r="9"/><circle cx="755" cy="444" r="9"/></g>
+    <g font-size="23" fill="#526A5E"><text x="1404" y="613">长安</text><text x="1252" y="428">河西</text><text x="1077" y="492">西域</text><text x="894" y="465">大宛</text><text x="721" y="496">大夏</text></g>
+    <circle cx="1418" cy="207" r="47" stroke="#C2C4AD" stroke-width="1.5"/>
+    <path d="M1418 171L1430 218L1418 209L1406 218L1418 171Z" fill="#8B9E8C"/><text x="1418" y="148" text-anchor="middle" font-size="17" fill="#88947D">北</text>
+    <text x="1110" y="730" text-anchor="middle" font-size="18" fill="#9A9E89">叙事路线示意</text>
+  </g>
+  <path d="M96 795H1504" stroke="#DCDCC9"/>
+</svg>

@@ -41,7 +41,8 @@ def _levels(ffmpeg, path: Path, processing: str = "", *, loop: bool = False) -> 
     return result
 
 
-def mix_history_audio(ffmpeg, joined, final, events, resources, bgm_path, bgm_volume, output_dir) -> dict:
+def mix_timeline_audio(ffmpeg, joined, final, events, resources, bgm_path, bgm_volume, output_dir,
+                       *, measure_levels=True) -> dict:
     """Events are final seconds after voice/video retiming; assets stay at 1x.
 
     Input video contains narration only. This function applies no atempo, tempo
@@ -149,10 +150,20 @@ def mix_history_audio(ffmpeg, joined, final, events, resources, bgm_path, bgm_vo
               "events": placements, "event_count": len(placements),
               "triggers_per_minute": len(placements) / duration * 60,
               "bgm": music_report, "filter_sha256": hashlib.sha256(graph.encode()).hexdigest(),
-              "levels": {"narration_input": _levels(ffmpeg, joined), "final_mix": _levels(ffmpeg, final)},
-              "measurement_note": "Full-track RMS/peak are diagnostic only; configured BGM gain is unchanged."}
-    if music:
+              "levels": ({"narration_input": _levels(ffmpeg, joined), "final_mix": _levels(ffmpeg, final)}
+                         if measure_levels else {}),
+              "levels_measured": measure_levels,
+              "measurement_note": ("Full-track RMS/peak are diagnostic only; configured BGM gain is unchanged."
+                                   if measure_levels else "Skipped for user-requested direct generation.")}
+    if music and measure_levels:
         report["levels"]["bgm_at_configured_gain"] = _levels(ffmpeg, music, music_processing + ",", loop=True)
     (output_dir / "audio_mix_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2),
                                                      encoding="utf-8")
     return report
+
+
+def mix_history_audio(ffmpeg, joined, final, events, resources, bgm_path, bgm_volume, output_dir,
+                      *, measure_levels=True) -> dict:
+    """Compatible History Pack entry point for the shared final-clock mixer."""
+    return mix_timeline_audio(ffmpeg, joined, final, events, resources, bgm_path, bgm_volume,
+                              output_dir, measure_levels=measure_levels)

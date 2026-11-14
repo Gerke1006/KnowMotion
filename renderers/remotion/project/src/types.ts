@@ -12,7 +12,7 @@ export type HistoryComponent =
   | {id: 'history.map'; parameters: MapParams}
   | {id: 'history.timeline'; parameters: TimelineParams}
   | {id: 'history.person'; parameters: PersonParams};
-export type Fonts = {chinese?: string; english?: string; subtitle?: string; subtitle_weight?: string; subtitle_color?: string; outline_color?: string; outline_width?: number};
+export type Fonts = {chinese?: string; english?: string; subtitle?: string; subtitle_weight?: string; subtitle_color?: string; outline_color?: string; outline_width?: number; background_opacity?: number};
 export type Scene = {
   scene_id: string; title?: string; narration?: string; duration: number; components: HistoryComponent[];
   audio?: {narration_duration?: number; narration_offset?: number};

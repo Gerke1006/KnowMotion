@@ -167,6 +167,12 @@ async def plan(request: VideoRequest, research: dict[str, Any], gateway: Any = N
                                                  for source in history_sources if source["id"] in cited]
             scene["extensions"] = extensions
         scene["duration"] = max(0.1, float(scene.get("duration", 15)) / total * request.duration)
+        if (request.mode == "live" and request.domain == Domain.mathematics
+                and scene["domain"] in ("mathematics", Domain.mathematics)):
+            from harness.math_animation import validate_math_scene
+            if scene.get("extensions", {}).get("math_animation_version") != "1.0":
+                raise ValueError("New live mathematical scenes require math_animation_version=1.0")
+            validate_math_scene(scene)
         scenes.append(Scene.model_validate(scene))
     if len({scene.scene_id for scene in scenes}) != len(scenes):
         raise ValueError("场景 ID 必须唯一")

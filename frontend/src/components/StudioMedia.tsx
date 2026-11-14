@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { api, durationLabel, type Job } from "../studio";
 
-function useProtectedMedia(path: string | null, token: string) {
+export function useProtectedMedia(path: string | null, token: string) {
   const [src, setSrc] = useState("");
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
@@ -77,7 +77,7 @@ export function VideoThumbnail({ job, token }: { job: Job; token: string }) {
       <span className="thumbnail-play">
         <Play size={19} fill="currentColor" />
       </span>
-      <span className="thumbnail-format">MP4</span>
+      <span className="thumbnail-format">视频</span>
     </div>
   );
 }
@@ -106,8 +106,8 @@ export function VideoResult({
   return (
     <section className="video-result" aria-label="生成的视频">
       <div className="result-section-heading">
-        <h2>{job.topic}</h2>
-        <span className="finished-label">Ready to watch</span>
+        <h2>视频已完成</h2>
+        <span className="finished-label">可以播放了</span>
       </div>
       <div className="video-player-wrap">
         {video.src && !playError ? (
@@ -157,18 +157,18 @@ export function VideoResult({
             <a
               className="button-secondary download-link"
               href={video.src}
-              download="knowmotion-video.mp4"
+              download="知动视频.mp4"
             >
               <ArrowDownToLine size={17} />
-              Download
+              下载视频
             </a>
           )}
           <button className="button-primary" onClick={onNew}>
-            Create new video
+            新建视频
           </button>
         </div>
         <span className="result-meta">
-          {duration > 0 ? `${durationLabel(duration)} · ` : ""}MP4
+          {duration > 0 ? `${durationLabel(duration)} · ` : ""}视频
         </span>
       </div>
     </section>

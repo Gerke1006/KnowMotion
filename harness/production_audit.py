@@ -30,7 +30,8 @@ def build_snapshot(root: Path) -> dict:
                 path = Path(directory) / filename
                 relative = path.relative_to(root)
                 if path.suffix.lower() in {
-                ".py", ".json", ".md", ".ts", ".tsx", ".css", ".svg", ".png", ".jpg", ".geojson", ".wav", ".m4a"
+                ".py", ".json", ".md", ".ts", ".tsx", ".css", ".svg", ".png", ".jpg", ".geojson", ".wav", ".m4a",
+                ".otf", ".ttf", ".woff", ".woff2", ".txt"
                 } or path.name == "LICENSE":
                     files[relative.as_posix()] = sha256(path)
     for name in ("pyproject.toml", "AGENTS.md"):
@@ -46,7 +47,8 @@ def public_configuration(settings) -> dict:
              "minimax_base_url", "minimax_voice_id", "tts_enabled", "tts_speed", "playback_speed",
              "bgm_volume", "transition_duration", "narration_gap", "narration_lufs", "chinese_font",
              "english_font", "subtitle_font", "subtitle_font_weight", "subtitle_color",
-             "subtitle_outline_color", "subtitle_outline_width", "remotion_project", "remotion_entry")
+             "subtitle_outline_color", "subtitle_outline_width", "subtitle_background_opacity",
+             "history_narrative_bindings", "history_validation_enabled", "remotion_project", "remotion_entry")
     result = {name: getattr(settings, name) for name in names}
     bgm = Path(settings.bgm_path) if settings.bgm_path else None
     result["bgm_sha256"] = sha256(bgm) if bgm and bgm.is_file() else None
