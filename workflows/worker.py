@@ -31,7 +31,8 @@ async def main():
         try:
             result = await Orchestrator(settings, repository).run(job_id)
             if getattr(result.status, "value", result.status) == "failed":
-                raise ApplicationError("Video production failed; inspect job status", type="ProductionError")
+                raise ApplicationError("Video production failed; inspect job status", type="ProductionError",
+                                       non_retryable="run_manifest.json" in result.artifacts)
             return {"job_id": result.id, "status": getattr(result.status, "value", result.status)}
         finally:
             heartbeat_task.cancel()

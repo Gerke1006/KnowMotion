@@ -1,0 +1,18 @@
+{
+  "id": "history-animation-v2",
+  "version": "2.0",
+  "duration_budget": 90,
+  "target_final_duration": [75, 90],
+  "narration_char_budget": 440,
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "playback_speed": 1.15,
+  "style_id": "gufeng",
+  "sfx_per_minute": [12, 18],
+  "director_repairs": 1,
+  "transport_attempts": 3,
+  "model_max_tokens": 16000,
+  "model_timeout": 600.0,
+  "runtime_ai_review": false
+}

@@ -67,6 +67,8 @@ class VideoRenderer:
         if len(ids) != len(set(ids)):
             raise RendererError("Duplicate scene IDs are not allowed")
         # Check optional render dependencies before requesting any paid narration.
+        if any(scene.get("renderer") == "remotion" for scene in data["scenes"]):
+            RemotionRenderer(self.settings).preflight(ensure_browser=True)
         for scene in data["scenes"]:
             effects = scene.get("audio", {}).get("effects", [])
             asset_root = (
@@ -121,6 +123,7 @@ class VideoRenderer:
                         "scene": scene,
                         "metadata": data["metadata"],
                         "version": implementation,
+                        "adapter_version": adapter.fingerprint() if hasattr(adapter, "fingerprint") else None,
                         "voice": hashlib.sha256(voice.read_bytes()).hexdigest() if voice else None,
                         "narration_lufs": setting(self.settings, "narration_lufs", -16),
                         "font": setting(self.settings, "font_path", ""),

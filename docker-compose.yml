@@ -44,6 +44,7 @@ services:
 
   api:
     build: .
+    shm_size: 1gb
     env_file:
       - path: .env
         required: false
@@ -52,9 +53,23 @@ services:
       EXECUTION_BACKEND: temporal
       TEMPORAL_ADDRESS: temporal:7233
       OUTPUT_DIR: /app/outputs
-      MANIM_FONT: Noto Sans CJK SC
-      FONT_PATH: /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+      PYTHONPATH: /app
+      MANIM_FONT: Noto Serif CJK SC
+      CHINESE_FONT: Noto Serif CJK SC
+      ENGLISH_FONT: Liberation Serif
+      SUBTITLE_FONT: Noto Sans CJK SC
+      FONT_PATH: /usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc
+      ENGLISH_FONT_PATH: /usr/share/fonts/truetype/liberation2/LiberationSerif-Regular.ttf
+      SUBTITLE_FONT_PATH: /usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc
       MANIM_PYTHON: python
+      FFMPEG_PATH: /usr/bin/ffmpeg
+      FFPROBE_PATH: /usr/bin/ffprobe
+      LATEX_COMPILER_PATH: /usr/bin/pdflatex
+      LATEX_CACHE_DIR: /app/data/latex-cache
+      # Override host Windows paths from .env; use image-installed Headless Shell.
+      REMOTION_PROJECT: ""
+      REMOTION_ENTRY: src/index.ts
+      REMOTION_BROWSER_EXECUTABLE: ""
       BGM_PATH: ${DOCKER_BGM_PATH:-}
       S3_ENDPOINT: http://minio:9000
     ports:
@@ -70,6 +85,7 @@ services:
 
   worker:
     build: .
+    shm_size: 1gb
     command: ["python", "-m", "workflows.worker"]
     env_file:
       - path: .env

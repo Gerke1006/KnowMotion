@@ -29,6 +29,7 @@ class SuccessfulProducer:
 
 
 def settings_for(tmp_path, **changes):
+    changes.setdefault("project_root", tmp_path)
     return Settings(_env_file=None, output_dir=tmp_path / "outputs", database_url="sqlite:///:memory:", **changes)
 
 

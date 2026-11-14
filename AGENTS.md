@@ -1,8 +1,12 @@
 # Project validation
 
 - 用户要求：之后的视频验收必须使用本项目已配置的文本模型和完整 Agent 管线，先生成文本/分镜，再生成视频。禁止用手写讲稿、demo 样例、mock 模型或复用旧 demo 成片代替端到端验收。
-- 运行 `python scripts/verify_live.py`，它读取项目 `.env`，创建新的 live 任务，调用 Orchestrator、真实模型、MiniMax、渲染器与 FFmpeg。技术失败可用 `--resume <job_id>` 恢复同一 live 任务。
+- 通用视频验收入口为 `python scripts/verify_live.py`。历史导演 v2 的独立正式验收使用 `python scripts/verify_history.py --topic "<主题>"`：只提交主题，冻结构建后由项目 Agent 独立研究、写分段讲稿、选择资源和导演动作，再调用真实 MiniMax、Remotion 与 FFmpeg。
+- 历史 v2 正式失败任务必须保留错误与产物，禁止由开发者改讲稿、分镜、锚点、字幕、音频或时间轴后恢复为验收通过。通用软件缺陷只能在该次验收结束后修复并回归，冻结新构建、创建新任务。普通旧流程的技术 `--resume` 不适用于绕过此独立验收规则。
+- 正式运行只有有界技术重试和最多一次由配置模型完成的导演协议修复；不使用人工审片、手工改稿或 AI 评分循环。资源重建、依赖安装和系统字体准备在冻结前完成。
 - 单元回归可使用隔离 fixture，但不能作为真实视频验收的替代品。交付需说明实际模型与成片，保留 `model_calls.json` 和 `live_acceptance.json`。
 - 默认成片速度为常速的 1.15 倍，画面、字幕和人声同步，保留音高。不要通过 TTS_SPEED 再加速一次。
+- 历史 v2 必须使用同一次 MiniMax 音频的真实词时间；缺失则明确失败，不按字数估算。音效在最终时间线上按起音/峰值对齐；用户 BGM 保持已增强的 0.30 配置增益，不另加自动压低或二次倍速。
 - 场景按实际配音长度收尾，场景之间短叠化，避免按计划时长补入数秒静止或无声等待。
 - 不在日志、报告、源码或回复中输出 API 密钥。
+- 历史 v2 保留 `run_manifest.json`、`artifact_records.json`、逐次脱敏模型请求/响应、词时间、导演帧执行和混音证据；正式结论依据 `live_acceptance.json`，隔离 fixture 测试不能替代真实验收。

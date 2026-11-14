@@ -23,12 +23,24 @@ dev = ["pytest>=8,<10", "pytest-asyncio>=0.25,<2", "ruff>=0.11,<1"]
 [project.scripts]
 vibe = "harness.cli:main"
 
+[tool.setuptools]
+license-files = ["third_party/vibe-knowledge/LICENSE", "third_party/vibe-knowledge/NOTICE.md"]
+
 [tool.setuptools.packages.find]
 include = ["harness*", "api*", "storage*", "workflows*", "renderers*", "domains*", "assets*"]
 
 [tool.setuptools.package-data]
 domains = ["**/*.json", "**/*.md"]
-assets = ["*.json", "**/*.json", "**/*.md"]
+assets = ["*.json", "**/*.json", "**/*.md", "**/*.wav"]
+renderers = [
+  "remotion/project/package.json", "remotion/project/package-lock.json", "remotion/project/tsconfig.json",
+  "remotion/project/remotion.config.ts", "remotion/project/README.md",
+  "remotion/project/tools/*.ts",
+  "remotion/project/src/*.ts", "remotion/project/src/*.tsx", "remotion/project/src/*.css",
+  "remotion/project/src/**/*.ts", "remotion/project/src/**/*.tsx", "remotion/project/src/**/*.css",
+  "remotion/project/public/**/*.json", "remotion/project/public/**/*.geojson", "remotion/project/public/**/*.md",
+  "remotion/project/public/**/*.jpg", "remotion/project/public/**/*.png", "remotion/project/public/**/*.svg",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

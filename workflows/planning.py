@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from harness.schemas import Domain, Scene, TeachingPlan, VideoRequest, VisualPlan
+from harness.history import CONTRACTS as HISTORY_COMPONENTS, normalize_history_component, referenced_source_ids
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAINS = ROOT / "domains"
@@ -54,6 +55,11 @@ def demo_lesson(request: VideoRequest) -> dict[str, Any]:
 
 async def plan(request: VideoRequest, research: dict[str, Any], gateway: Any = None) -> TeachingPlan:
     """Create a teaching sequence first; rendering choices are refined separately."""
+    history_sources = [{**{key: value for key, value in source.items() if key != "evidence_text"},
+                        "id": source.get("id") or f"source_{index + 1:02d}"}
+                       for index, source in enumerate(research.get("sources", []))]
+    if request.domain == Domain.history:
+        research = {**research, "sources": history_sources}
     if request.mode == "demo":
         content = demo_lesson(request)
     else:
@@ -72,15 +78,44 @@ async def plan(request: VideoRequest, research: dict[str, Any], gateway: Any = N
             "全片是一段连续讲解：相邻场景用因果、承接或问题自然过渡，避免逐幕重复开场、总结或说‘下一幕’。"
             "场景切换不插入等待或静默，动画跟随实际旁白结束；duration 是常速讲稿预算，导出时统一倍速。"
             "每个场景当前只使用一个主要组件，可在该组件 parameters 中组合标签、公式和图形。"
-            "renderer: 数学和物理用 manim，其他用 canvas。可用组件仅 math.derivative_secant、"
+            "renderer: 数学和物理用 manim，历史用 remotion，其他用 canvas。可用组件仅 math.derivative_secant、"
             "math.integral_riemann、math.pythagorean、math.formula、general.title、general.timeline、"
-            "general.relationship、general.process、general.chart。数学图像 function 仅 x**2、sin(x)、cos(x)、x、exp(x)。"
+            "general.relationship、general.process、general.chart、history.map、history.timeline、history.person。数学图像 function 仅 x**2、sin(x)、cos(x)、x、exp(x)。"
             "derivative 参数 x0,dx_start,dx_end,x_range；integral 参数 bounds,n_start,n_end；"
             "pythagorean 参数 a,b,c 必须满足勾股定理；math.formula 必须用 parameters.latex 存放真正的 LaTeX 数学表达式，"
             "不包含美元符号或文档环境；分数用 \\frac，极限用 \\lim，积分用 \\int，禁止用 Unicode 上下标或纯文本模拟公式。"
             "latex 字段中仅放数学表达式，中文说明放 labels，旁白 narration 用自然中文，不读出 LaTeX 命令。"
             "其他组件参数 title,labels（字符串列表）,values（数字列表）。给每个场景说明变化的起止状态。\n" + pack_rules
         )
+        if request.domain == Domain.history:
+            system += (
+                "\n历史组件只用 history.map、history.timeline、history.person。"
+                "只有 research.geography.records 至少有2个与主题相关的有据地点时才使用地图，短片覆盖三种组件；"
+                "无可靠坐标目录时只用时间线与人物组件，不编造经纬度，不借用不相关主题的地点。"
+                "每幕只能有一个 component，renderer 固定 remotion。所有 parameters.source_ids 必须为"
+                "输入 research.sources 中 id 组成的非空字符串数组，不能填写标题或链接。"
+                "history.map 参数：title(字符串，可选)，locations(2到8个对象，每个必须有 id/name 字符串及 lon/lat 数字)，"
+                "routes(数组，每项 from/to 是已有 location.id，label 字符串，kind 固定 schematic)，"
+                "viewport(可选，west/east/south/north 数字，包含全部地点)，note(字符串)，source_ids(字符串数组)。"
+                "有 research.geography 时，地点名称、id、经纬度须从提供的地名目录选择，不能臆造坐标。"
+                "地图常驻说明现代近似定位、路线为示意；不绘制未经史料支持的疆域。"
+                "路线label描述连接的两处地点或交流关系；方位词必须符合该段实际经纬度，不用整条网络的方向替代局部方向。"
+                "history.timeline 参数：title(可选字符串)，events(2到7个对象，year 数字，label/detail 字符串，"
+                "source_ids 可选字符串数组)，range(可选两个递增数字)，note(字符串)，source_ids(字符串数组)。"
+                "公元前年用负数，无0年；事件必须有资料支持，争议纪年不要伪装成唯一精确年份。"
+                "events 可加 date_label 字符串；世纪、约数、范围或不确定日期必须填写 date_label，"
+                "例如‘约公元前2世纪’或‘公元前139/138年（记载有异）’，year 此时仅供时间轴定位，不是精确史实。"
+                "history.person 参数：name/role/years 均为字符串（years 不是数组），facts 是1到4个短字符串，"
+                "related 可选数组，每项仅 name/relation 字符串，source_ids 字符串数组。"
+                "未提供经过许可的画像时不要填写 portrait_asset，用姓名符号；资料不明的生卒年用活动时期。"
+                "只有 research.portraits 明确提供的 portrait.path 才可写入 portrait_asset，必须逐字使用该 path，不能编造文件名。"
+                "例如目录若提供 portraits/zhang-qian-mogao.jpg，可作为后世绘画使用，不能称为生前真容；"
+                "画面的许可和后世作品说明由渲染器使用该素材元数据 caption 标注，不得否认或改写这种限定。"
+                "标题最多20字，地点及事件label最多12字，事件detail和人物facts每项最多40字。"
+                "所有可见文案（标题、note、label、detail、facts）面向普通观众，不得出现 date_label、source_ids、"
+                "viewport、portrait_asset 等字段名、JSON 或组件实现说明。"
+                "明确区分人物贡献、时代条件与长期交流网络，不把时间先后写成必然因果。"
+            )
         constraints = {}
         if request.narration_char_budget:
             budget = request.narration_char_budget
@@ -104,7 +139,33 @@ async def plan(request: VideoRequest, research: dict[str, Any], gateway: Any = N
         scene = dict(raw)
         scene.setdefault("scene_id", f"scene_{index + 1:02d}")
         scene.setdefault("domain", request.domain)
-        scene.setdefault("renderer", "manim" if scene["domain"] in ("mathematics", "physics", Domain.mathematics, Domain.physics) else "canvas")
+        scene.setdefault("renderer", "manim" if scene["domain"] in ("mathematics", "physics", Domain.mathematics, Domain.physics)
+                         else "remotion" if scene["domain"] in ("history", Domain.history) and request.mode == "live" else "canvas")
+        components = scene.get("components", [])
+        is_history = scene["domain"] in ("history", Domain.history)
+        if is_history and request.mode == "live":
+            if len(components) != 1 or components[0].get("id") not in HISTORY_COMPONENTS:
+                raise ValueError("历史 live 场景必须使用一个 history.map、history.timeline 或 history.person 组件")
+        if any(component.get("id") in HISTORY_COMPONENTS for component in components):
+            scene["components"] = [normalize_history_component(component, sources=history_sources,
+                                    require_sources=request.mode == "live")
+                                    if component.get("id") in HISTORY_COMPONENTS else component for component in components]
+            if request.mode == "live":
+                anchors = {point["id"]: point for point in research.get("geography", {}).get("records", [])}
+                for component in scene["components"]:
+                    if component.get("id") != "history.map":
+                        continue
+                    for point in component["parameters"]["locations"]:
+                        anchor = anchors.get(point["id"])
+                        if not anchor or any(not math.isclose(point[axis], anchor[axis], rel_tol=0, abs_tol=1e-5)
+                                             for axis in ("lon", "lat")):
+                            raise ValueError("历史地图地点必须使用本次研究中可追溯的坐标；无可靠坐标请使用时间线或人物组件")
+            scene["renderer"] = "remotion"
+            cited = referenced_source_ids(scene["components"])
+            extensions = dict(scene.get("extensions", {}))
+            extensions["historical_sources"] = [{key: source[key] for key in ("id", "title", "url") if key in source}
+                                                 for source in history_sources if source["id"] in cited]
+            scene["extensions"] = extensions
         scene["duration"] = max(0.1, float(scene.get("duration", 15)) / total * request.duration)
         scenes.append(Scene.model_validate(scene))
     if len({scene.scene_id for scene in scenes}) != len(scenes):
@@ -123,8 +184,10 @@ def visual_plan(teaching: TeachingPlan) -> VisualPlan:
     for scene in teaching.scenes:
         pack = load_pack(scene.domain)
         updated = scene.model_copy(deep=True)
+        if any(component.id in HISTORY_COMPONENTS for component in updated.components):
+            updated.renderer = "remotion"
         updated.camera = {"framing": "safe_area", "motion": "static", **scene.camera}
-        updated.audio = {"narration_priority": True, "bgm_gain": 0.12, **scene.audio}
+        updated.audio = {"narration_priority": True, "bgm_gain": .30 if scene.domain == Domain.history else .12, **scene.audio}
         scene_style = json.loads((DOMAINS / scene.domain.value / "styles" / "default.json").read_text(encoding="utf-8"))
         updated.extensions = {**scene.extensions, "pack": pack["id"], "style": pack["style"], "visual_style": scene_style}
         # x_range is the camera viewport. Fit a valid moving secant point into

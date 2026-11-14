@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "sources": [
+    {
+      "id": "unesco_changan_tianshan",
+      "title": "Silk Roads: the Routes Network of Chang'an-Tianshan Corridor",
+      "url": "https://whc.unesco.org/en/list/1442/",
+      "topics": ["丝绸之路", "丝路", "张骞", "长安", "敦煌", "silk road", "silk roads", "Zhang Qian"],
+      "provider": "UNESCO",
+      "kind": "web",
+      "notes": "世界遗产说明针对长安—天山走廊，不等同于整条欧亚交通网。文中形成时段为公元前2世纪至公元1世纪；强调多路径网络与跨文化交流。地理连线应标为交流方向示意，不能说成张骞的精确轨迹。"
+    },
+    {
+      "id": "unesco_about_silk_roads",
+      "focus_terms": ["Zhang Qian", "Richthofen"],
+      "title": "About the Silk Roads",
+      "url": "https://www.unesco.org/en/silk-roads/about-silk-roads",
+      "topics": ["丝绸之路", "丝路", "张骞", "玄奘", "silk road", "silk roads", "Zhang Qian", "Xuanzang"],
+      "provider": "UNESCO",
+      "kind": "web",
+      "notes": "此页面将张骞初次出使写为139 BCE，UNESCO另一篇1993年资料写138 BCE。若同用这些资料，使用公元前2世纪等有据的宽泛时段，或标注具体年份的来源与差异，不把不同记载静默合并。"
+    },
+    {
+      "id": "unesco_samarkand",
+      "title": "Samarkand – Crossroad of Cultures",
+      "url": "https://whc.unesco.org/en/list/603/",
+      "topics": ["撒马尔罕", "丝绸之路", "丝路", "Samarkand", "Samarqand", "silk road", "silk roads"],
+      "provider": "UNESCO",
+      "kind": "web",
+      "notes": "区分古城阿弗拉西阿卜、帖木儿时期城区与现代城市；不把后世建筑当作汉代场景。"
+    },
+    {
+      "id": "unesco_opening_silk_route_1993",
+      "title": "The Opening of the Silk Route (Exploration by Land, 1993)",
+      "url": "https://en.unesco.org/silkroad/sites/default/files/knowledge-bank-article/the%20opening%20of%20the%20silk%20route.pdf",
+      "topics": ["丝绸之路", "丝路", "张骞", "silk road", "silk roads", "Zhang Qian"],
+      "provider": "UNESCO",
+      "kind": "pdf",
+      "notes": "参考索引；live HTML检索可跳过PDF。此资料记张骞从长安出发为138 BCE，与UNESCO About网页的139 BCE不同。"
+    }
+  ]
+}

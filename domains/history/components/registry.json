@@ -1,9 +1,21 @@
 {
   "component_ids": [
-    "general.process",
-    "general.relationship",
-    "general.timeline"
+    "history.map",
+    "history.timeline",
+    "history.person"
   ],
-  "implementation": "renderers/",
-  "policy": "复用受控模板；模型只提供数据，不直接执行模型返回的 Python。"
+  "renderer": "remotion",
+  "legacy_components": [
+    "general.process",
+    "general.timeline",
+    "general.relationship"
+  ],
+  "implementation": "renderers/remotion/",
+  "validation": "harness/history.py",
+  "schemas": {
+    "history.map": "map.schema.json",
+    "history.timeline": "timeline.schema.json",
+    "history.person": "person.schema.json"
+  },
+  "policy": "模型只提供验证后的数据；历史事实引用已取回的史料 id。"
 }

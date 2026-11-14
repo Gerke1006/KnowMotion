@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0",
+  "topics": ["丝绸之路", "丝路", "张骞", "silk road", "silk roads", "zhang qian"],
+  "coordinate_system": "WGS84 longitude/latitude (EPSG:4326)",
+  "map_notice": "地理位置与交流方向示意；今地定位不等于古代疆界或精确行程。",
+  "records": [
+    {
+      "id": "changan",
+      "name": "长安（今西安附近）",
+      "modern_name": "Xi'an",
+      "aliases": [
+        "长安",
+        "西安",
+        "Chang’an",
+        "Chang'an",
+        "Xi'an"
+      ],
+      "lon": 108.942222,
+      "lat": 34.261111,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q5826",
+        "property": "P625",
+        "statement_id": "q5826$D1AF3628-5CC8-4BC0-81EE-5A342C86BDC2",
+        "revision_id": 2567163402,
+        "url": "https://www.wikidata.org/wiki/Q5826?oldid=2567163402",
+        "retrieved_at": "2026-11-14T08:17:16.814819+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    },
+    {
+      "id": "dunhuang",
+      "name": "敦煌",
+      "modern_name": "Dunhuang",
+      "aliases": [
+        "敦煌",
+        "Dunhuang"
+      ],
+      "lon": 94.663889,
+      "lat": 40.141111,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q319114",
+        "property": "P625",
+        "statement_id": "q319114$A732A6B0-425D-4AF0-890E-D1EE2DC0C73F",
+        "revision_id": 2563697865,
+        "url": "https://www.wikidata.org/wiki/Q319114?oldid=2563697865",
+        "retrieved_at": "2026-11-14T08:17:17.463009+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    },
+    {
+      "id": "kashgar",
+      "name": "喀什",
+      "modern_name": "Kashgar",
+      "aliases": [
+        "喀什",
+        "疏勒",
+        "Kashgar",
+        "Kashi"
+      ],
+      "lon": 75.983333,
+      "lat": 39.45,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q170521",
+        "property": "P625",
+        "statement_id": "q170521$DB2FA368-A48A-4397-BF6A-59F5D657C7ED",
+        "revision_id": 2550839165,
+        "url": "https://www.wikidata.org/wiki/Q170521?oldid=2550839165",
+        "retrieved_at": "2026-11-14T08:17:18.670591+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    },
+    {
+      "id": "samarkand",
+      "name": "撒马尔罕",
+      "modern_name": "Samarkand",
+      "aliases": [
+        "撒马尔罕",
+        "Samarkand",
+        "Samarqand"
+      ],
+      "lon": 66.975833,
+      "lat": 39.654722,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q5753",
+        "property": "P625",
+        "statement_id": "q5753$8D055F36-D990-40B3-BFC3-6F9400375E1A",
+        "revision_id": 2564442125,
+        "url": "https://www.wikidata.org/wiki/Q5753?oldid=2564442125",
+        "retrieved_at": "2026-11-14T08:17:20.881530+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    },
+    {
+      "id": "balkh",
+      "name": "巴尔赫（巴克特拉附近）",
+      "modern_name": "Balkh",
+      "aliases": [
+        "巴尔赫",
+        "巴克特拉",
+        "Balkh",
+        "Bactra"
+      ],
+      "lon": 66.898889,
+      "lat": 36.758056,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q182159",
+        "property": "P625",
+        "statement_id": "q182159$2734E4F7-6EB0-4D47-9340-5F6A53A23941",
+        "revision_id": 2568558679,
+        "url": "https://www.wikidata.org/wiki/Q182159?oldid=2568558679",
+        "retrieved_at": "2026-11-14T08:17:21.760354+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    },
+    {
+      "id": "antioch",
+      "name": "安条克（今安塔基亚附近）",
+      "modern_name": "Antakya",
+      "aliases": [
+        "安条克",
+        "安塔基亚",
+        "Antioch",
+        "Antakya"
+      ],
+      "lon": 36.160556,
+      "lat": 36.2025,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q80561",
+        "property": "P625",
+        "statement_id": "q80561$8A971B98-89CA-43E4-BEBB-3910213C364F",
+        "revision_id": 2564639167,
+        "url": "https://www.wikidata.org/wiki/Q80561?oldid=2564639167",
+        "retrieved_at": "2026-11-14T08:17:22.976388+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    },
+    {
+      "id": "alexandria",
+      "name": "亚历山大港",
+      "modern_name": "Alexandria",
+      "aliases": [
+        "亚历山大港",
+        "Alexandria"
+      ],
+      "lon": 29.8925,
+      "lat": 31.1975,
+      "accuracy": "approximate-modern-place-anchor",
+      "usage_note": "今地坐标，仅作示意定位；不代表古城边界、遗址精确位置或某次出使的实测途径。",
+      "source": {
+        "provider": "Wikidata",
+        "entity_id": "Q87",
+        "property": "P625",
+        "statement_id": "q87$D59C4EBA-2977-4C73-B6C2-F680CA76AC98",
+        "revision_id": 2565117580,
+        "url": "https://www.wikidata.org/wiki/Q87?oldid=2565117580",
+        "retrieved_at": "2026-11-14T08:19:31.787795+00:00",
+        "license": "CC0-1.0",
+        "license_url": "https://www.wikidata.org/wiki/Wikidata:Licensing"
+      }
+    }
+  ]
+}

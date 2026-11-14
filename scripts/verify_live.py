@@ -72,20 +72,40 @@ async def verify(args):
         folder = Path(result.output_path).parent
         calls = json.loads((folder / "model_calls.json").read_text(encoding="utf-8"))
         report = json.loads((folder / "render_report.json").read_text(encoding="utf-8"))
+        storyboard = json.loads((folder / "storyboard.json").read_text(encoding="utf-8"))
+        if storyboard.get("schema_version") == "2.0" and storyboard.get("domain") == "history":
+            acceptance = json.loads((folder / "live_acceptance.json").read_text(encoding="utf-8"))
+            print(json.dumps(acceptance, ensure_ascii=False, indent=2), flush=True)
+            if not all(acceptance["checks"].values()):
+                raise RuntimeError("History Agent acceptance failed; see live_acceptance.json")
+            return
         media = await asyncio.to_thread(inspect_media, folder, report, settings)
         checks = {
             "live_agent": result.mode == "live",
             "configured_model_used": len(calls) >= 3 and all(c["model"] == settings.model_name for c in calls),
             "all_scenes_voiced": all(s["narration"] == "minimax" for s in report["scenes"]),
-            "configured_bgm_mixed": not settings.bgm_path or report["bgm"] == str(settings.bgm_path),
+            "configured_bgm_mixed": not settings.bgm_path or (
+                report["bgm"] == str(settings.bgm_path)
+                and abs(report.get("bgm_volume", -1) - settings.bgm_volume) < 1e-6),
             "synchronized_speed": report["composition"]["playback_speed"] == settings.playback_speed,
             "duration_matches_timeline": abs(report["duration"] - report["composition"]["expected_duration"]) < .12,
             "all_boundaries_transition": len(report["composition"]["transitions"]) == len(report["scenes"]) - 1,
             "no_long_boundary_silence": media["max_boundary_silence"] < .35,
             "no_black_intervals": media["black_intervals"] == 0,
         }
+        if storyboard["domain"] == "history":
+            components = [component for scene in storyboard["scenes"] for component in scene["components"]]
+            research = json.loads((folder / "research.json").read_text(encoding="utf-8"))
+            expected = {"history.timeline", "history.person"}
+            if len(research.get("geography", {}).get("records", [])) >= 2:
+                expected.add("history.map")
+            checks["history_uses_remotion"] = all(scene["renderer"] == "remotion" for scene in report["scenes"])
+            checks["history_component_coverage"] = expected.issubset(
+                {component["id"] for component in components})
+            checks["history_cites_sources"] = all(component["parameters"].get("source_ids") for component in components)
         acceptance = {"job_id": job.id, "model": settings.model_name, "model_calls": len(calls),
-                      "checks": checks, "duration": report["duration"], "bgm": report["bgm"], "output": result.output_path}
+                      "checks": checks, "duration": report["duration"], "bgm": report["bgm"],
+                      "bgm_volume": report.get("bgm_volume"), "output": result.output_path}
         (folder / "live_acceptance.json").write_text(json.dumps(acceptance, ensure_ascii=False, indent=2), encoding="utf-8")
         repository.update(job.id, artifacts={**result.artifacts,
             "live_acceptance.json": str(folder / "live_acceptance.json"),

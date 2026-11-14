@@ -1,33 +1,37 @@
 {
-  "id": "archival_timeline",
-  "background": "#1B2028",
-  "primary": "#D8B681",
-  "accent": "#A6B8BC",
-  "text": "#F3EEE5",
+  "id": "archival_motion",
+  "background": "#F3EBDD",
+  "panel": "#FFFCF5",
+  "text": "#27241F",
+  "primary": "#A64532",
+  "accent": "#AF884C",
+  "secondary": "#3F655D",
   "font": "SimSun",
-  "fallback_fonts": [
-    "Noto Serif CJK SC",
-    "Liberation Serif"
-  ],
-  "safe_margin": 0.08,
-  "attention_opacity": {
-    "focus": 1.0,
-    "context": 0.4,
-    "grid": 0.15
-  },
-  "motion": {
-    "reveal_seconds": 1.5,
-    "hold_after_key_seconds": 2.0,
-    "easing": "smoothstep"
-  },
-  "principles": [
-    "每个动作揭示一个关系",
-    "一致的语义配色",
-    "关键结论保留阅读时间",
-    "画面与旁白共用场景时间轴"
-  ],
   "english_font": "Times New Roman",
   "subtitle_font": "Microsoft YaHei",
   "subtitle_weight": "BOLD",
-  "subtitle_outline": "#161044"
+  "subtitle_outline": "#161044",
+  "safe_margin": 0.08,
+  "motion": {
+    "reveal_seconds": 0.65,
+    "easing": "smoothstep",
+    "continuous_camera": true,
+    "deterministic": true,
+    "timeline": "measured_narration"
+  },
+  "texture": "deterministic-paper-and-engraving",
+  "principles": [
+    "先时空后因果",
+    "路线为示意",
+    "出处始终可查",
+    "字随旁白推进",
+    "同一帧可复现"
+  ],
+  "references": [
+    {
+      "title": "Motion Showreel",
+      "url": "https://github.com/ConardLi/garden-skills/blob/main/skills/motion-showreel/README.zh-CN.md",
+      "use": "帧函数、口播时间轴、连续空间承接；原创实现，不复制素材"
+    }
+  ]
 }

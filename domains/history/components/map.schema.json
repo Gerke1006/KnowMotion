@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "source_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9_-]{1,64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 56,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "lat": {
+          "maximum": 85,
+          "minimum": -85,
+          "title": "Lat",
+          "type": "number"
+        },
+        "year": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Year"
+        },
+        "description": {
+          "default": "",
+          "maxLength": 120,
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "lon",
+        "lat"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "Route": {
+      "additionalProperties": false,
+      "properties": {
+        "source_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "from": {
+          "pattern": "^[A-Za-z0-9_-]{1,64}$",
+          "title": "From",
+          "type": "string"
+        },
+        "to": {
+          "pattern": "^[A-Za-z0-9_-]{1,64}$",
+          "title": "To",
+          "type": "string"
+        },
+        "label": {
+          "default": "",
+          "maxLength": 56,
+          "title": "Label",
+          "type": "string"
+        },
+        "kind": {
+          "const": "schematic",
+          "default": "schematic",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "from",
+        "to"
+      ],
+      "title": "Route",
+      "type": "object"
+    },
+    "Viewport": {
+      "additionalProperties": false,
+      "properties": {
+        "west": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "West",
+          "type": "number"
+        },
+        "east": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "East",
+          "type": "number"
+        },
+        "south": {
+          "maximum": 85,
+          "minimum": -85,
+          "title": "South",
+          "type": "number"
+        },
+        "north": {
+          "maximum": 85,
+          "minimum": -85,
+          "title": "North",
+          "type": "number"
+        }
+      },
+      "required": [
+        "west",
+        "east",
+        "south",
+        "north"
+      ],
+      "title": "Viewport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9_-]{1,64}$",
+        "type": "string"
+      },
+      "maxItems": 12,
+      "title": "Source Ids",
+      "type": "array"
+    },
+    "title": {
+      "default": "",
+      "maxLength": 56,
+      "title": "Title",
+      "type": "string"
+    },
+    "locations": {
+      "items": {
+        "$ref": "#/$defs/Location"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "title": "Locations",
+      "type": "array"
+    },
+    "routes": {
+      "items": {
+        "$ref": "#/$defs/Route"
+      },
+      "maxItems": 12,
+      "title": "Routes",
+      "type": "array"
+    },
+    "viewport": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Viewport"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "note": {
+      "default": "地点为近似定位；连线为交流示意，不表示古代国界或精确行程。",
+      "maxLength": 140,
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "locations"
+  ],
+  "title": "HistoryMap",
+  "type": "object"
+}

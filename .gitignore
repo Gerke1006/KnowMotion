@@ -14,5 +14,8 @@ outputs/
 media/
 node_modules/
 *.tsbuildinfo
+.playwright-cli/
+output/playwright/
+*.tsbuildinfo
 .tools/
 .DS_Store

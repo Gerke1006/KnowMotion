@@ -1,0 +1,1396 @@
+{
+  "schema_version": "2.0",
+  "environments": [
+    {
+      "id": "mountains",
+      "description": "纸本山峦远景；叙事环境示意",
+      "license": "project-original",
+      "intents": [
+        "环境",
+        "行旅"
+      ],
+      "conditions": [
+        "环境符合本轮资料与讲稿，不把装饰背景当作具体遗址复原。"
+      ]
+    },
+    {
+      "id": "road",
+      "description": "平缓道路与远景；旅行场景",
+      "license": "project-original",
+      "intents": [
+        "行旅",
+        "交接"
+      ],
+      "conditions": [
+        "环境符合本轮资料与讲稿，不把装饰背景当作具体遗址复原。"
+      ]
+    },
+    {
+      "id": "desert",
+      "description": "沙丘远景；不得以此推断具体地点地貌",
+      "license": "project-original",
+      "intents": [
+        "环境",
+        "行旅"
+      ],
+      "conditions": [
+        "环境符合本轮资料与讲稿，不把装饰背景当作具体遗址复原。"
+      ]
+    },
+    {
+      "id": "city_gate",
+      "description": "通用城郭远景",
+      "license": "project-original",
+      "intents": [
+        "城门",
+        "抵达"
+      ],
+      "conditions": [
+        "环境符合本轮资料与讲稿，不把装饰背景当作具体遗址复原。"
+      ]
+    },
+    {
+      "id": "interior",
+      "description": "纸本室内与案几背景",
+      "license": "project-original",
+      "intents": [
+        "命令",
+        "文书",
+        "交接"
+      ],
+      "conditions": [
+        "环境符合本轮资料与讲稿，不把装饰背景当作具体遗址复原。"
+      ]
+    },
+    {
+      "id": "map",
+      "description": "自然地理图面；无现代或古代行政边界",
+      "license": "project-original",
+      "intents": [
+        "地理",
+        "交流"
+      ],
+      "conditions": [
+        "环境符合本轮资料与讲稿，不把装饰背景当作具体遗址复原。"
+      ]
+    }
+  ],
+  "visual_assets": [
+    {
+      "id": "actor.person",
+      "kind": "actor",
+      "description": "通用古风人物剪影；不宣称具体人物容貌或朝代服饰复原",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "walk",
+        "handover"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 110,
+        "height": 210,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "人物",
+        "行旅",
+        "交接"
+      ],
+      "conditions": [
+        "旁白涉及人物的行动或参与关系，且不需要声称特定身份服饰。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "actor.person",
+          "prop.document"
+        ],
+        "focus_resource": "actor.person",
+        "action": "handover",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "actor.person",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "actor.envoy",
+      "kind": "actor",
+      "description": "持节使者示意；身份由来源支持的标签说明",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "walk",
+        "handover"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 110,
+        "height": 220,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "使者",
+        "命令",
+        "行旅",
+        "交接"
+      ],
+      "conditions": [
+        "资料明确支持使者或传达命令的身份；外形仅作通用示意。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "actor.envoy",
+          "prop.document"
+        ],
+        "focus_resource": "actor.envoy",
+        "action": "handover",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "actor.envoy",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "actor.horse",
+      "kind": "actor",
+      "description": "骑者与马的纸本剪影；骑行动作表现位移",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "walk",
+        "ride"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 260,
+        "height": 220,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "骑乘",
+        "行旅"
+      ],
+      "conditions": [
+        "旁白有据地涉及骑行；不得用骑者外观替代历史肖像。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "actor.horse",
+          "prop.gate"
+        ],
+        "focus_resource": "actor.horse",
+        "action": "ride",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "actor.horse",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "actor.caravan",
+      "kind": "actor",
+      "description": "商队群组示意；不声称确切人数与动物构成",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "walk",
+        "ride"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 340,
+        "height": 230,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "商队",
+        "行旅",
+        "交流"
+      ],
+      "conditions": [
+        "资料支持群体交通或商旅，不把通用群组画成确定人数。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "actor.caravan",
+          "prop.flag"
+        ],
+        "focus_resource": "actor.caravan",
+        "action": "walk",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "actor.caravan",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "prop.gate",
+      "kind": "prop",
+      "description": "通用城门示意；支持开闭，不还原特定建筑",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "open",
+        "close"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 440,
+        "height": 340,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "城门",
+        "抵达",
+        "离开"
+      ],
+      "conditions": [
+        "城门开闭或入城离城是当前旁白含义；建筑仅为环境示意。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "prop.gate",
+          "actor.person"
+        ],
+        "focus_resource": "prop.gate",
+        "action": "open",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "prop.gate",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "prop.document",
+      "kind": "prop",
+      "description": "文书物件；不伪造史料原文",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "handover",
+        "open"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 150,
+        "height": 145,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "文书",
+        "交接",
+        "命令"
+      ],
+      "conditions": [
+        "旁白涉及文书、消息或命令；图形不承载伪造原文。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "prop.document",
+          "actor.envoy"
+        ],
+        "focus_resource": "prop.document",
+        "action": "handover",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "prop.document",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "prop.flag",
+      "kind": "prop",
+      "description": "无史实纹章的通用旗帜示意",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "draw"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 140,
+        "height": 240,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "标识",
+        "命令",
+        "行旅"
+      ],
+      "conditions": [
+        "需要通用方向或群组标识；不得暗示未经证实的国旗、军旗和纹章。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "prop.flag",
+          "actor.caravan"
+        ],
+        "focus_resource": "prop.flag",
+        "action": "draw",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "prop.flag",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "prop.scroll",
+      "kind": "prop",
+      "description": "纸卷；用于逐步揭示当前信息",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "unroll",
+        "open",
+        "close"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 360,
+        "height": 200,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "文书",
+        "揭示",
+        "时序"
+      ],
+      "conditions": [
+        "需要逐步展开当前一条有来源的信息；不预告后续事实。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "prop.scroll",
+          "info.timeline"
+        ],
+        "focus_resource": "prop.scroll",
+        "action": "unroll",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "prop.scroll",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "prop.seal",
+      "kind": "prop",
+      "description": "通用印章物件；落印为叙事强调，不伪造历史印文",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "stamp"
+      ],
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "geometry": {
+        "width": 140,
+        "height": 200,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "命令",
+        "文书",
+        "强调"
+      ],
+      "conditions": [
+        "落印用于当前消息确认或叙事强调，不声称真实印文和印制事件。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "prop.seal",
+          "prop.document"
+        ],
+        "focus_resource": "prop.seal",
+        "action": "stamp",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": {
+        "id": "object_1",
+        "asset_id": "prop.seal",
+        "x": 0.5,
+        "y": 0.7,
+        "scale": 1,
+        "facing": 1,
+        "label": "",
+        "parameters": {}
+      },
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "info.map",
+      "kind": "info",
+      "description": "仅当前两端点的自然地理地图与示意连线；禁止作为古代国界或精确行程",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "draw"
+      ],
+      "parameters": {
+        "$defs": {
+          "Location": {
+            "additionalProperties": false,
+            "properties": {
+              "source_ids": {
+                "items": {
+                  "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                  "type": "string"
+                },
+                "maxItems": 12,
+                "title": "Source Ids",
+                "type": "array"
+              },
+              "id": {
+                "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                "title": "Id",
+                "type": "string"
+              },
+              "name": {
+                "maxLength": 56,
+                "minLength": 1,
+                "title": "Name",
+                "type": "string"
+              },
+              "lon": {
+                "maximum": 180,
+                "minimum": -180,
+                "title": "Lon",
+                "type": "number"
+              },
+              "lat": {
+                "maximum": 85,
+                "minimum": -85,
+                "title": "Lat",
+                "type": "number"
+              },
+              "year": {
+                "anyOf": [
+                  {
+                    "maximum": 10000,
+                    "minimum": -10000,
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Year"
+              },
+              "description": {
+                "default": "",
+                "maxLength": 120,
+                "title": "Description",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "lon",
+              "lat"
+            ],
+            "title": "Location",
+            "type": "object"
+          },
+          "Route": {
+            "additionalProperties": false,
+            "properties": {
+              "source_ids": {
+                "items": {
+                  "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                  "type": "string"
+                },
+                "maxItems": 12,
+                "title": "Source Ids",
+                "type": "array"
+              },
+              "id": {
+                "anyOf": [
+                  {
+                    "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Id"
+              },
+              "from": {
+                "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                "title": "From",
+                "type": "string"
+              },
+              "to": {
+                "pattern": "^[A-Za-z0-9_-]{1,64}$",
+                "title": "To",
+                "type": "string"
+              },
+              "label": {
+                "default": "",
+                "maxLength": 56,
+                "title": "Label",
+                "type": "string"
+              },
+              "kind": {
+                "const": "schematic",
+                "default": "schematic",
+                "title": "Kind",
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "to"
+            ],
+            "title": "Route",
+            "type": "object"
+          },
+          "Viewport": {
+            "additionalProperties": false,
+            "properties": {
+              "west": {
+                "maximum": 180,
+                "minimum": -180,
+                "title": "West",
+                "type": "number"
+              },
+              "east": {
+                "maximum": 180,
+                "minimum": -180,
+                "title": "East",
+                "type": "number"
+              },
+              "south": {
+                "maximum": 85,
+                "minimum": -85,
+                "title": "South",
+                "type": "number"
+              },
+              "north": {
+                "maximum": 85,
+                "minimum": -85,
+                "title": "North",
+                "type": "number"
+              }
+            },
+            "required": [
+              "west",
+              "east",
+              "south",
+              "north"
+            ],
+            "title": "Viewport",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source_ids": {
+            "items": {
+              "pattern": "^[A-Za-z0-9_-]{1,64}$",
+              "type": "string"
+            },
+            "maxItems": 12,
+            "title": "Source Ids",
+            "type": "array",
+            "minItems": 1
+          },
+          "title": {
+            "default": "",
+            "maxLength": 56,
+            "title": "Title",
+            "type": "string"
+          },
+          "locations": {
+            "items": {
+              "$ref": "#/$defs/Location"
+            },
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Locations",
+            "type": "array"
+          },
+          "routes": {
+            "items": {
+              "$ref": "#/$defs/Route"
+            },
+            "maxItems": 12,
+            "title": "Routes",
+            "type": "array"
+          },
+          "viewport": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Viewport"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "note": {
+            "default": "地点为近似定位；连线为交流示意，不表示古代国界或精确行程。",
+            "maxLength": 140,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "locations",
+          "source_ids"
+        ],
+        "title": "HistoryMap",
+        "type": "object"
+      },
+      "geometry": {
+        "width": 760,
+        "height": 370,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "地理",
+        "行旅",
+        "交流"
+      ],
+      "conditions": [
+        "本轮 geography 至少有两个有据地点，当前仅展示这两个端点。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "info.map",
+          "actor.person"
+        ],
+        "focus_resource": "info.map",
+        "action": "draw",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": "在当前旁白提示处展示；必填事实参数从本次 research 填入，不能照抄虚构示例。",
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "info.timeline",
+      "kind": "info",
+      "description": "当前一个经来源核实的日期；未来事件不预先显示",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize",
+        "draw"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "year": {
+            "type": "number",
+            "minimum": -10000,
+            "maximum": 10000,
+            "not": {
+              "const": 0
+            }
+          },
+          "date_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 56
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "year",
+          "date_label",
+          "label",
+          "source_ids"
+        ]
+      },
+      "geometry": {
+        "width": 700,
+        "height": 200,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "时序",
+        "年代",
+        "揭示"
+      ],
+      "conditions": [
+        "当前旁白涉及有来源的一个日期，保留约数、世纪或纪年分歧标签。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "info.timeline",
+          "prop.scroll"
+        ],
+        "focus_resource": "info.timeline",
+        "action": "draw",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": "在当前旁白提示处展示；必填事实参数从本次 research 填入，不能照抄虚构示例。",
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    },
+    {
+      "id": "info.portrait",
+      "kind": "info",
+      "description": "人物符号与姓名身份；示意而非生前肖像或历史照片",
+      "actions": [
+        "enter",
+        "exit",
+        "move",
+        "emphasize"
+      ],
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 56
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 56
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 12
+          }
+        },
+        "required": [
+          "name",
+          "role",
+          "source_ids"
+        ]
+      },
+      "geometry": {
+        "width": 220,
+        "height": 280,
+        "anchor": "bottom_center",
+        "label_bottom": 32
+      },
+      "intents": [
+        "人物",
+        "身份",
+        "关系"
+      ],
+      "conditions": [
+        "旁白需识别有来源的人物姓名与角色，只显示符号而非虚构肖像。",
+        "仅绑定当前讲稿的真实词时间提示，事实须有本轮来源。"
+      ],
+      "combination_example": {
+        "resource_ids": [
+          "info.portrait",
+          "prop.document"
+        ],
+        "focus_resource": "info.portrait",
+        "action": "emphasize",
+        "layout": {
+          "focus": {
+            "x": 0.42,
+            "y": 0.7
+          },
+          "companion": {
+            "x": 0.68,
+            "y": 0.7
+          }
+        },
+        "note": "只说明可组合能力；人物、信息与先后顺序由本轮 Agent 决定。"
+      },
+      "example": "在当前旁白提示处展示；必填事实参数从本次 research 填入，不能照抄虚构示例。",
+      "license": "project-original",
+      "source": "renderers/remotion/project/src/HistoryAssets.tsx"
+    }
+  ],
+  "sfx_assets": [
+    {
+      "id": "sfx.footstep",
+      "path": "assets/audio/history/footstep.wav",
+      "duration": 0.26,
+      "onset": 0.012229166666666666,
+      "peak": 0.01879166666666667,
+      "default_gain_db": -10,
+      "sha256": "eb6497bc683b1bf97aa87f7f22884031983c69dd7cc52121f2d3ec6dc97c1810",
+      "license": "project-original",
+      "description": "轻短脚步：人物开始行走；每个提示只触发一次",
+      "intents": [
+        "行旅",
+        "人物"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 601,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.hoof",
+      "path": "assets/audio/history/hoof.wav",
+      "duration": 0.4,
+      "onset": 0.020229166666666666,
+      "peak": 0.025979166666666668,
+      "default_gain_db": -12,
+      "sha256": "87d98c6ed852938d8cd3238d9b5118c277cf45ca2935215629b608065b3a416b",
+      "license": "project-original",
+      "description": "双蹄敲击：骑乘或商队移动的单次提示",
+      "intents": [
+        "骑乘",
+        "行旅"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 607,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.gate",
+      "path": "assets/audio/history/gate.wav",
+      "duration": 0.65,
+      "onset": 0.0089375,
+      "peak": 0.32716666666666666,
+      "default_gain_db": -13,
+      "sha256": "d2864ceb633780ad9c35458ff1fbab2c3029a97c8861974a77b2f66294f3124c",
+      "license": "project-original",
+      "description": "木门开合的低频摩擦与轻扣；非历史实录",
+      "intents": [
+        "城门",
+        "抵达"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 613,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.paper",
+      "path": "assets/audio/history/paper.wav",
+      "duration": 0.48,
+      "onset": 0.012208333333333333,
+      "peak": 0.2507916666666667,
+      "default_gain_db": -12,
+      "sha256": "6364a7b56225b79bcd0c12464ce439eef7f1d4df45ca65a2b03cd1d7af76fbc6",
+      "license": "project-original",
+      "description": "纸页轻摩擦：文书交接、展开与收起",
+      "intents": [
+        "文书",
+        "交接"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 617,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.stamp",
+      "path": "assets/audio/history/stamp.wav",
+      "duration": 0.32,
+      "onset": 0.0351875,
+      "peak": 0.0403125,
+      "default_gain_db": -10,
+      "sha256": "471e24bd7604e67aefeca501e01f4ae6f4a7d718b05e4af6441edbaeb8e73dca",
+      "license": "project-original",
+      "description": "印章落下的短促木质撞击",
+      "intents": [
+        "命令",
+        "强调"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 619,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.wind",
+      "path": "assets/audio/history/wind.wav",
+      "duration": 0.8,
+      "onset": 0.029979166666666668,
+      "peak": 0.39358333333333334,
+      "default_gain_db": -19,
+      "sha256": "aac3c9344bc03bf8148aee6a998e7234a6f1b73efb7b8e970edc2ac87803db2f",
+      "license": "project-original",
+      "description": "短促柔和风声：环境转入，不作为持续底噪",
+      "intents": [
+        "环境",
+        "行旅"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 631,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.draw",
+      "path": "assets/audio/history/draw.wav",
+      "duration": 0.42,
+      "onset": 0.005291666666666667,
+      "peak": 0.19504166666666667,
+      "default_gain_db": -14,
+      "sha256": "a49070b5f4025e1599468f2ae3bef8ae9090df2f74a8d8e639b0c9b9b6a2978d",
+      "license": "project-original",
+      "description": "轻柔划线：当前地图连线或图形描画",
+      "intents": [
+        "地理",
+        "揭示"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 641,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.tap",
+      "path": "assets/audio/history/tap.wav",
+      "duration": 0.16,
+      "onset": 0.012145833333333333,
+      "peak": 0.017333333333333333,
+      "default_gain_db": -14,
+      "sha256": "8c37779b01792446205e890b5ab57bb9ddf26a6a01edbd6dd5860b22053d5eda",
+      "license": "project-original",
+      "description": "轻点击：关键词和当前日期强调",
+      "intents": [
+        "时序",
+        "强调"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 643,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.drum",
+      "path": "assets/audio/history/drum.wav",
+      "duration": 0.55,
+      "onset": 0.012270833333333333,
+      "peak": 0.019270833333333334,
+      "default_gain_db": -14,
+      "sha256": "4d5928b1150cb9e4a745123ee7a683540f3183d2133bcd4b252cde82fc2be726",
+      "license": "project-original",
+      "description": "低沉短鼓点：章节转折或动作落点",
+      "intents": [
+        "转折",
+        "命令"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 647,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    },
+    {
+      "id": "sfx.chime",
+      "path": "assets/audio/history/chime.wav",
+      "duration": 0.8,
+      "onset": 0.001625,
+      "peak": 0.02525,
+      "default_gain_db": -16,
+      "sha256": "5a60f2655cf82f88f196941ae0e320b3e02cd9f2f59328d838c68c6074c2c408",
+      "license": "project-original",
+      "description": "短柔和双音：信息揭示与段落收束",
+      "intents": [
+        "揭示",
+        "收束"
+      ],
+      "conditions": [
+        "当前语义拍有相符的动作或信息揭示。",
+        "遵守最终每分钟12–18次触发预算，不能替代旁白或BGM。"
+      ],
+      "provenance": {
+        "method": "history-original-synthesis-v1",
+        "seed": 653,
+        "sample_rate": 48000,
+        "channels": 1,
+        "sample_width": 2,
+        "generator": "tools/build_history_resources.py",
+        "recordings_or_external_samples": false
+      },
+      "onset_definition": "first sample at least -40 dBFS",
+      "peak_definition": "first maximum absolute PCM sample"
+    }
+  ],
+  "rights": "Original project-drawn symbols and procedurally synthesized sounds; no third-party media.",
+  "generation": {
+    "script": "tools/build_history_resources.py",
+    "version": "history-original-synthesis-v1",
+    "script_sha256": "9864de9f6f17b8302e1741dfddea01f32cec917c01e1b3648e6e13b1da719719"
+  }
+}

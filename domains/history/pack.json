@@ -1,8 +1,8 @@
 {
   "id": "history",
   "name": "历史",
-  "version": "1.0",
-  "style": "archival_timeline",
+  "version": "2.0",
+  "style": "archival_motion",
   "keywords": [
     "历史",
     "朝代",
@@ -17,7 +17,14 @@
     "罗马",
     "战争",
     "history",
-    "silk road"
+    "silk road",
+    "张骞",
+    "西域",
+    "郑和",
+    "文艺复兴",
+    "大航海",
+    "historical",
+    "silk roads"
   ],
   "extensions": [
     "historical_period",
@@ -36,5 +43,12 @@
       ],
       "file": "silk_road.json"
     }
-  ]
+  ],
+  "preferred_renderer": "remotion",
+  "components": [
+    "history.map",
+    "history.timeline",
+    "history.person"
+  ],
+  "source_policy": "retrieved-evidence-with-stable-ids"
 }

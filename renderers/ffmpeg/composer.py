@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import math
 import re
 import shutil
 from pathlib import Path
@@ -168,8 +167,9 @@ class FFmpeg:
         if not .5 <= speed <= 2 or not 0 <= transition_duration <= 1 or any(d <= 0 for d in durations):
             raise RendererError("Invalid composition timing")
         fps = int(metadata.get("fps", 30))
-        overlaps = [math.floor((min(transition_duration, a / 3, b / 3) + 1e-8) * fps) / fps
-                    for a, b in zip(durations, durations[1:])]
+        from harness.media_clock import composition_clock
+        clock = composition_clock(durations, fps, transition_duration, speed)
+        overlaps = clock["overlaps"]
         args, filters = [], []
         for index, (clip, duration) in enumerate(zip(clips, durations)):
             args += ["-i", str(clip)]
@@ -202,8 +202,7 @@ class FFmpeg:
                   "-c:v", "libx264", "-preset", "fast", "-crf", "20", "-pix_fmt", "yuv420p",
                   "-c:a", "aac", "-ar", "48000", "-ac", "2", "-movflags", "+faststart", str(output)])
         require_output(output)
-        return {"playback_speed": speed, "source_duration": elapsed, "expected_duration": final_duration,
-                "transition_duration": transition_duration, "transitions": transitions,
+        return {**clock,
                 "audio_join": "speech-preserving midpoint cuts in silent transition handles"}
 
     def concat(self, clips: list[Path], output: Path) -> Path:

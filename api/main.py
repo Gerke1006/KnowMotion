@@ -5,21 +5,27 @@ from __future__ import annotations
 import asyncio
 from contextlib import asynccontextmanager, suppress
 import hmac
+import json
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from api.configuration import ApiConfiguration, ConfigurationError, validate_changes
+from api.media import register_media_routes
 from harness.schemas import JobCreate, JobRecord
 from storage.repository import JobRepository
 
 
-def create_app(settings=None, *, repository=None, orchestrator_factory=None) -> FastAPI:
+def create_app(settings=None, *, repository=None, orchestrator_factory=None, api_settings_path=None) -> FastAPI:
     if settings is None:
         from harness.settings import Settings
         settings = Settings()
+    configuration = ApiConfiguration(
+        settings, Path(api_settings_path) if api_settings_path else Path(settings.project_root) / "data" / "runtime-api-settings.json",
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -47,7 +53,9 @@ def create_app(settings=None, *, repository=None, orchestrator_factory=None) -> 
                 while True:
                     job_id = await app.state.queue.get()
                     try:
-                        await factory(settings, repo).run(job_id)
+                        # Each execution gets one immutable configuration snapshot.
+                        # Saving settings cannot change a job already in progress.
+                        await factory(configuration.snapshot(), repo).run(job_id)
                     except asyncio.CancelledError:
                         raise
                     except Exception:
@@ -153,6 +161,46 @@ def create_app(settings=None, *, repository=None, orchestrator_factory=None) -> 
 
     protected = [Depends(authorize)]
 
+    @app.get("/settings/api", dependencies=protected)
+    async def get_api_settings(response: Response):
+        response.headers["Cache-Control"] = "no-store"
+        return configuration.public()
+
+    @app.put("/settings/api", dependencies=protected)
+    async def save_api_settings(request: Request, response: Response):
+        response.headers["Cache-Control"] = "no-store"
+        if not configuration.editable:
+            raise HTTPException(409, "Custom API settings require local execution; configure Temporal worker environments instead.")
+        # Parse manually so FastAPI/Pydantic cannot echo secret input values in
+        # validation errors. Neither request bodies nor keys are logged.
+        try:
+            chunks, size = [], 0
+            async for chunk in request.stream():
+                size += len(chunk)
+                if size > 20000:
+                    raise HTTPException(413, "API settings payload is too large")
+                chunks.append(chunk)
+            payload = json.loads(b"".join(chunks))
+            changes = validate_changes(payload)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            raise HTTPException(422, "API settings must be a valid JSON object") from None
+        except ConfigurationError as exc:
+            raise HTTPException(422, str(exc)) from None
+        try:
+            return configuration.save(changes)
+        except OSError:
+            raise HTTPException(503, "API settings could not be saved; check access to the local data directory") from None
+
+    @app.delete("/settings/api", dependencies=protected)
+    async def reset_api_settings(response: Response):
+        response.headers["Cache-Control"] = "no-store"
+        if not configuration.editable:
+            raise HTTPException(409, "Custom API settings require local execution; configure Temporal worker environments instead.")
+        try:
+            return configuration.reset()
+        except OSError:
+            raise HTTPException(503, "API settings could not be reset; check access to the local data directory") from None
+
     def find_job(request: Request, job_id: str) -> JobRecord:
         record = request.app.state.repository.get(job_id)
         if record is None:
@@ -168,6 +216,8 @@ def create_app(settings=None, *, repository=None, orchestrator_factory=None) -> 
         if not path.is_file():
             raise HTTPException(404, "Artifact not found")
         return path
+
+    register_media_routes(app, settings, protected, find_job, artifact_path)
 
     @app.get("/health")
     async def health():

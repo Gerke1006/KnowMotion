@@ -1,16 +1,16 @@
 {
-  "preferred": "canvas",
+  "preferred": "remotion",
   "adapters": [
-    "manim",
-    "canvas"
+    "remotion"
   ],
-  "future_adapters": [
-    "remotion",
-    "blender"
+  "legacy_demo_adapters": [
+    "canvas"
   ],
   "fps": 30,
   "resolution": [
     1280,
     720
-  ]
+  ],
+  "composition": "KnowledgeScene",
+  "component_contract": "harness/history.py"
 }

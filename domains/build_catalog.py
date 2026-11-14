@@ -176,6 +176,9 @@ def build():
                {"id": "reference.motion_showreel", "kind": "reference", "domains": ["general"], "source": "https://github.com/ConardLi/garden-skills/tree/main/skills/motion-showreel", "downloaded": False, "rights": "External reference only; no media copied."},
                {"id": "audio.user_bgm", "kind": "audio", "domains": ["general"], "source": "env:BGM_PATH", "available": (ROOT / "assets/audio/vibe-bgm.m4a").is_file(), "local_path": "assets/audio/vibe-bgm.m4a", "rights": "User-supplied; resolve at runtime."}]
     write_json(ROOT / "assets" / "catalog.json", {"version": "1.0", "assets": assets})
+    # Phase 2 history metadata supersedes the intentionally retained legacy demo.
+    from domains.history.definition import install_metadata
+    install_metadata(ROOT)
     for subdir in ("audio", "fonts", "textures", "reference_videos"):
         path = ROOT / "assets" / subdir
         path.mkdir(parents=True, exist_ok=True)

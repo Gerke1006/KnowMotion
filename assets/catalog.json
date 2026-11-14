@@ -352,6 +352,75 @@
       "available": true,
       "rights": "User-supplied; resolve at runtime.",
       "local_path": "assets/audio/vibe-bgm.m4a"
+    },
+    {
+      "id": "history.map",
+      "component_id": "history.map",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "history"
+      ],
+      "scenes": [
+        "map"
+      ],
+      "animations": [
+        "reveal",
+        "focus",
+        "trace"
+      ],
+      "renderer": [
+        "remotion"
+      ],
+      "source": "renderers/remotion/",
+      "license": "project-original",
+      "version": "2.0"
+    },
+    {
+      "id": "history.timeline",
+      "component_id": "history.timeline",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "history"
+      ],
+      "scenes": [
+        "timeline"
+      ],
+      "animations": [
+        "reveal",
+        "focus",
+        "trace"
+      ],
+      "renderer": [
+        "remotion"
+      ],
+      "source": "renderers/remotion/",
+      "license": "project-original",
+      "version": "2.0"
+    },
+    {
+      "id": "history.person",
+      "component_id": "history.person",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "history"
+      ],
+      "scenes": [
+        "person"
+      ],
+      "animations": [
+        "reveal",
+        "focus",
+        "trace"
+      ],
+      "renderer": [
+        "remotion"
+      ],
+      "source": "renderers/remotion/",
+      "license": "project-original",
+      "version": "2.0"
     }
   ]
 }

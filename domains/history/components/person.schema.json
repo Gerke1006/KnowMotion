@@ -1,0 +1,95 @@
+{
+  "$defs": {
+    "RelatedPerson": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 56,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "relation": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Relation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "relation"
+      ],
+      "title": "RelatedPerson",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9_-]{1,64}$",
+        "type": "string"
+      },
+      "maxItems": 12,
+      "title": "Source Ids",
+      "type": "array"
+    },
+    "name": {
+      "maxLength": 56,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "role": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Role",
+      "type": "string"
+    },
+    "years": {
+      "default": "",
+      "maxLength": 56,
+      "title": "Years",
+      "type": "string"
+    },
+    "facts": {
+      "items": {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Facts",
+      "type": "array"
+    },
+    "portrait_asset": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Portrait Asset"
+    },
+    "related": {
+      "items": {
+        "$ref": "#/$defs/RelatedPerson"
+      },
+      "maxItems": 4,
+      "title": "Related",
+      "type": "array"
+    }
+  },
+  "required": [
+    "name",
+    "role",
+    "facts"
+  ],
+  "title": "HistoryPerson",
+  "type": "object"
+}

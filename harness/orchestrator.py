@@ -11,7 +11,9 @@ from pydantic import BaseModel
 from filelock import FileLock, Timeout
 
 from harness.asset_retriever import AssetRetriever
+from harness.history_profile import history_settings
 from harness.model_gateway import ModelGateway
+from harness.production_audit import FrozenRun, build_snapshot
 from harness.schemas import AssetManifest, JobStatus, TeachingPlan, VideoPlan, VideoRequest, VisualPlan
 from harness.settings import Settings, secret_value
 from workflows.planning import plan, route_topic, visual_plan
@@ -28,9 +30,9 @@ def write_json(path: Path, value: Any) -> None:
     temp.replace(path)
 
 
-async def finish_thread(function, *args):
+async def finish_thread(function, *args, **kwargs):
     """Keep the job lock until synchronous filesystem/process work actually exits."""
-    task = asyncio.create_task(asyncio.to_thread(function, *args))
+    task = asyncio.create_task(asyncio.to_thread(function, *args, **kwargs))
     try:
         return await asyncio.shield(task)
     except asyncio.CancelledError:
@@ -82,12 +84,29 @@ class Orchestrator:
         artifacts = dict(record.artifacts)
         gateway = self.gateway or ModelGateway(self.settings, audit_path=work / "model_calls.json")
         dirty = False
+        audit = None
+        historical = None
+        legacy = (work / "teaching_plan.json").exists() and not (work / "run_manifest.json").exists()
+        eligible = (record.mode == "live" and self.settings.history_director_enabled
+                    and self.renderer_factory is None and not legacy)
+        initial_build = build_snapshot(self.settings.project_root) if eligible else None
+        had_checkpoint = (work / "video_request.json").exists()
+        cfg = self.settings.model_copy(update={
+            **({"tts_enabled": record.request.tts_enabled} if record.request.tts_enabled is not None else {}),
+            **({"playback_speed": record.request.playback_speed} if record.request.playback_speed is not None else {}),
+            **({"model_retries": min(2, self.settings.model_retries)} if eligible else {}),
+        })
 
         async def stage(name: str, progress: float, filename: str, contract, action: Callable):
             nonlocal dirty
             self.repository.update(job_id, status=JobStatus.running, stage=name, progress=progress, error=None)
             target = work / filename
             cached = False
+            if audit:
+                audit.verify()
+                registered = json.loads(audit.records_path.read_text(encoding="utf-8"))["artifacts"]
+                if target.exists() and filename not in registered:
+                    raise ValueError(f"Unrecorded checkpoint cannot be reused: {filename}")
             if target.exists() and not dirty:
                 try:
                     raw = json.loads(target.read_text(encoding="utf-8"))
@@ -97,15 +116,27 @@ class Orchestrator:
                     cached = False
             if not cached:
                 dirty = True
+                gateway.stage = name
                 result = action()
                 if inspect.isawaitable(result):
                     result = await result
                 write_json(target, result)
+            if audit:
+                audit.record(name, [target], origin="topic_routing")
+                audit.record_model_calls()
             artifacts[filename] = str(target)
             self.repository.update(job_id, artifacts=dict(artifacts))
             return result
 
         try:
+            if eligible and ((work / "run_manifest.json").exists() or
+                             str(record.request.domain) in {"history", "Domain.history"}):
+                if record.status == JobStatus.failed:
+                    raise ValueError("A failed frozen acceptance run is closed; create a fresh job after fixing generic code")
+                cfg = history_settings(cfg)
+                audit = FrozenRun(cfg, work, record.topic, initial_build=initial_build)
+                if hasattr(gateway, "settings"):
+                    gateway.settings = cfg
             request_data = record.request.model_dump(exclude={"topic", "renderer", "tts_enabled", "playback_speed"}, exclude_none=True)
             # Let the router infer dimensions for non-landscape formats unless explicitly sized.
             if record.request.aspect_ratio != "16:9" and (record.request.width, record.request.height) == (1280, 720):
@@ -125,6 +156,19 @@ class Orchestrator:
                 return defaults
 
             request = await stage("identify", .05, "video_request.json", VideoRequest, identify)
+            if eligible and request.domain.value == "history":
+                if audit is None:
+                    if had_checkpoint:
+                        raise ValueError("Unfrozen history checkpoint cannot become independent acceptance evidence")
+                    cfg = history_settings(cfg)
+                    if hasattr(gateway, "settings"):
+                        gateway.settings = cfg
+                    audit = FrozenRun(cfg, work, record.topic, initial_build=initial_build)
+                    audit.record("identify", [work / "video_request.json"], origin="topic_routing")
+                    audit.record_model_calls()
+                from workflows.history_production import HistoryProduction
+                historical = HistoryProduction(cfg, self.repository, self.repository.get(job_id), request, gateway, audit)
+                return await historical.run()
             findings = await stage("research", .15, "research.json", None,
                                    lambda: research(request, gateway))
             teaching = await stage("teaching", .28, "teaching_plan.json", TeachingPlan,
@@ -178,4 +222,18 @@ class Orchestrator:
                 secret = secret_value(getattr(self.settings, name, ""))
                 if secret:
                     message = message.replace(secret, "[REDACTED]")
+            current = self.repository.get(job_id)
+            artifacts.update(current.artifacts if current else {})
+            if audit:
+                # Preserve the failed attempt; never rebaseline changed evidence to resume it.
+                try:
+                    audit.record_model_calls()
+                except (ValueError, OSError):
+                    pass
+                failure = work / "failure.json"
+                if not failure.exists():
+                    write_json(failure, {"error": message[:3000], "stage": current.stage if current else None,
+                                         "closed": True, "new_task_required": True})
+                for path in work.rglob("*.json"):
+                    artifacts[path.relative_to(work).as_posix()] = str(path.resolve())
             return self.repository.update(job_id, status=JobStatus.failed, error=message[:3000], artifacts=artifacts)

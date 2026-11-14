@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "assets": [
+    {
+      "id": "zhang-qian-mogao",
+      "path": "portraits/zhang-qian-mogao.jpg",
+      "title": "莫高窟张骞出使题材壁画局部",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Zhang_Qian.jpg",
+      "file_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Zhang_Qian.jpg",
+      "source_revision_url": "https://commons.wikimedia.org/w/index.php?title=File:Zhang_Qian.jpg&oldid=1150996436",
+      "author": "Unknown historical artist",
+      "period": "唐代（后世描绘）",
+      "license": "Public domain (PD-Art; PD-old-70; PD-1996)",
+      "license_url": "https://creativecommons.org/publicdomain/mark/1.0/",
+      "sha256": "5afc24ab611f4ad7ab18a4881668808b21ada8ee9dbf3b42f952d9762604f52e",
+      "retrieved_at": "2026-11-14T08:19:41.606278+00:00",
+      "caption": "莫高窟壁画 · 左为张骞，骑马者为汉武帝；唐代后世描绘，非生前肖像",
+      "interpretation_note": "画面主体为汉武帝与送行群臣；张骞位于画面左侧跪拜处。不得裁取中央骑乘者并标为张骞肖像。",
+      "source_book": "Cave Temples of Mogao: Art and History on the Silk Road, Getty, 2000"
+    }
+  ],
+  "usage_notice": "仅使用来源明确的后世艺术作品；不得当作生前写实肖像。public-relative path is resolved within the bundled Remotion public directory."
+}

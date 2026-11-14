@@ -56,6 +56,15 @@ uv run --extra dev vibe generate "导数" --mode live --renderer canvas --durati
 
 制作一分多钟的短版可运行 `python scripts/verify_live.py --duration 90 --narration-chars 440`。`--narration-chars` 把全片旁白字符预算传给项目 Agent，促使模型生成四幕精简讲稿；实际时长仍以配音和倍速后的成片为准。BGM 继续读取项目 `BGM_PATH`。
 
+历史导演 v2 的独立正式验收使用单独入口：
+
+```powershell
+npm ci --prefix renderers/remotion/project
+python scripts/verify_history.py --topic "你要解释的历史主题"
+```
+
+只提交主题，Agent 根据本轮检索资料生成约 440 字、5–8 段讲稿，再选择通用资源并编排人物和道具动作。生产配置目标为 75–90 秒，实际时长由 MiniMax 配音决定。软件、资源和配置先冻结，运行中不由开发者补写内容；正式失败任务保留错误与证据，不能修讲稿或分镜后恢复成“独立验收通过”。修复通用软件缺陷后需要新构建和新任务。详见 [History Pack v2](docs/HISTORY_PACK.md)。
+
 `canvas` 是确定性二维绘图适配器，以 Pillow 逐帧绘制，经 FFmpeg 编码，不依赖浏览器；`svg` 目前使用相同二维适配器。Manim 是数学主渲染器，使用真实函数曲线、割线到切线、黎曼矩形和几何对象。公式采用真实 LaTeX 编译，通过 PDF 转为矢量 SVG（Manim）或透明 PNG（Canvas），保留分数、积分、上下标等数学排版。缺少编译器会明确报错，不回退为纯文本公式。
 
 本机 LaTeX 工具位于 `.tools/latex/`（不提交 Git）。也可设置 `LATEX_COMPILER_PATH` 指向 Tectonic 或系统 LaTeX 编译器；公式缓存位于 `data/latex-cache/`。首次运行 Tectonic 可能需要下载其 TeX 宏包。
@@ -94,6 +103,8 @@ BGM 可留空；默认 `BGM_VOLUME=0.30`，可在 `.env` 调整音乐增益。�
 
 Live 研究目前使用 Wikipedia 中英文搜索及正文摘要，保留实际取回的链接和时间；网络不可达或无资料时明确失败。它不是覆盖所有学科的专业检索服务，适合后续加入教材、论文与史料检索适配器。模型计划经 Pydantic 验证，数学函数由受限 AST 解释，模型文本不会作为 Python 直接执行。
 
+历史 v2 另行优先抓取主题匹配的官方史料注册表，保存实际取回的证据、时间和来源。MiniMax 同一次配音返回词级字幕，字幕、对象显隐、动作和音效共同引用真实词时间；缺失词时间会失败，不按文字长度假定对齐。画面和人声仅在 FFmpeg 合成时应用一次 1.15 倍速，BGM 与音效随后按最终时间混入。BGM 保持当前 0.30 增益，不额外自动压低；原创音效记录可核对的起音、峰值、播放起止与素材 SHA-256。
+
 ## API 与任务存储
 
 ### 本地前端
@@ -107,7 +118,11 @@ uv run --all-extras vibe serve
 # 浏览器打开 http://127.0.0.1:8000/
 ```
 
-页面集中展示知识点输入、Agent 处理进度和最终视频。生成请求使用真实 `live` 管线，按项目 `.env` 调用文本模型和配音服务；技术失败可以恢复原任务，复用有效检查点。页面不携带模型密钥。若服务设置了 `API_TOKEN`，在页面的访问验证入口输入该服务令牌。
+工作台左侧只保留 New Video、Library 与 History。New Video 仅接受 Prompt，点击右下角 Generate Video 后进入该任务的 History 详情页，显示输入内容、可折叠的真实 Agent 制作流程，以及完成后的视频播放与下载。Library 展示已完成的 live 视频；History 保留生成记录，并支持继续失败任务、复用有效检查点。页面中的封面取自相应成片，不使用演示视频代替真实结果。
+
+右上角“自定义 API”可以配置兼容 Chat Completions 的文本模型 Base URL、模型名与密钥，以及 MiniMax 配音接口。Base URL 填接口基址（例如以 `/v1` 结尾的地址），不要附加 `/chat/completions`。默认读取项目 `.env`；本地服务的自定义设置单独保存在被 Git 忽略的 `data/runtime-api-settings.json`，不会改写 `.env`，重启后仍生效。空密钥表示保留现有值，恢复默认会删除覆盖配置。每个本地任务在开始执行时取得配置快照，因此运行中的任务不受修改影响，尚未开始的排队任务使用更新后的配置。Temporal 模式需通过 worker 环境配置接口，页面不会假装修改远程 worker。
+
+配置接口不回传密钥，密钥不进入任务记录或视频产物，页面也不将其写入浏览器持久存储。若服务设置了 `API_TOKEN`，在自定义 API 弹窗的访问验证入口输入该服务令牌。生成仍使用完整真实 `live` 管线，默认画面、字幕与配音同步为 1.15 倍速。
 
 前端源文件在 `frontend/`，构建产物在 `frontend/dist/`，由 FastAPI 的 `/` 和 `/assets/` 提供。首次构建后再启动服务；修改前端后重新构建并刷新页面。当前前端启动说明针对本地源码目录，单独安装 Python wheel 不会包含前端构建产物。开发时可运行 `npm --prefix frontend run dev`，API 服务仍需运行。
 
@@ -132,12 +147,18 @@ Invoke-RestMethod http://127.0.0.1:8000/jobs -Method Post -ContentType 'applicat
 | `GET /jobs/{id}` | 阶段、进度、失败原因与产物列表 |
 | `POST /jobs/{id}/resume` | 恢复失败任务，沿用任务 ID 与有效检查点；活动或已完成任务返回 409 |
 | `GET /jobs/{id}/video` | 下载完成的 MP4 |
+| `GET /jobs/{id}/thumbnail` | 由实际成片生成并缓存 JPEG 封面，遵守同样的任务鉴权 |
 | `GET /jobs/{id}/artifacts/{name}` | 下载计划、嵌套场景源码等产物 |
 | `GET /ui-config` | 页面是否需要服务令牌，仅返回 `requires_auth` 布尔值 |
+| `GET /settings/api` | 当前非密钥配置与密钥是否已配置，不返回密钥 |
+| `PUT /settings/api` | 保存本地文本模型与 MiniMax API 覆盖配置，空密钥保留原值 |
+| `DELETE /settings/api` | 删除覆盖配置，恢复服务启动时的 `.env` 默认值 |
 
 本地使用 SQLite 和有并发上限的任务队列，API 重启后恢复未完成任务。**本地后端运行一个 API 进程**，用 `LOCAL_WORKERS` 设置内部并发。多 API 进程、多台 worker 使用 Temporal + PostgreSQL。远程服务可设置 `API_TOKEN`，客户端发送 `Authorization: Bearer ...`。
 
 每个任务有独立输出目录；每阶段原子写入 JSON 检查点。恢复时复用有效中间产物，上游检查点损坏则重做其下游计划。场景视频和语音按内容指纹缓存，渲染缓存包含组件源码指纹。共享目录中的任务锁防止重复渲染同时写入；CLI `resume` 适用于已停止/失败的任务。
+
+以上恢复行为用于普通任务。历史 v2 的正式独立验收同时检查冻结清单与产物指纹；正式失败记录不能通过外部修改内容再恢复。软件修复与下一次正式验收分开记录，保留原失败任务。
 
 ## Temporal / PostgreSQL / MinIO
 
@@ -177,7 +198,7 @@ frontend/       React 前端、液态玻璃导航、任务进度与视频播放
 tests/          规划、检索、渲染、网关、存储、任务恢复与 API 测试
 ```
 
-任务输出 `outputs/<job_id>/`：
+兼容流程的任务输出 `outputs/<job_id>/`：
 
 ```text
 video_request.json → research.json → teaching_plan.json → visual_plan.json
@@ -186,13 +207,34 @@ video_request.json → research.json → teaching_plan.json → visual_plan.json
 → effective_storyboard.json → render_report.json → final.mp4
 ```
 
+历史导演 v2 的核心产物链为：
+
+```text
+run_manifest.json → research.json → narration_script.json
+→ candidate_resources.json → director_plan.json → speech_manifest.json
+→ resolved_timeline.json → director_execution.json → sound_execution.json
+→ render_report.json → media_verification.json → live_acceptance.json → final.mp4
+```
+
+`calls/` 保留逐次脱敏模型请求与响应；`speech/` 保留原始词时间；`scenes/` 保留 Remotion 参数、帧执行证据和分段视频。`artifact_records.json` 关联各阶段产物与哈希。资源卡、SVG 演员和固定 seed 音效是通用能力，不含特定人物的预写剧情。
+
 素材检索按完整组件、基础组件组合、通用绘图三级执行。场景可拥有不同的 `domain`，分别装载对应 Pack；CLI/API 的 `renderer=auto` 默认保留各场景选择，显式指定其他 renderer 则覆盖全片。优先复用受信组件，通过参数生成源码，不执行模型任意编写的程序。
 
 ## 已实现范围与扩展点
 
-数学主流程与二维多学科演示可以本地运行；六学科教学规范、通用 Plan Schema、场景级学科策略、素材索引、真实 MiniMax 配音、FFmpeg 混音和任务管理已实现。历史已有时间线和人物/事件关系组件；地理边界数据、真实地图及史料专用检索尚未内置。参考视频目录当前保存来源索引，不含他人视频或未授权音频文件。
+数学主流程与二维多学科演示可以本地运行；六学科教学规范、通用 Plan Schema、场景级学科策略、素材索引、真实 MiniMax 配音、FFmpeg 混音和任务管理已实现。History Pack v2 增加了古风纸本演员、骑乘、城门、文书、卷轴、印章与逐拍导演协议，采用真实词时间驱动可见对象和动作。地图使用 Natural Earth 公有领域陆地轮廓与可追溯坐标，只显示当前两个端点；连线表示交流示意，不表示古代国界或精确行程。当前日期与人物符号按旁白逐步显示。旧版地图、时间线、已许可后世人物画仍保留兼容能力。
 
-Remotion 和 Blender 提供真正的外部进程适配器，分别需要安装并配置可信的 Remotion 项目或 Blender 模板；没有配置会明确失败。它们还不是开箱即用的完整场景组件库。运行参数见 [渲染器说明](renderers/README.md)。
+历史研究优先抓取注册的 UNESCO 丝路资料，并结合通用百科检索；每个历史组件必须引用本次研究取得的来源编号。新增历史主题的机构资料可扩展 `assets/history/sources.json`。来源和坐标校验保证可追溯，不代替历史事实审校。详见 [History Pack](docs/HISTORY_PACK.md)。
+
+Remotion 默认使用内置项目，首次安装 Node 依赖：
+
+```powershell
+npm ci --prefix renderers/remotion/project
+uv run --all-extras vibe doctor
+uv run --all-extras python scripts/verify_history.py --topic "你要解释的历史主题"
+```
+
+`REMOTION_PROJECT` 留空即可选择内置项目；也可指向自己的可信项目。默认自动准备 Chrome Headless Shell；已有兼容 Chromium 时可设置 `REMOTION_BROWSER_EXECUTABLE`，浏览器会在付费配音之前检查。`REMOTION_CONCURRENCY=2` 控制单个场景的浏览器并发。输出保留每幕 `.remotion.json` 参数，可编辑源码在 `renderers/remotion/project/src`。Blender 仍需提供模板。运行参数见 [渲染器说明](renderers/README.md)。
 
 ## 开发验证
 
@@ -205,8 +247,12 @@ uv run --all-extras python scripts/verify_live.py
 
 单元测试检查隔离的代码回归，不能代替真实视频验收。验收会调用配置的付费模型和配音服务，输出 `model_calls.json`（模型、调用时间、响应摘要及用量，不含密钥）与 `live_acceptance.json`。技术失败后可用 `python scripts/verify_live.py --resume <job_id>` 恢复同一 live 任务。Docker 服务仍需单独部署验证。
 
+历史 v2 请使用 `python scripts/verify_history.py --topic "<主题>"`，并遵守上述正式失败保留规则。TypeScript 帧执行审计、音频回归和冻结产物审计属于开发验证；其通过不代表已有正式成片。wheel 包含 v2 资源卡、10 个原创 WAV、Remotion 源码和 `tools/check-director.ts`；Node 依赖、浏览器、系统字体与用户 BGM 需在部署环境准备。
+
 ## 参考与设计来源
 
 参考 [video-use/manim-video](https://github.com/browser-use/video-use/tree/main/skills/manim-video) 的先教学规划、逐场景源码与独立渲染、统一视觉风格。参考 [motion-showreel](https://github.com/ConardLi/garden-skills/tree/main/skills/motion-showreel) 的确定性时间轴、连续视觉变化、以实际旁白时长安排画面。按本项目明确要求，未采用它们的人工确认和审片流程。这里的代码与教学样例为本项目实现，并非复制完整上游技能。
+
+历史 v2 还参考 [vibe-knowledge 固定提交 c3a13a8](https://github.com/andyhuo520/vibe-knowledge/tree/c3a13a85f7cc560e5d396f063baecea4b2748e1e) 的旁白锚点、物件入退场和音效峰值定位机制。保留其 [MIT LICENSE 与归属说明](third_party/vibe-knowledge/NOTICE.md)；本项目 SVG 与 WAV 为原创，没有引入上游样片、音乐、配音参照、风格墙或其他媒体。继续使用本项目 MiniMax 和用户提供的 BGM。
 
 接口依据：[MiniMax 文本模型](https://platform.minimax.cn/docs/guides/text-generation)、[同步语音 API](https://platform.minimax.cn/docs/api-reference/speech-t2a-http)、[官方音色目录](https://github.com/MiniMax-AI/skills/blob/main/skills/frontend-dev/references/minimax-voice-catalog.md)。

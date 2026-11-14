@@ -1,9 +1,10 @@
 {
   "narration": "minimax",
   "voice_name": "温润青年",
-  "bgm_gain": 0.12,
+  "bgm_gain": 0.3,
   "voice_priority": true,
   "bgm_source": "BGM_PATH 环境变量",
   "effects": [],
-  "note": "未内置第三方音乐或音效；无 BGM 时保留旁白。"
+  "playback_speed": 1.15,
+  "note": "旁白先行；统一倍速后混入用户 BGM，保持原曲节奏。"
 }

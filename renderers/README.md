@@ -4,7 +4,7 @@
 
 - **Manim**：可信模板生成源码，动态割线逼近切线、黎曼矩形细分、勾股关系。公式通过真实 LaTeX 编译为矢量 SVG，中文使用宋体，英文 Times New Roman。安装项目 `manim` extra，并配置 LaTeX 编译器。
 - **Canvas / SVG 适配**：CPU 绘制逐帧二维组件并交给 FFmpeg；`svg` 当前复用此二维适配器，不解析外部 SVG。支持数学图形、时间线、关系/过程图和柱状图。
-- **Remotion**：需 `remotion_project`，已安装本地 `@remotion/cli`，入口默认 `src/index.ts`，注册 `KnowledgeScene` composition；props 是 `{scene, metadata}`。项目缺失时报技术错误。
+- **Remotion**：默认使用内置 `remotion/project`，实现历史地图、时间线和人物档案。先运行 `npm ci --prefix renderers/remotion/project`；入口为 `src/index.ts`，注册 `KnowledgeScene`，按真实配音时长计算帧数。props 是 `{scene, metadata, fonts, sources}`。可用 `REMOTION_PROJECT` 选择可信外部项目，依赖或浏览器缺失会在配音前报告。
 - **Blender**：需 `blender_path` 和受信任的 `blender_template` Python 文件。模板接收 `--manifest ... --output ...`。模型不能提交可执行 Python。
 
 `math.derivative_secant`、`math.integral_riemann` 支持安全数学 AST（`x`、常量、四则、有限幂、sin/cos/exp 等），没有 `eval` 或属性访问。组件参数中只接受可绘制的实数函数；奇点和非法表达式会报错。
@@ -20,6 +20,8 @@ MiniMax 使用 HTTP `t2a_v2` 的 hex 响应。官方音色目录确认温润青�
 FFmpeg 统一画幅/帧率/音频格式后拼接，循环铺设低音量 BGM，支持 `scene.audio.effects=[{"path":"...","at":1.2,"volume":0.3}]`，音效文件限制在 `assets/audio` 内。Canvas 和 Manim 均提供随场景时间分页的中文字幕；BGM 默认首尾淡入淡出。`music_timeline` 暂作策划元数据，尚未按多个音乐段自动编曲。多个组件按顺序平分场景时长；动画动作与镜头由模板管理，不执行任意模型动作指令。`scene.extensions.visual_style` 的 background、primary、accent、text 字段控制学科配色。
 
 `effective_storyboard.json` 保存配音驱动的实际场景时长，`render_report.json` 标明实际渲染器、缓存命中及声音是否启用。缓存同时校验模板源码指纹；仅检查进程、文件、时长和最终文件能否解码，无 AI 审片循环。
+
+Remotion 缓存同时覆盖 TypeScript、配置、锁定依赖及 public 地图/肖像素材。`REMOTION_CONCURRENCY` 控制每幕并发，`REMOTION_BROWSER_EXECUTABLE` 可复用现有兼容 Chromium；Windows 本机路径不要直接用于 Linux 容器。浏览器只渲染可信模板和本地批准资产，不执行模型代码或任意图片网址。人物没有获准画像时使用标注为示意的姓名图形；有后世画像时强制显示素材来源中的年代说明。
 
 ## 实现依据
 

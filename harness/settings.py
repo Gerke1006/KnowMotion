@@ -52,6 +52,9 @@ class Settings(BaseSettings):
     renderer_fallback: bool = False
     remotion_project: str = ""
     remotion_entry: str = "src/index.ts"
+    remotion_concurrency: int = Field(default=2, ge=1, le=16)
+    remotion_browser_executable: str = ""
+    history_director_enabled: bool = True
     blender_path: str = "blender"
     blender_template: str = ""
     render_concurrency: int = Field(default=2, ge=1, le=16)

@@ -1,0 +1,120 @@
+{
+  "$defs": {
+    "Event": {
+      "additionalProperties": false,
+      "properties": {
+        "source_ids": {
+          "items": {
+            "pattern": "^[A-Za-z0-9_-]{1,64}$",
+            "type": "string"
+          },
+          "maxItems": 12,
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "year": {
+          "maximum": 10000,
+          "minimum": -10000,
+          "title": "Year",
+          "type": "number"
+        },
+        "date_label": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Date Label"
+        },
+        "label": {
+          "maxLength": 56,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "detail": {
+          "default": "",
+          "maxLength": 120,
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "year",
+        "label"
+      ],
+      "title": "Event",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "source_ids": {
+      "items": {
+        "pattern": "^[A-Za-z0-9_-]{1,64}$",
+        "type": "string"
+      },
+      "maxItems": 12,
+      "title": "Source Ids",
+      "type": "array"
+    },
+    "title": {
+      "default": "",
+      "maxLength": 56,
+      "title": "Title",
+      "type": "string"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/Event"
+      },
+      "maxItems": 7,
+      "minItems": 2,
+      "title": "Events",
+      "type": "array"
+    },
+    "range": {
+      "anyOf": [
+        {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "number"
+            },
+            {
+              "maximum": 10000,
+              "minimum": -10000,
+              "type": "number"
+            }
+          ],
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Range"
+    },
+    "note": {
+      "default": "时间先后不自动构成因果关系。",
+      "maxLength": 140,
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "events"
+  ],
+  "title": "HistoryTimeline",
+  "type": "object"
+}

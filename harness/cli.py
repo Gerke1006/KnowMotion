@@ -15,6 +15,13 @@ from storage.repository import JobRepository
 def doctor(settings: Settings) -> dict:
     from renderers.ffmpeg.composer import FFmpeg
     from renderers.latex import find_compiler
+    from renderers.remotion import RemotionRenderer
+    remotion = RemotionRenderer(settings)
+    try:
+        remotion.preflight()
+        remotion_status = "ready"
+    except RuntimeError:
+        remotion_status = "needs npm ci / Node.js"
     try:
         ffmpeg = FFmpeg(settings).binary
     except Exception:
@@ -26,6 +33,7 @@ def doctor(settings: Settings) -> dict:
     return {
         "python": sys.version.split()[0], "ffmpeg": str(ffmpeg),
         "manim_installed": importlib.util.find_spec("manim") is not None,
+        "remotion": {"project": str(remotion.project), "dependencies": remotion_status},
         "model_configured": bool(settings.model_name and secret_value(settings.model_api_key)),
         "tts_configured": bool(secret_value(settings.minimax_api_key)),
         "voice": settings.minimax_voice_name,
@@ -49,6 +57,8 @@ def main():
     generate.add_argument("--mode", choices=["demo", "live"], default="live")
     generate.add_argument("--renderer", choices=["auto", "manim", "canvas", "svg", "remotion", "blender"], default="auto")
     generate.add_argument("--duration", type=float, default=60)
+    generate.add_argument("--narration-chars", dest="narration_char_budget", type=int, default=None,
+                          help="全片旁白字符预算（含标点），传给项目 Agent 控制短片长度")
     generate.add_argument("--aspect-ratio", choices=["16:9", "9:16", "1:1"], default="16:9")
     generate.add_argument("--width", type=int, default=1280)
     generate.add_argument("--height", type=int, default=720)
