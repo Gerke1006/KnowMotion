@@ -13,5 +13,6 @@ data/
 outputs/
 media/
 node_modules/
+*.tsbuildinfo
 .tools/
 .DS_Store
