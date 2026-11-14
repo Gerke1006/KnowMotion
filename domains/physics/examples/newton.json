@@ -1,0 +1,159 @@
+{
+  "id": "newton",
+  "title": "牛顿第二定律",
+  "aliases": [
+    "牛顿第二定律",
+    "newton's second law",
+    "newton second law"
+  ],
+  "learning_objectives": [
+    "识别合力与加速度的关系",
+    "理解质量对加速度的影响",
+    "知道经典模型的适用条件"
+  ],
+  "knowledge": [
+    "在惯性系、质量不变的经典力学条件下，F_net=ma。",
+    "质量不变时，加速度与合力成正比。",
+    "合力一定时，加速度与质量成反比。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax University Physics: Newton's Second Law",
+      "url": "https://openstax.org/books/university-physics-volume-1/pages/5-3-newtons-second-law"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "力改变运动状态",
+      "learning_goal": "从速度变化引出加速度",
+      "narration": "推小车时，我们关心的是速度怎样变化。描述速度变化快慢的物理量，叫作加速度。",
+      "visual_concept": "从速度变化引出加速度",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "力改变运动状态",
+            "labels": [
+              "合力",
+              "速度变化",
+              "加速度"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "physics",
+      "renderer": "manim"
+    },
+    {
+      "title": "合力越大，加速度越大",
+      "learning_goal": "固定质量比较合力",
+      "narration": "固定质量为一千克。合力从一牛顿增加到三牛顿，加速度也从一增加到三米每二次方秒。",
+      "visual_concept": "固定质量比较合力",
+      "components": [
+        {
+          "id": "general.chart",
+          "parameters": {
+            "title": "假设 m=1 kg，a 单位 m/s²",
+            "labels": [
+              "1 N",
+              "2 N",
+              "3 N"
+            ],
+            "values": [
+              1,
+              2,
+              3
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "physics",
+      "renderer": "manim"
+    },
+    {
+      "title": "质量也决定变化",
+      "learning_goal": "固定合力比较质量",
+      "narration": "同样的合力作用下，质量越大，加速度越小。因此不能只比较推力，而忽略物体质量。",
+      "visual_concept": "固定合力比较质量",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "质量也决定变化",
+            "latex": "a=\\frac{F_{\\mathrm{net}}}{m}",
+            "labels": [
+              "合力 F_net：N",
+              "质量 m：kg",
+              "加速度 a：m/s²"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "physics",
+      "renderer": "manim"
+    },
+    {
+      "title": "写出模型，也说明条件",
+      "learning_goal": "总结适用范围",
+      "narration": "牛顿第二定律写作合力等于质量乘加速度。这里采用惯性参考系，质量不变，并处于经典力学范围。",
+      "visual_concept": "总结适用范围",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "写出模型，也说明条件",
+            "latex": "F_{\\mathrm{net}}=ma",
+            "labels": [
+              "惯性系",
+              "质量不变",
+              "经典力学"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "units": {
+          "force": "N",
+          "mass": "kg",
+          "acceleration": "m/s²"
+        },
+        "assumptions": [
+          "惯性系",
+          "恒定质量",
+          "经典非相对论范围"
+        ]
+      },
+      "scene_id": "scene_04",
+      "domain": "physics",
+      "renderer": "manim"
+    }
+  ],
+  "teaching_structure": [
+    "可观察现象",
+    "理想模型",
+    "变量关系",
+    "条件与预测"
+  ]
+}

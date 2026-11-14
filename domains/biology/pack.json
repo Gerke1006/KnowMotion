@@ -1,0 +1,34 @@
+{
+  "id": "biology",
+  "name": "生物",
+  "version": "1.0",
+  "style": "layered_life_process",
+  "keywords": [
+    "生物",
+    "细胞",
+    "光合作用",
+    "基因",
+    "DNA",
+    "蛋白质",
+    "神经",
+    "生态",
+    "biology",
+    "photosynthesis"
+  ],
+  "extensions": [
+    "scale",
+    "structures",
+    "process_steps",
+    "organism"
+  ],
+  "lessons": [
+    {
+      "title": "光合作用",
+      "aliases": [
+        "光合作用",
+        "photosynthesis"
+      ],
+      "file": "photosynthesis.json"
+    }
+  ]
+}

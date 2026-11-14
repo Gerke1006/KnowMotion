@@ -1,0 +1,16 @@
+{
+  "preferred": "manim",
+  "adapters": [
+    "manim",
+    "canvas"
+  ],
+  "future_adapters": [
+    "remotion",
+    "blender"
+  ],
+  "fps": 30,
+  "resolution": [
+    1280,
+    720
+  ]
+}

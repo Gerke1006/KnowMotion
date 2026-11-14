@@ -1,0 +1,38 @@
+{
+  "id": "economics",
+  "name": "经济学",
+  "version": "1.0",
+  "style": "analytical_chart",
+  "keywords": [
+    "经济",
+    "供需",
+    "供给",
+    "需求",
+    "通货膨胀",
+    "利率",
+    "市场",
+    "GDP",
+    "economics",
+    "supply",
+    "demand"
+  ],
+  "extensions": [
+    "assumptions",
+    "variables",
+    "data_sources",
+    "model_limits"
+  ],
+  "lessons": [
+    {
+      "title": "供需关系",
+      "aliases": [
+        "供需",
+        "供给",
+        "需求",
+        "supply",
+        "demand"
+      ],
+      "file": "supply_demand.json"
+    }
+  ]
+}

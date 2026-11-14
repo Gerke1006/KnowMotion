@@ -1,0 +1,36 @@
+{
+  "id": "literature",
+  "name": "文学",
+  "version": "1.0",
+  "style": "typographic_imagery",
+  "keywords": [
+    "文学",
+    "诗",
+    "小说",
+    "比喻",
+    "意象",
+    "人物关系",
+    "修辞",
+    "鲁迅",
+    "红楼梦",
+    "literature",
+    "metaphor"
+  ],
+  "extensions": [
+    "work",
+    "author",
+    "text_evidence",
+    "interpretations"
+  ],
+  "lessons": [
+    {
+      "title": "比喻的表达",
+      "aliases": [
+        "比喻",
+        "修辞",
+        "metaphor"
+      ],
+      "file": "metaphor.json"
+    }
+  ]
+}

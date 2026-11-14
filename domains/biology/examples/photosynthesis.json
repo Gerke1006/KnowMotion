@@ -1,0 +1,150 @@
+{
+  "id": "photosynthesis",
+  "title": "光合作用",
+  "aliases": [
+    "光合作用",
+    "photosynthesis"
+  ],
+  "learning_objectives": [
+    "区分光合作用的物质与能量来源",
+    "了解叶绿体内两类过程",
+    "认识总反应式是简化表达"
+  ],
+  "knowledge": [
+    "植物光合作用把光能转为化学能。",
+    "光反应发生在类囊体膜，释放的氧气来自水。",
+    "碳固定利用二氧化碳合成有机物，葡萄糖总反应式是简化概括。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax Biology 2e: Overview of Photosynthesis",
+      "url": "https://openstax.org/books/biology-2e/pages/8-1-overview-of-photosynthesis"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "植物怎样储存太阳能？",
+      "learning_goal": "区分物质和能量输入",
+      "narration": "植物吸收光，同时取得水和二氧化碳。光提供能量，水和二氧化碳提供反应所需的物质。",
+      "visual_concept": "区分物质和能量输入",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "植物怎样储存太阳能？",
+            "labels": [
+              "光能",
+              "水 + 二氧化碳",
+              "有机物 + 氧气"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "biology",
+      "renderer": "canvas"
+    },
+    {
+      "title": "进入叶绿体",
+      "learning_goal": "确定细胞器与过程位置",
+      "narration": "在叶绿体中，光反应位于类囊体膜。它把光能转化，并由水释放氧气。这里的结构仅作示意。",
+      "visual_concept": "确定细胞器与过程位置",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "进入叶绿体",
+            "labels": [
+              "叶绿体",
+              "类囊体膜",
+              "光反应",
+              "氧气"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "biology",
+      "renderer": "canvas"
+    },
+    {
+      "title": "把碳固定下来",
+      "learning_goal": "衔接两类反应",
+      "narration": "碳固定在叶绿体基质中进行，利用光反应提供的能量载体，将二氧化碳的碳用于合成有机物。",
+      "visual_concept": "衔接两类反应",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "把碳固定下来",
+            "labels": [
+              "光反应",
+              "能量载体",
+              "碳固定",
+              "有机物"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "biology",
+      "renderer": "canvas"
+    },
+    {
+      "title": "读懂简化总式",
+      "learning_goal": "避免混淆简式和一步反应",
+      "narration": "总反应式概括了物质变化，却不表示过程一步完成。氧气来自水，复杂的中间反应被简化了。",
+      "visual_concept": "避免混淆简式和一步反应",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "读懂简化总式",
+            "latex": "6\\mathrm{CO}_2+6\\mathrm{H}_2\\mathrm{O}\\xrightarrow{\\mathrm{light}}\\mathrm{C}_6\\mathrm{H}_{12}\\mathrm{O}_6+6\\mathrm{O}_2",
+            "labels": [
+              "总式为简化表达",
+              "氧气来自水"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "scale": "细胞器",
+        "structures": [
+          "叶绿体",
+          "类囊体膜",
+          "基质"
+        ],
+        "organism": "绿色植物"
+      },
+      "scene_id": "scene_04",
+      "domain": "biology",
+      "renderer": "canvas"
+    }
+  ],
+  "teaching_structure": [
+    "尺度与结构",
+    "过程输入",
+    "机制与流向",
+    "功能和边界"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "experimental_diagram",
+  "background": "#0B1E29",
+  "primary": "#7AD7F0",
+  "accent": "#F4B860",
+  "text": "#E8F1F5",
+  "font": "SimSun",
+  "fallback_fonts": [
+    "Noto Serif CJK SC",
+    "Liberation Serif"
+  ],
+  "safe_margin": 0.08,
+  "attention_opacity": {
+    "focus": 1.0,
+    "context": 0.4,
+    "grid": 0.15
+  },
+  "motion": {
+    "reveal_seconds": 1.5,
+    "hold_after_key_seconds": 2.0,
+    "easing": "smoothstep"
+  },
+  "principles": [
+    "每个动作揭示一个关系",
+    "一致的语义配色",
+    "关键结论保留阅读时间",
+    "画面与旁白共用场景时间轴"
+  ],
+  "english_font": "Times New Roman",
+  "subtitle_font": "Microsoft YaHei",
+  "subtitle_weight": "BOLD",
+  "subtitle_outline": "#161044"
+}

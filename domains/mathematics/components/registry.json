@@ -1,0 +1,11 @@
+{
+  "component_ids": [
+    "general.relationship",
+    "math.derivative_secant",
+    "math.formula",
+    "math.integral_riemann",
+    "math.pythagorean"
+  ],
+  "implementation": "renderers/",
+  "policy": "复用受控模板；模型只提供数据，不直接执行模型返回的 Python。"
+}

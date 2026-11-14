@@ -1,0 +1,151 @@
+{
+  "id": "metaphor",
+  "title": "比喻的表达",
+  "aliases": [
+    "比喻",
+    "修辞",
+    "metaphor"
+  ],
+  "learning_objectives": [
+    "识别本体与喻体",
+    "寻找二者共同特征",
+    "结合语境评价表达效果"
+  ],
+  "knowledge": [
+    "比喻通过相似性连接本体与喻体。",
+    "分析比喻需要说明相似点及其表达作用。",
+    "同一比喻可以有多个受语境约束的解读。"
+  ],
+  "sources": [
+    {
+      "title": "Poetry Foundation: Metaphor",
+      "url": "https://www.poetryfoundation.org/education/glossary/metaphor"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "把抽象感受变成画面",
+      "learning_goal": "用原创句子观察比喻",
+      "narration": "看这个原创示例：记忆像一座灯塔。记忆是本体，灯塔是用来帮助我们理解它的喻体。",
+      "visual_concept": "用原创句子观察比喻",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "原创示例：记忆像一座灯塔",
+            "labels": [
+              "记忆：本体",
+              "像",
+              "灯塔：喻体"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "literature",
+      "renderer": "canvas"
+    },
+    {
+      "title": "相似点在哪里？",
+      "learning_goal": "寻找意象之间的联系",
+      "narration": "灯塔能够指引方向。把记忆比作灯塔，可以让人想到过去的经验对今天的选择产生影响。",
+      "visual_concept": "寻找意象之间的联系",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "相似点在哪里？",
+            "labels": [
+              "灯塔",
+              "指引",
+              "记忆",
+              "选择"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "literature",
+      "renderer": "canvas"
+    },
+    {
+      "title": "从解释到表达效果",
+      "learning_goal": "说清具体表达作用",
+      "narration": "比喻把难以看见的记忆，变成一个可以想象的形象。分析时，应说明具体联系，而不只说生动形象。",
+      "visual_concept": "说清具体表达作用",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "从解释到表达效果",
+            "labels": [
+              "抽象的记忆",
+              "可见的灯塔",
+              "指引的感受"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "literature",
+      "renderer": "canvas"
+    },
+    {
+      "title": "让解读回到语境",
+      "learning_goal": "明确解释边界",
+      "narration": "如果上下文写的是孤独，灯塔也可能带来另一种感受。解读要回到语境，并说明证据支持什么。",
+      "visual_concept": "明确解释边界",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "让解读回到语境",
+            "labels": [
+              "文本语境",
+              "相似点",
+              "表达效果",
+              "证据"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "work": "原创教学示例",
+        "text_evidence": [
+          "记忆像一座灯塔"
+        ],
+        "interpretations": [
+          "记忆具有指引作用；最终解释取决于上下文"
+        ]
+      },
+      "scene_id": "scene_04",
+      "domain": "literature",
+      "renderer": "canvas"
+    }
+  ],
+  "teaching_structure": [
+    "文本观察",
+    "人物或意象联系",
+    "表达效果",
+    "有依据的解读"
+  ]
+}

@@ -1,0 +1,90 @@
+# Local integration environment. Temporal's development server is deliberately
+# confined to localhost; use a managed/hardened Temporal service in production.
+name: vibe-knowledge-agent
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: vibe
+      POSTGRES_USER: vibe
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vibe-local-only}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vibe -d vibe"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  temporal:
+    image: temporalio/temporal:latest
+    command: ["server", "start-dev", "--ip", "0.0.0.0", "--db-filename", "/var/lib/temporal/temporal.db"]
+    ports:
+      - "127.0.0.1:7233:7233"
+      - "127.0.0.1:8233:8233"
+    volumes:
+      - temporal-data:/var/lib/temporal
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "127.0.0.1:7233"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  minio:
+    image: minio/minio:latest
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-vibe-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-vibe-local-storage}
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio-data:/data
+
+  api:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment: &app-environment
+      DATABASE_URL: postgresql+psycopg://vibe:${POSTGRES_PASSWORD:-vibe-local-only}@postgres:5432/vibe
+      EXECUTION_BACKEND: temporal
+      TEMPORAL_ADDRESS: temporal:7233
+      OUTPUT_DIR: /app/outputs
+      MANIM_FONT: Noto Sans CJK SC
+      FONT_PATH: /usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc
+      MANIM_PYTHON: python
+      BGM_PATH: ${DOCKER_BGM_PATH:-}
+      S3_ENDPOINT: http://minio:9000
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./outputs:/app/outputs
+      - ./assets/audio:/app/assets/audio:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+  worker:
+    build: .
+    command: ["python", "-m", "workflows.worker"]
+    env_file:
+      - path: .env
+        required: false
+    environment: *app-environment
+    volumes:
+      - ./outputs:/app/outputs
+      - ./assets/audio:/app/assets/audio:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  temporal-data:
+  minio-data:

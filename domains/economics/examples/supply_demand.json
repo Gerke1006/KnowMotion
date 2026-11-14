@@ -1,0 +1,162 @@
+{
+  "id": "supply_demand",
+  "title": "供需关系",
+  "aliases": [
+    "供需",
+    "供给",
+    "需求",
+    "supply",
+    "demand"
+  ],
+  "learning_objectives": [
+    "理解需求量与需求的区别",
+    "认识供需均衡模型",
+    "知道图中数字是教学假设"
+  ],
+  "knowledge": [
+    "在其他条件不变时，简单需求模型中价格越高需求量越低。",
+    "简单供给模型中价格越高供给量越高。",
+    "需求曲线整体移动与沿曲线移动不同，模型数据并非现实预测。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax Principles of Economics: Demand, Supply, and Equilibrium",
+      "url": "https://openstax.org/books/principles-economics-3e/pages/3-1-demand-supply-and-equilibrium-in-markets-for-goods-and-services"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "从一个简化市场开始",
+      "learning_goal": "明确模型条件",
+      "narration": "想象一个简化市场，先假设收入、偏好和生产条件不变。接下来的数字都是教学假设。",
+      "visual_concept": "明确模型条件",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "从一个简化市场开始",
+            "labels": [
+              "买方需求",
+              "市场价格",
+              "卖方供给"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "economics",
+      "renderer": "canvas"
+    },
+    {
+      "title": "价格与需求量",
+      "learning_goal": "观察沿需求曲线变化",
+      "narration": "价格从一元涨到三元，假设需求量从九份降到三份。这是在同一条需求关系上移动。",
+      "visual_concept": "观察沿需求曲线变化",
+      "components": [
+        {
+          "id": "general.chart",
+          "parameters": {
+            "title": "假设需求量（份），非实测数据",
+            "labels": [
+              "价格 1 元",
+              "价格 2 元",
+              "价格 3 元"
+            ],
+            "values": [
+              9,
+              6,
+              3
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "economics",
+      "renderer": "canvas"
+    },
+    {
+      "title": "价格与供给量",
+      "learning_goal": "观察供给关系",
+      "narration": "同样三档价格下，假设供给量从三份增到九份。在两元时，供给和需求都为六份。",
+      "visual_concept": "观察供给关系",
+      "components": [
+        {
+          "id": "general.chart",
+          "parameters": {
+            "title": "假设供给量（份），均衡价 2 元",
+            "labels": [
+              "价格 1 元",
+              "价格 2 元",
+              "价格 3 元"
+            ],
+            "values": [
+              3,
+              6,
+              9
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "economics",
+      "renderer": "canvas"
+    },
+    {
+      "title": "模型有条件",
+      "learning_goal": "区分需求变化与需求量变化",
+      "narration": "如果收入或偏好改变，需求关系本身可能移动。简单模型帮助解释方向，不保证预测真实市场。",
+      "visual_concept": "区分需求变化与需求量变化",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "模型有条件",
+            "labels": [
+              "收入",
+              "偏好",
+              "需求关系",
+              "价格与数量"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "assumptions": [
+          "其他条件不变",
+          "教学假设数据"
+        ],
+        "model_limits": [
+          "非现实市场预测"
+        ]
+      },
+      "scene_id": "scene_04",
+      "domain": "economics",
+      "renderer": "canvas"
+    }
+  ],
+  "teaching_structure": [
+    "经济问题",
+    "模型假设",
+    "曲线或数据变化",
+    "解释与局限"
+  ]
+}

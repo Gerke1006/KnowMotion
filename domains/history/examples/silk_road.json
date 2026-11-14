@@ -1,0 +1,152 @@
+{
+  "id": "silk_road",
+  "title": "丝绸之路",
+  "aliases": [
+    "丝绸之路",
+    "silk road"
+  ],
+  "learning_objectives": [
+    "理解丝绸之路是交流网络",
+    "认识张骞出使的历史背景",
+    "区分交流过程与单一线性因果"
+  ],
+  "knowledge": [
+    "丝绸之路是跨欧亚大陆、多时期演变的交流网络。",
+    "张骞在公元前二世纪出使西域。",
+    "商品、技术、宗教和知识沿多条路线传播。"
+  ],
+  "sources": [
+    {
+      "title": "UNESCO: About the Silk Roads",
+      "url": "https://en.unesco.org/silkroad/about-silk-roads"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "一条路，还是一张网？",
+      "learning_goal": "把单一路线改为网络概念",
+      "narration": "丝绸之路并不是一条固定的道路，而是不同时期不断变化的交通与交流网络。",
+      "visual_concept": "把单一路线改为网络概念",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "交流网络示意，非地理地图",
+            "labels": [
+              "东亚",
+              "中亚",
+              "西亚",
+              "地中海"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "history",
+      "renderer": "canvas"
+    },
+    {
+      "title": "汉代的西域往来",
+      "learning_goal": "把事件放在时间背景中",
+      "narration": "公元前二世纪，张骞出使西域。汉朝对西域的了解与往来，成为这一时期交流的重要背景。",
+      "visual_concept": "把事件放在时间背景中",
+      "components": [
+        {
+          "id": "general.timeline",
+          "parameters": {
+            "title": "汉代的西域往来",
+            "labels": [
+              "公元前二世纪",
+              "张骞出使",
+              "往来加深"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "history",
+      "renderer": "canvas"
+    },
+    {
+      "title": "流动的不只有丝绸",
+      "learning_goal": "扩展交换内容",
+      "narration": "商旅携带商品，也促进技术、信仰和知识传播。交流往往经过多个中间地区，逐步发生。",
+      "visual_concept": "扩展交换内容",
+      "components": [
+        {
+          "id": "general.process",
+          "parameters": {
+            "title": "流动的不只有丝绸",
+            "labels": [
+              "商品交换",
+              "人员往来",
+              "技术与文化传播"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "history",
+      "renderer": "canvas"
+    },
+    {
+      "title": "从网络理解历史",
+      "learning_goal": "保留史料与因果边界",
+      "narration": "理解丝绸之路，要同时观察路线、人物和时代。图中连线只是关系示意，不能代替真实的历史地图。",
+      "visual_concept": "保留史料与因果边界",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "从网络理解历史",
+            "labels": [
+              "时代",
+              "地区",
+              "人群",
+              "史料"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "historical_period": "汉代及后续时期",
+        "locations": [
+          "东亚",
+          "中亚",
+          "西亚"
+        ],
+        "historical_sources": [
+          "UNESCO Silk Roads"
+        ]
+      },
+      "scene_id": "scene_04",
+      "domain": "history",
+      "renderer": "canvas"
+    }
+  ],
+  "teaching_structure": [
+    "时空背景",
+    "关键人物与事件",
+    "因果链",
+    "影响与史料边界"
+  ]
+}

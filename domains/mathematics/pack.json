@@ -1,0 +1,63 @@
+{
+  "id": "mathematics",
+  "name": "数学",
+  "version": "1.0",
+  "style": "geometric_clarity",
+  "keywords": [
+    "数学",
+    "微积分",
+    "导数",
+    "积分",
+    "勾股",
+    "几何",
+    "代数",
+    "概率",
+    "函数",
+    "矩阵",
+    "calculus",
+    "derivative",
+    "integral",
+    "pythagor"
+  ],
+  "extensions": [
+    "formula",
+    "coordinate_system",
+    "mathematical_objects",
+    "transformation",
+    "proof_steps"
+  ],
+  "lessons": [
+    {
+      "title": "微积分的本质",
+      "aliases": [
+        "微积分",
+        "calculus"
+      ],
+      "file": "calculus.json"
+    },
+    {
+      "title": "导数的几何意义",
+      "aliases": [
+        "导数",
+        "derivative"
+      ],
+      "file": "derivative.json"
+    },
+    {
+      "title": "积分与面积",
+      "aliases": [
+        "积分",
+        "integral"
+      ],
+      "file": "integral.json"
+    },
+    {
+      "title": "勾股定理",
+      "aliases": [
+        "勾股",
+        "pythagor"
+      ],
+      "file": "pythagorean.json"
+    }
+  ]
+}

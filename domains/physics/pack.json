@@ -1,0 +1,35 @@
+{
+  "id": "physics",
+  "name": "物理",
+  "version": "1.0",
+  "style": "experimental_diagram",
+  "keywords": [
+    "物理",
+    "牛顿",
+    "力学",
+    "加速度",
+    "电磁",
+    "光学",
+    "量子",
+    "热力学",
+    "physics",
+    "newton"
+  ],
+  "extensions": [
+    "units",
+    "assumptions",
+    "forces",
+    "initial_conditions"
+  ],
+  "lessons": [
+    {
+      "title": "牛顿第二定律",
+      "aliases": [
+        "牛顿第二定律",
+        "newton's second law",
+        "newton second law"
+      ],
+      "file": "newton.json"
+    }
+  ]
+}

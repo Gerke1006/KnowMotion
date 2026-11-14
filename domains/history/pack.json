@@ -1,0 +1,40 @@
+{
+  "id": "history",
+  "name": "历史",
+  "version": "1.0",
+  "style": "archival_timeline",
+  "keywords": [
+    "历史",
+    "朝代",
+    "秦",
+    "汉朝",
+    "唐朝",
+    "宋朝",
+    "明朝",
+    "清朝",
+    "丝绸之路",
+    "工业革命",
+    "罗马",
+    "战争",
+    "history",
+    "silk road"
+  ],
+  "extensions": [
+    "historical_period",
+    "locations",
+    "characters",
+    "events",
+    "causal_relationships",
+    "historical_sources"
+  ],
+  "lessons": [
+    {
+      "title": "丝绸之路",
+      "aliases": [
+        "丝绸之路",
+        "silk road"
+      ],
+      "file": "silk_road.json"
+    }
+  ]
+}

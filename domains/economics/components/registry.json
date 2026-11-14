@@ -1,0 +1,9 @@
+{
+  "component_ids": [
+    "general.chart",
+    "general.process",
+    "general.relationship"
+  ],
+  "implementation": "renderers/",
+  "policy": "复用受控模板；模型只提供数据，不直接执行模型返回的 Python。"
+}

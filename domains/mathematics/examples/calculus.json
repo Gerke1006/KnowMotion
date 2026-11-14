@@ -1,0 +1,179 @@
+{
+  "id": "calculus",
+  "title": "微积分的本质",
+  "aliases": [
+    "微积分",
+    "calculus"
+  ],
+  "learning_objectives": [
+    "用导数描述瞬时变化",
+    "用积分描述连续累积",
+    "理解变化与累积由微积分基本定理联系"
+  ],
+  "knowledge": [
+    "导数是差商的极限。",
+    "定积分是黎曼和的极限。",
+    "对连续函数 f，F(x)=∫₀ˣ f(t)dt 满足 F'(x)=f(x)。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax Calculus Volume 1: The Fundamental Theorem of Calculus",
+      "url": "https://openstax.org/books/calculus-volume-1/pages/5-3-the-fundamental-theorem-of-calculus"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "微积分在问什么？",
+      "learning_goal": "把变化和累积作为两个核心问题",
+      "narration": "微积分研究两个相连的问题：某一刻变化有多快，以及不断变化的量怎样累积。",
+      "visual_concept": "把变化和累积作为两个核心问题",
+      "components": [
+        {
+          "id": "general.relationship",
+          "parameters": {
+            "title": "微积分在问什么？",
+            "labels": [
+              "瞬时变化",
+              "导数",
+              "连续累积",
+              "积分"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "导数：看局部变化",
+      "learning_goal": "让割线趋于切线",
+      "narration": "在平方函数上，让两点越来越近。割线趋近切线，横坐标一处的斜率趋近二。",
+      "visual_concept": "让割线趋于切线",
+      "components": [
+        {
+          "id": "math.derivative_secant",
+          "parameters": {
+            "title": "导数：看局部变化",
+            "function": "x**2",
+            "x_range": [
+              -1,
+              3
+            ],
+            "x0": 1,
+            "dx_start": 1.5,
+            "dx_end": 0.02
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "积分：把小块累加",
+      "learning_goal": "用小矩形表示连续累积",
+      "narration": "再看曲线下的面积。把小矩形逐一相加，并让每块越来越窄，得到积分的直观含义。",
+      "visual_concept": "用小矩形表示连续累积",
+      "components": [
+        {
+          "id": "math.integral_riemann",
+          "parameters": {
+            "title": "积分：把小块累加",
+            "function": "x**2",
+            "bounds": [
+              0,
+              2
+            ],
+            "n_start": 4,
+            "n_end": 32
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "两种操作怎样联系？",
+      "learning_goal": "连接累积量与其瞬时变化",
+      "narration": "把零到某一点的面积记作一个新函数。对连续函数，这个累积函数的导数等于原函数。",
+      "visual_concept": "连接累积量与其瞬时变化",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "两种操作怎样联系？",
+            "latex": "F(x)=\\int_0^x f(t)\\,\\mathrm{d}t\\qquad F'(x)=f(x)",
+            "labels": [
+              "条件：f 连续",
+              "微积分基本定理"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_04",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "一个具体例子",
+      "learning_goal": "用平方函数检查变化与累积",
+      "narration": "平方函数累积成三分之立方；再求导，又回到平方。变化和累积，因此被同一个定理联系起来。",
+      "visual_concept": "用平方函数检查变化与累积",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "一个具体例子",
+            "latex": "\\int_0^x t^2\\,\\mathrm{d}t=\\frac{x^3}{3}\\qquad \\frac{\\mathrm{d}}{\\mathrm{d}x}\\left(\\frac{x^3}{3}\\right)=x^2",
+            "labels": [
+              "积分：累积",
+              "导数：变化"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "formula": "diff(x**3/3,x)=x**2",
+        "proof_steps": [
+          "F(x)=Integral(t**2,(t,0,x))=x**3/3",
+          "diff(F(x),x)=x**2"
+        ]
+      },
+      "scene_id": "scene_05",
+      "domain": "mathematics",
+      "renderer": "manim"
+    }
+  ],
+  "teaching_structure": [
+    "直观问题",
+    "动态对象",
+    "数学关系",
+    "应用与边界"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "narration": "minimax",
+  "voice_name": "温润青年",
+  "bgm_gain": 0.12,
+  "voice_priority": true,
+  "bgm_source": "BGM_PATH 环境变量",
+  "effects": [],
+  "note": "未内置第三方音乐或音效；无 BGM 时保留旁白。"
+}

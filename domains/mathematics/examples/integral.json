@@ -1,0 +1,159 @@
+{
+  "id": "integral",
+  "title": "积分与面积",
+  "aliases": [
+    "积分",
+    "integral"
+  ],
+  "learning_objectives": [
+    "理解用小矩形逼近面积",
+    "区分有限求和与积分",
+    "计算 x² 在 [0,2] 上的定积分"
+  ],
+  "knowledge": [
+    "在 [0,2] 上以等宽矩形近似 x² 下方的面积。",
+    "连续函数的黎曼和在网格趋于零时收敛到定积分。",
+    "∫₀² x²dx = [x³/3]₀² = 8/3。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax Calculus Volume 1: The Definite Integral",
+      "url": "https://openstax.org/books/calculus-volume-1/pages/5-2-the-definite-integral"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "曲线下的面积",
+      "learning_goal": "提出不规则面积问题",
+      "narration": "我们想求平方函数从零到二之间的曲线下面积。边界是弯的，普通长方形公式不能直接使用。",
+      "visual_concept": "提出不规则面积问题",
+      "components": [
+        {
+          "id": "math.integral_riemann",
+          "parameters": {
+            "title": "曲线下的面积",
+            "function": "x**2",
+            "bounds": [
+              0,
+              2
+            ],
+            "n_start": 4,
+            "n_end": 4
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "把面积分成小块",
+      "learning_goal": "构造中点矩形近似",
+      "narration": "先把区间切成四份，用每段中点的函数值作高度。小矩形面积相加，得到一个近似值。",
+      "visual_concept": "构造中点矩形近似",
+      "components": [
+        {
+          "id": "math.integral_riemann",
+          "parameters": {
+            "title": "把面积分成小块",
+            "function": "x**2",
+            "bounds": [
+              0,
+              2
+            ],
+            "n_start": 4,
+            "n_end": 8,
+            "labels": [
+              "宽 Δx",
+              "高 f(x)"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "分得越细，误差越小",
+      "learning_goal": "展示黎曼和收敛",
+      "narration": "不断增加矩形数量，每块变得更窄。对这个连续函数，矩形面积的总和会趋向确定的极限。",
+      "visual_concept": "展示黎曼和收敛",
+      "components": [
+        {
+          "id": "math.integral_riemann",
+          "parameters": {
+            "title": "分得越细，误差越小",
+            "function": "x**2",
+            "bounds": [
+              0,
+              2
+            ],
+            "n_start": 8,
+            "n_end": 32
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "极限就是定积分",
+      "learning_goal": "用原函数求出面积",
+      "narration": "这个极限就是定积分。平方函数的原函数是三分之立方，代入上下限，面积等于三分之八。",
+      "visual_concept": "用原函数求出面积",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "极限就是定积分",
+            "latex": "\\int_0^2 x^2\\,\\mathrm{d}x=\\left[\\frac{x^3}{3}\\right]_0^2=\\frac{8}{3}",
+            "labels": [
+              "分割",
+              "求和",
+              "取极限"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "formula": "Integral(x**2,(x,0,2))=8/3",
+        "coordinate_system": {
+          "x": [
+            0,
+            2
+          ]
+        }
+      },
+      "scene_id": "scene_04",
+      "domain": "mathematics",
+      "renderer": "manim"
+    }
+  ],
+  "teaching_structure": [
+    "直观问题",
+    "动态对象",
+    "数学关系",
+    "应用与边界"
+  ]
+}

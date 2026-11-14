@@ -1,0 +1,161 @@
+{
+  "id": "derivative",
+  "title": "导数的几何意义",
+  "aliases": [
+    "导数",
+    "derivative"
+  ],
+  "learning_objectives": [
+    "区分平均变化率与瞬时变化率",
+    "理解割线趋近切线",
+    "求出 x² 在 x=1 处的导数"
+  ],
+  "knowledge": [
+    "函数 f(x)=x² 的平均变化率为 ((1+h)²-1)/h=2+h，h≠0。",
+    "当 h 趋近 0 时，割线斜率趋近 2。",
+    "导数表达瞬时变化率；可导性需要极限存在。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax Calculus Volume 1: Derivatives",
+      "url": "https://openstax.org/books/calculus-volume-1/pages/3-1-defining-the-derivative"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "变化有多快？",
+      "learning_goal": "观察曲线与两个点",
+      "narration": "沿着平方函数移动，同样向右一步，高度的变化并不一样。怎样描述某一点的变化速度？",
+      "visual_concept": "观察曲线与两个点",
+      "components": [
+        {
+          "id": "math.derivative_secant",
+          "parameters": {
+            "title": "变化有多快？",
+            "function": "x**2",
+            "x_range": [
+              -1,
+              3
+            ],
+            "x0": 1,
+            "dx_start": 1.5,
+            "dx_end": 1.5,
+            "labels": [
+              "f(x)=x²",
+              "平均变化率"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "两点之间：平均变化率",
+      "learning_goal": "用割线斜率表示差商",
+      "narration": "连接两个点得到割线。竖直变化除以水平变化，就是这段区间的平均变化率。",
+      "visual_concept": "用割线斜率表示差商",
+      "components": [
+        {
+          "id": "math.derivative_secant",
+          "parameters": {
+            "title": "两点之间：平均变化率",
+            "function": "x**2",
+            "x_range": [
+              -1,
+              3
+            ],
+            "x0": 1,
+            "dx_start": 1.5,
+            "dx_end": 0.8,
+            "latex": "\\frac{\\Delta y}{\\Delta x}=2+h"
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "让两点逐渐靠近",
+      "learning_goal": "让割线趋于切线",
+      "narration": "把第二个点向第一个点靠近。水平距离趋近零，割线逐渐接近切线，斜率趋近二。",
+      "visual_concept": "让割线趋于切线",
+      "components": [
+        {
+          "id": "math.derivative_secant",
+          "parameters": {
+            "title": "让两点逐渐靠近",
+            "function": "x**2",
+            "x_range": [
+              -1,
+              3
+            ],
+            "x0": 1,
+            "dx_start": 0.8,
+            "dx_end": 0.02
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "导数：瞬时变化率",
+      "learning_goal": "连接数值极限与导数定义",
+      "narration": "在横坐标一处，平方函数的导数是二。导数就是差商的极限，前提是这个极限存在。",
+      "visual_concept": "连接数值极限与导数定义",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "导数：瞬时变化率",
+            "latex": "f'(1)=\\lim_{h\\to 0}(2+h)=2",
+            "labels": [
+              "平均变化率",
+              "取极限",
+              "瞬时变化率"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "formula": "f'(1)=2",
+        "proof_steps": [
+          "((1+h)^2-1)/h=2+h, h≠0",
+          "lim(h→0)(2+h)=2"
+        ]
+      },
+      "scene_id": "scene_04",
+      "domain": "mathematics",
+      "renderer": "manim"
+    }
+  ],
+  "teaching_structure": [
+    "直观问题",
+    "动态对象",
+    "数学关系",
+    "应用与边界"
+  ]
+}

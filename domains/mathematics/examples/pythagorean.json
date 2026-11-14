@@ -1,0 +1,148 @@
+{
+  "id": "pythagorean",
+  "title": "勾股定理",
+  "aliases": [
+    "勾股",
+    "pythagor"
+  ],
+  "learning_objectives": [
+    "识别直角三角形的斜边",
+    "用面积理解 a²+b²=c²",
+    "区别数值验证与一般证明"
+  ],
+  "knowledge": [
+    "直角三角形中，直角所对的边是斜边。",
+    "对直角三角形，a²+b²=c²。",
+    "3²+4²=5² 是示例而不是一般证明。"
+  ],
+  "sources": [
+    {
+      "title": "OpenStax Prealgebra: Use the Pythagorean Theorem",
+      "url": "https://openstax.org/books/prealgebra-2e/pages/9-5-use-properties-of-angles-triangles-and-the-pythagorean-theorem"
+    }
+  ],
+  "scenes": [
+    {
+      "title": "三条边，一个直角",
+      "learning_goal": "辨认斜边",
+      "narration": "先找直角。与直角相对的边叫斜边，也是直角三角形中最长的一条边。",
+      "visual_concept": "辨认斜边",
+      "components": [
+        {
+          "id": "math.pythagorean",
+          "parameters": {
+            "title": "三条边，一个直角",
+            "a": 3,
+            "b": 4,
+            "c": 5,
+            "labels": [
+              "直角边 a",
+              "直角边 b",
+              "斜边 c"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_01",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "在每条边上搭正方形",
+      "learning_goal": "把边长平方转换为面积",
+      "narration": "分别以三条边为边长搭正方形。它们的面积，就是三条边长各自的平方。",
+      "visual_concept": "把边长平方转换为面积",
+      "components": [
+        {
+          "id": "math.pythagorean",
+          "parameters": {
+            "title": "在每条边上搭正方形",
+            "a": 3,
+            "b": 4,
+            "c": 5,
+            "labels": [
+              "a²=9",
+              "b²=16",
+              "c²=25"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_02",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "面积之间的关系",
+      "learning_goal": "观察面积等式",
+      "narration": "勾股定理说，两个直角边上正方形的面积之和，等于斜边上正方形的面积。",
+      "visual_concept": "观察面积等式",
+      "components": [
+        {
+          "id": "math.pythagorean",
+          "parameters": {
+            "title": "面积之间的关系",
+            "a": 3,
+            "b": 4,
+            "c": 5,
+            "latex": "a^2+b^2=c^2"
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {},
+      "scene_id": "scene_03",
+      "domain": "mathematics",
+      "renderer": "manim"
+    },
+    {
+      "title": "数值验证与适用条件",
+      "learning_goal": "避免把示例当作一般证明",
+      "narration": "三、四、五满足九加十六等于二十五。这验证了一个例子；一般证明还需要拼图或相似三角形。",
+      "visual_concept": "避免把示例当作一般证明",
+      "components": [
+        {
+          "id": "math.formula",
+          "parameters": {
+            "title": "数值验证与适用条件",
+            "latex": "3^2+4^2=5^2\\qquad a^2+b^2=c^2",
+            "labels": [
+              "条件：直角三角形",
+              "示例验证 ≠ 一般证明"
+            ]
+          }
+        }
+      ],
+      "duration": 15,
+      "animation_sequence": [],
+      "camera": {},
+      "audio": {},
+      "extensions": {
+        "proof_steps": [],
+        "limitations": "此示范课解释定理并做数值验证，不声称给出一般证明。"
+      },
+      "scene_id": "scene_04",
+      "domain": "mathematics",
+      "renderer": "manim"
+    }
+  ],
+  "teaching_structure": [
+    "直观问题",
+    "动态对象",
+    "数学关系",
+    "应用与边界"
+  ]
+}

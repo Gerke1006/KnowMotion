@@ -1,0 +1,357 @@
+{
+  "version": "1.0",
+  "assets": [
+    {
+      "id": "math.derivative_secant",
+      "component_id": "math.derivative_secant",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "mathematics",
+        "physics"
+      ],
+      "scenes": [
+        "derivative_secant"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "math.integral_riemann",
+      "component_id": "math.integral_riemann",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "mathematics",
+        "physics"
+      ],
+      "scenes": [
+        "integral_riemann"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "math.pythagorean",
+      "component_id": "math.pythagorean",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "mathematics",
+        "physics"
+      ],
+      "scenes": [
+        "pythagorean"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "math.formula",
+      "component_id": "math.formula",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "general"
+      ],
+      "scenes": [
+        "formula"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "general.title",
+      "component_id": "general.title",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "general"
+      ],
+      "scenes": [
+        "title"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "general.timeline",
+      "component_id": "general.timeline",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "general"
+      ],
+      "scenes": [
+        "timeline"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "general.relationship",
+      "component_id": "general.relationship",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "general"
+      ],
+      "scenes": [
+        "relationship"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "general.process",
+      "component_id": "general.process",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "general"
+      ],
+      "scenes": [
+        "process"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "general.chart",
+      "component_id": "general.chart",
+      "kind": "animation",
+      "level": "complete",
+      "domains": [
+        "general"
+      ],
+      "scenes": [
+        "chart"
+      ],
+      "animations": [
+        "reveal",
+        "transform"
+      ],
+      "renderer": [
+        "manim",
+        "canvas"
+      ],
+      "source": "renderers/",
+      "license": "project-original",
+      "version": "1.0"
+    },
+    {
+      "id": "primitive.axes",
+      "kind": "animation",
+      "level": "basic",
+      "domains": [
+        "general"
+      ],
+      "supports": [
+        "general.composed_chart"
+      ],
+      "scenes": [
+        "chart"
+      ],
+      "animations": [
+        "draw"
+      ],
+      "source": "renderers/",
+      "license": "project-original"
+    },
+    {
+      "id": "primitive.labels",
+      "kind": "animation",
+      "level": "basic",
+      "domains": [
+        "general"
+      ],
+      "supports": [
+        "general.composed_chart"
+      ],
+      "scenes": [
+        "chart",
+        "timeline"
+      ],
+      "animations": [
+        "reveal"
+      ],
+      "source": "renderers/",
+      "license": "project-original"
+    },
+    {
+      "id": "primitive.generic",
+      "kind": "animation",
+      "level": "primitive",
+      "domains": [
+        "general"
+      ],
+      "supports": [],
+      "scenes": [
+        "custom"
+      ],
+      "animations": [
+        "reveal"
+      ],
+      "source": "renderers/",
+      "license": "project-original"
+    },
+    {
+      "id": "style.mathematics",
+      "kind": "design",
+      "domains": [
+        "mathematics"
+      ],
+      "source": "domains/mathematics/styles/default.json",
+      "license": "project-original"
+    },
+    {
+      "id": "style.history",
+      "kind": "design",
+      "domains": [
+        "history"
+      ],
+      "source": "domains/history/styles/default.json",
+      "license": "project-original"
+    },
+    {
+      "id": "style.physics",
+      "kind": "design",
+      "domains": [
+        "physics"
+      ],
+      "source": "domains/physics/styles/default.json",
+      "license": "project-original"
+    },
+    {
+      "id": "style.biology",
+      "kind": "design",
+      "domains": [
+        "biology"
+      ],
+      "source": "domains/biology/styles/default.json",
+      "license": "project-original"
+    },
+    {
+      "id": "style.economics",
+      "kind": "design",
+      "domains": [
+        "economics"
+      ],
+      "source": "domains/economics/styles/default.json",
+      "license": "project-original"
+    },
+    {
+      "id": "style.literature",
+      "kind": "design",
+      "domains": [
+        "literature"
+      ],
+      "source": "domains/literature/styles/default.json",
+      "license": "project-original"
+    },
+    {
+      "id": "reference.manim_video",
+      "kind": "reference",
+      "domains": [
+        "mathematics",
+        "physics"
+      ],
+      "source": "https://github.com/browser-use/video-use/tree/main/skills/manim-video",
+      "downloaded": false,
+      "rights": "External reference only; no source copied."
+    },
+    {
+      "id": "reference.motion_showreel",
+      "kind": "reference",
+      "domains": [
+        "general"
+      ],
+      "source": "https://github.com/ConardLi/garden-skills/tree/main/skills/motion-showreel",
+      "downloaded": false,
+      "rights": "External reference only; no media copied."
+    },
+    {
+      "id": "audio.user_bgm",
+      "kind": "audio",
+      "domains": [
+        "general"
+      ],
+      "source": "env:BGM_PATH",
+      "available": true,
+      "rights": "User-supplied; resolve at runtime.",
+      "local_path": "assets/audio/vibe-bgm.m4a"
+    }
+  ]
+}
